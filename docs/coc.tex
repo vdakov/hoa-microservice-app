@@ -1,0 +1,77 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Code of Conduct}
+\author{Group 18b}
+\date{November 2022}
+
+\begin{document}
+
+\maketitle
+
+\section{Meetings}
+    \begin{itemize}
+        \item Agenda for the meeting is to be submitted by 18:00 on the day before the upcoming meeting; it should describe a clear outline of the discussed items, which on their own outline the goal of the meeting.
+        \item Secretary of the team takes notes and publishes those in the repository
+        \item Lab meetings have mandatory presence
+        \item For other meetings, absence ought to be discussed beforehand
+    \end{itemize}
+\section{Product}
+    \begin{itemize}
+        \item  We are to develop a prototype of the application in the provided time window
+        \item User story assignment using the MOSCOW principle; Must-have and a part of should-have features will be implemented. Could-have features will not be addressed.
+        \item Development and Main branches - (if issues relate to documentation, they ought to be merged directly to main rather than dev if separate dev and main branches are agreed upon)
+        \item Consistent code style, possibly enforced via Checkstyle, adjusted during the coding process
+        \item Naming convention for issue branches - issue number followed by a short description of the issue in kebab case with lowercase letters
+        \item Don't rename other people's variables and classes without consent
+        \item Group Grade Aim: 9 or higher
+    \end{itemize}
+\section{Planning}
+    \begin{itemize}
+        \item Recurring meetings on Mondays from 11:00 until 12:45
+        \item Meetings with our TA are on Thursdays unless specified otherwise
+        \item Communication - Usually conducted via Discord, Whatsapp for urgent matters, Mattermost for communication with our TA
+        \item Chairmen and Notetakers are rotated on a weekl basis - previous Notetaker becomes new Chairman and new Notetaker either volunteers or is chosen by chairman
+    \end{itemize}
+\section{(Team)work}
+    \begin{itemize}
+        \item The CoC can be updated if the entire team agrees with the amendment
+        \item Time tracking in Gitlab is encouraged
+        \item Templates for agendas for meetings defined in first meeting
+        \item When the agendas are published on GitLab, initially they are just named 'Agenda\_DD\_MM\_YYYY' and is later appended with the notes to \newline 'Agenda\_Notes\_DD\_MM\_YYYY'
+    \end{itemize}
+\section{Code Contribution}
+    \begin{itemize}
+        \item Each merge request is approved by 2 others ( check if the code is meaningful etc. )
+        \item Every merge request should be reviewed by at least two people at latest 24 hours after the creation of the request.
+        \item Every merge request should be reviewed by at least two people at latest 24 hours after the creation of the request.
+        \item Test coverage for each class above 60 $\%$
+        \item Every team member should finish up their weekly Merge Requests by Sunday, 23:59 and the actual Merge Day is Monday to resolve code conflicts, refactorings, etc.
+        \item Close to merge day, finishing existing MR's should be prioritized over starting new features.
+        \item Reassignment of issues is allowed in this case
+        \item Constant meetings and project reviews to find out what needs improvement
+        \item Accordingly, whenever a merge request is made, the one making it should inform the team by channels outside of Gitlab, such as Discord or Mattermost
+        \item If the merge request is not approved, the one blocking it should explain it
+        \item Merge request should not be approved without any feedback. In the case when there are no complaints or questions about a person's code, the reviewer should specify that in their comment
+        \item The one making the merge request should put a short description of all the changes in their merge request. If there are stuff still to be added at a later date, the reviewer should describe what with "TO-DO" with a time limit they set for doing so with another merge request.
+        \item Merge request reviews should be done in the style of conventional comments: conventionalcomments.org/
+        \item When addressing TO-DO parts of a previous merge request in another, they should refer to that merge request explicitly in their comments
+        \item If there is a known bug in the merge request, which is to be fixed, it should be denoted with the "BUG" label in a new issue and fixed as fast as possible. It should additionally be avoided to submit merge request with bugs unless the one submitting it feels it is absolutely necessary
+        \item All commits should be atomic
+        \item Avoid commits like "fixed pipeline" and "bugfix" by squashing it into the appropriate commit.
+        \item You should do this before pushing:
+            \begin{itemize}
+                \item git rebase -i HEAD~[number of commits to go back]
+                \item If already pushed, git push --force for new history
+            \end{itemize}
+        \item For every commit, the pipeline should pass
+        \item One feature per commit
+        \item The issues that reviewers mention in their comments should be at least addressed in 12 hours from the time of the comment (excluding the hours between 22:00 and 09:00 the next day to account for sleep )
+        \item Never modify others' branches without consent
+    \end{itemize}
+\section{Conflicts}
+    \begin{itemize}
+        \item Reaching consensus first, otherwise - majority vote, the chair is the tiebreaker
+        \item In case of a group member not adhering by the CoC first try to address the issue within our group, but if that does not yield results, address higher authority without delays
+    \end{itemize}
+\end{document}
