@@ -19,8 +19,8 @@
 ###Progress
 Everyone did user stories and architecture draft. We made the code of conduct.
 Gijs had Covid.
-Vasko and Simeon: security, 
-Erik and Gijs: 
+Vasko and Simeon: security, elections and board
+Erik and Gijs: creation of HOA's and accounts, technical specs
 Simeon played around with visualization.
 Steve and Patrik: public notice board, requirements
 
