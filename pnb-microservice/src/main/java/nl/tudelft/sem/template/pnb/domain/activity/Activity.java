@@ -3,24 +3,31 @@ package nl.tudelft.sem.template.pnb.domain.activity;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import nl.tudelft.sem.template.pnb.domain.HasEvents;
 
+@Data
 @Entity
 @Table(name = "activities")
 @NoArgsConstructor
 public class Activity extends HasEvents {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private int id;
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
+    @Convert(converter = TimeAttributeConverter.class)
     @Column(name = "time", nullable = false)
     private Date time;
 
