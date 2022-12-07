@@ -31,5 +31,5 @@ test-pnb-microservice:
   stage: test
   script:
     - gradle pnb-microservice:test pnb-microservice:jacocoTestReport
-    - cat pnb-microservice/build/reports/jacoco/test/html/index.html | grep -Po "Total.*?([0-9]{1,3})%"
+    #- cat pnb-microservice/build/reports/jacoco/test/html/index.html | grep -Po "Total.*?([0-9]{1,3})%"
   coverage: /([0-9]{1,3})%/
