@@ -1,9 +1,8 @@
 package nl.tudelft.sem.template.hoa.controllers;
 
 import java.util.List;
-import nl.tudelft.sem.template.hoa.domain.hoa.Hoa;
-import nl.tudelft.sem.template.hoa.domain.hoa.Hoa;
-import nl.tudelft.sem.template.hoa.domain.hoa.HoaService;
+import nl.tudelft.sem.template.hoa.entitites.Hoa;
+import nl.tudelft.sem.template.hoa.services.HoaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
