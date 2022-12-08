@@ -9,5 +9,6 @@ public interface HoaRepository extends JpaRepository<Hoa, Integer> {
     @Override
     List<Hoa> findAll();
 
-    Hoa save();
+    @Override
+    Hoa save(Hoa hoa);
 }
