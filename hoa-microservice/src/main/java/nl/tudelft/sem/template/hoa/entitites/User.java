@@ -1,12 +1,15 @@
 package nl.tudelft.sem.template.hoa.entitites;
 
-import lombok.Data;
-
+import lombok.NoArgsConstructor;
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
-@Data
+
 @Entity
-@Table(name = "users")
+@Table
+@Inheritance(strategy = InheritanceType.JOINED)
+@NoArgsConstructor
 public class User extends HasEvents {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,30 +19,32 @@ public class User extends HasEvents {
     @Column(name = "displayName", nullable = false, unique = true)
     private String displayName;
 
+    @OneToMany
+    private Set<Hoa> associations;
+
     public User(String displayName) {
         this.displayName = displayName;
+        this.associations = new HashSet<>();
     }
 
-    public User() {
-
-    }
 
     /**
      * Method to allow joining of a user to an association
      * TO-DO: routing to gateway
      * TO-DO: turning joining into an application process
      *
-     * @param id the id of the assocation in the database
+     * @param - The HOA the user wants to join
      */
-    public void joinAssociation(int id) {
-        //if(!memberships.containsKey(id)) memberships.put(id,)
+    public void joinAssociation(Hoa a) {
+        associations.add(a);
     }
 
-    // =============================== TO- DO ================================
-    public void leaveAssociation(int id) {
+    public void leaveAssociation(Hoa b) {
+        if (associations.contains(b)) associations.remove(b);
     }
 
     public void createAssociation() {
+
     }
 
     public void submitVoteElection() {
@@ -47,6 +52,4 @@ public class User extends HasEvents {
 
     public void changeVote() {
     }
-
-
 }

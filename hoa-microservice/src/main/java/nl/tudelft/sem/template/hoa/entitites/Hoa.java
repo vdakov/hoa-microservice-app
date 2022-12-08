@@ -1,10 +1,9 @@
 package nl.tudelft.sem.template.hoa.entitites;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import javax.persistence.*;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -28,6 +27,9 @@ public class Hoa extends HasEvents {
     @Column(name = "city", nullable = false)
     private String city;
 
+    @OneToMany
+    private Set<User> members;
+
     /**
      * Constructor for HOA.
      */
@@ -35,6 +37,7 @@ public class Hoa extends HasEvents {
         this.name = name;
         this.city = city;
         this.country = country;
+        this.members = new HashSet<>();
     }
 
     public void changeName(String name) {
