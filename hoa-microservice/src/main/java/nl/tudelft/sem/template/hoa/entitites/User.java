@@ -1,7 +1,16 @@
 package nl.tudelft.sem.template.hoa.entitites;
 
 import lombok.NoArgsConstructor;
-import javax.persistence.*;
+
+import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.GenerationType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.ManyToMany;
+import javax.persistence.Column;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,7 +28,7 @@ public class User extends HasEvents {
     @Column(name = "displayName", nullable = false, unique = true)
     private String displayName;
 
-    @OneToMany
+    @ManyToMany
     private Set<Hoa> associations;
 
     public User(String displayName) {

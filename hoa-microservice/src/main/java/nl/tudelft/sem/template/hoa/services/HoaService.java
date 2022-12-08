@@ -34,7 +34,4 @@ public class HoaService {
         return hoaRepository.findAll();
     }
 
-//    public Hoa getHoa(int id){
-//        return hoaRepository.findHoaById(id);
-//    }
 }
