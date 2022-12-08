@@ -28,6 +28,7 @@ public class User extends HasEvents {
      * Method to allow joining of a user to an association
      * TO-DO: routing to gateway
      * TO-DO: turning joining into an application process
+     *
      * @param id the id of the assocation in the database
      */
     public void joinAssociation(int id) {

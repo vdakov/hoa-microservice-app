@@ -8,7 +8,7 @@ public class BoardMember extends User {
         super(displayName);
     }
 
-    public void changeVoteRequirement(){
+    public void changeVoteRequirement() {
 
     }
 }
