@@ -10,6 +10,8 @@ gradle-app.setting
 ### Java ###
 # Compiled class file
 *.class
+# Bin folder
+*/bin/
 
 # Log file
 *.log
