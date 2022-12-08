@@ -1,7 +1,9 @@
-package nl.tudelft.sem.template.pnb.domain.activity;
+package nl.tudelft.sem.template.hoa.domain.activity;
 
-import java.util.Date;
-import java.util.Objects;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import nl.tudelft.sem.template.hoa.domain.HasEvents;
+
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -9,9 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import nl.tudelft.sem.template.pnb.domain.HasEvents;
+import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "activities")

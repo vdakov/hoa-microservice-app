@@ -25,9 +25,9 @@ public class HoaController {
         this.hoaService = hoaService;
     }
 
-    @GetMapping("/*")
+    @GetMapping("/world")
     public ResponseEntity<String> helloWorld() {
-        return ResponseEntity.status(501).body("Not implemented");
+        return ResponseEntity.ok().build();
 
     }
 
