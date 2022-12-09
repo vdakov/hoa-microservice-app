@@ -47,4 +47,21 @@ public class RegistrationService {
     public boolean checkEmailIsUnique(Email email) {
         return !userRepository.existsByEmail(email);
     }
+
+    /**
+     * Changes a users password.
+     *
+     * @param email the email of the user to edit
+     * @param password the new password
+     * @return the user
+     * @throws Exception if anything goes wrong
+     */
+    public AppUser changePassword(Email email, Password password) throws Exception {
+        AppUser user = userRepository.findByEmail(email).orElseThrow();
+        HashedPassword pwd = passwordHashingService.hash(password);
+        user.changePassword(pwd);
+        userRepository.delete(user);
+        userRepository.saveAndFlush(user);
+        return user;
+    }
 }

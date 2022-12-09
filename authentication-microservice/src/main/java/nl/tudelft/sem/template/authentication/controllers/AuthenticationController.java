@@ -7,6 +7,7 @@ import nl.tudelft.sem.template.authentication.domain.user.Password;
 import nl.tudelft.sem.template.authentication.domain.user.RegistrationService;
 import nl.tudelft.sem.template.authentication.models.AuthenticationRequestModel;
 import nl.tudelft.sem.template.authentication.models.AuthenticationResponseModel;
+import nl.tudelft.sem.template.authentication.models.CredentialChangeRequestModel;
 import nl.tudelft.sem.template.authentication.models.RegistrationRequestModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -96,6 +98,28 @@ public class AuthenticationController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
 
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Allows a user to change their password.
+     *
+     * @param request the request containing the users email and new password.
+     * @return 200 OK if the change was successful.
+     */
+    @PostMapping("/changePassword")
+    public ResponseEntity changePassword(@RequestBody CredentialChangeRequestModel request) throws Exception {
+        //Verify if user is authenticated
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            Email email = new Email(request.getEmail());
+            Password password = new Password(request.getPassword());
+            try {
+                registrationService.changePassword(email, password);
+            } catch (Exception e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            }
+
+        }
         return ResponseEntity.ok().build();
     }
 }

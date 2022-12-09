@@ -1,8 +1,13 @@
 package nl.tudelft.sem.template.authentication.domain.user;
 
 import java.util.Objects;
-import javax.persistence.*;
-
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nl.tudelft.sem.template.authentication.domain.HasEvents;
 
@@ -17,7 +22,7 @@ public class AppUser extends HasEvents {
      * Identifier for the application user.
      */
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private int id;
 
