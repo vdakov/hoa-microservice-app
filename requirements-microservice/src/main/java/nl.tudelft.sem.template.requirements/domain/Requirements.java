@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Requirements extends HasEvents {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
     private int id;
 
@@ -28,18 +28,13 @@ public class Requirements extends HasEvents {
     @Column(name = "requirementDescription", nullable = false)
     private String requirementDescription;
 
-    public Requirements(int id, String name, String description) {
-        this.id = id;
+    public Requirements(String name, String description) {
         this.requirementName = name;
         this.requirementDescription = description;
     }
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getRequirementName() {
