@@ -10,26 +10,28 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "requirements")
+@NoArgsConstructor
 public class Requirements extends HasEvents {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private int id;
 
-    @Column(name = "name", nullable = false, unique = true)
-    private String name;
+    @Column(name = "requirementName", nullable = false, unique = true)
+    private String requirementName;
 
-    @Column(name = "description", nullable = false)
-    private String description;
+    @Column(name = "requirementDescription", nullable = false)
+    private String requirementDescription;
 
     public Requirements(int id, String name, String description) {
         this.id = id;
-        this.name = name;
-        this.description = description;
+        this.requirementName = name;
+        this.requirementDescription = description;
     }
 
     public int getId() {
@@ -40,20 +42,20 @@ public class Requirements extends HasEvents {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getRequirementName() {
+        return requirementName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setRequirementName(String requirementName) {
+        this.requirementName = requirementName;
     }
 
-    public String getDescription() {
-        return description;
+    public String getRequirementDescription() {
+        return requirementDescription;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setRequirementDescription(String requirementDescription) {
+        this.requirementDescription = requirementDescription;
     }
 
     @Override
@@ -61,11 +63,12 @@ public class Requirements extends HasEvents {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Requirements that = (Requirements) o;
-        return id == that.id && Objects.equals(name, that.name) && Objects.equals(description, that.description);
+        return id == that.id && requirementName.equals(that.requirementName)
+                && requirementDescription.equals(that.requirementDescription);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description);
+        return Objects.hash(id, requirementName, requirementDescription);
     }
 }
