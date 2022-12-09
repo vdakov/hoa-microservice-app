@@ -7,7 +7,7 @@ import nl.tudelft.sem.template.authentication.domain.user.Password;
 import nl.tudelft.sem.template.authentication.domain.user.RegistrationService;
 import nl.tudelft.sem.template.authentication.models.AuthenticationRequestModel;
 import nl.tudelft.sem.template.authentication.models.AuthenticationResponseModel;
-import nl.tudelft.sem.template.authentication.models.CredentialChangeRequestModel;
+import nl.tudelft.sem.template.authentication.models.ChangePasswordRequestModel;
 import nl.tudelft.sem.template.authentication.models.RegistrationRequestModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -108,7 +108,7 @@ public class AuthenticationController {
      * @return 200 OK if the change was successful.
      */
     @PostMapping("/changePassword")
-    public ResponseEntity changePassword(@RequestBody CredentialChangeRequestModel request) throws Exception {
+    public ResponseEntity changePassword(@RequestBody ChangePasswordRequestModel request) throws Exception {
         //Verify if user is authenticated
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
             Email email = new Email(request.getEmail());

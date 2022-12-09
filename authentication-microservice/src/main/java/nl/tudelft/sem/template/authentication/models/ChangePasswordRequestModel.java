@@ -6,7 +6,8 @@ import lombok.Data;
  * Model representing a registration request.
  */
 @Data
-public class CredentialChangeRequestModel {
+public class ChangePasswordRequestModel {
     private String email;
     private String password;
+    private String newPassword;
 }
