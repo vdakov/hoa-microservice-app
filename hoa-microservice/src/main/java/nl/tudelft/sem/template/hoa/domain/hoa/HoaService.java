@@ -1,6 +1,8 @@
 package nl.tudelft.sem.template.hoa.domain.hoa;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,7 +18,7 @@ public class HoaService {
         this.hoaRepository = hoaRepository;
     }
 
-    public Hoa createActivity(String name, String country, String city) throws Exception {
+    public Hoa createHoa(String name, String country, String city) throws Exception {
         Hoa hoa = new Hoa(name, country, city);
         return hoaRepository.save(hoa);
     }
@@ -28,5 +30,12 @@ public class HoaService {
      */
     public List<Hoa> getAllHoas() {
         return hoaRepository.findAll();
+    }
+
+    public Hoa getHoaById(int id) {
+        System.out.println("hoaId: " + id);
+        Hoa out = hoaRepository.findById(id);
+        if (out == null) throw new NoSuchElementException();
+        return out;
     }
 }
