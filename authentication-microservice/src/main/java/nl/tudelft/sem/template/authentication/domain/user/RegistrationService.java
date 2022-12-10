@@ -52,13 +52,13 @@ public class RegistrationService {
      * Changes a users password.
      *
      * @param email the email of the user to edit
-     * @param password the new password
+     * @param newPass the new password
      * @return the user
      * @throws Exception if anything goes wrong
      */
-    public AppUser changePassword(Email email, Password password, Password newPass) throws Exception {
+    public AppUser changePassword(Email email, Password newPass) throws Exception {
         AppUser user = userRepository.findByEmail(email).orElseThrow();
-        HashedPassword pwd = passwordHashingService.hash(password);
+        HashedPassword pwd = passwordHashingService.hash(newPass);
         user.changePassword(pwd);
         userRepository.delete(userRepository.findByEmail(email).orElseThrow());
         userRepository.saveAndFlush(user);

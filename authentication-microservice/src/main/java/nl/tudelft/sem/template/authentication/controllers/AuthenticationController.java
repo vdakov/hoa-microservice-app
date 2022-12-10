@@ -110,15 +110,20 @@ public class AuthenticationController {
     @PostMapping("/changePassword")
     public ResponseEntity changePassword(@RequestBody ChangePasswordRequestModel request) throws Exception {
         //Verify if user is authenticated
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+        AuthenticationRequestModel model = new AuthenticationRequestModel();
+        model.setEmail(request.getEmail());
+        model.setPassword(request.getPassword());
+        if (authenticate(model).getStatusCode().getReasonPhrase().equals("OK")) {
             Email email = new Email(request.getEmail());
             Password password = new Password(request.getPassword());
+            Password newPass = new Password(request.getNewPassword());
             try {
-                registrationService.changePassword(email, password);
+                registrationService.changePassword(email, newPass);
             } catch (Exception e) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
             }
-
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Improper credentials");
         }
         return ResponseEntity.ok().build();
     }
