@@ -63,9 +63,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
                 try {
                     if (jwtTokenVerifier.validateToken(token)) {
-                        String email = jwtTokenVerifier.getEmailFromToken(token);
+                        String username = jwtTokenVerifier.getUsernameFromToken(token);
                         var authenticationToken = new UsernamePasswordAuthenticationToken(
-                                email,
+                                username,
                                 null, List.of() // no credentials and no authorities
                         );
                         authenticationToken.setDetails(new WebAuthenticationDetailsSource()

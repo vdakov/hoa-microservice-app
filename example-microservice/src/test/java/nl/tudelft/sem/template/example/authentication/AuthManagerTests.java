@@ -17,7 +17,7 @@ public class AuthManagerTests {
     }
 
     @Test
-    public void getEmailTest() {
+    public void getUsernameTest() {
         // Arrange
         String expected = "user123";
         var authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -27,7 +27,7 @@ public class AuthManagerTests {
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
         // Act
-        String actual = authManager.getEmail();
+        String actual = authManager.getUsername();
 
         // Assert
         assertThat(actual).isEqualTo(expected);

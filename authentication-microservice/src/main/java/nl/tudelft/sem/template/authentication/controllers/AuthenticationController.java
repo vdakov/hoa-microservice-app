@@ -2,9 +2,9 @@ package nl.tudelft.sem.template.authentication.controllers;
 
 import nl.tudelft.sem.template.authentication.authentication.JwtTokenGenerator;
 import nl.tudelft.sem.template.authentication.authentication.JwtUserDetailsService;
-import nl.tudelft.sem.template.authentication.domain.user.Email;
 import nl.tudelft.sem.template.authentication.domain.user.Password;
 import nl.tudelft.sem.template.authentication.domain.user.RegistrationService;
+import nl.tudelft.sem.template.authentication.domain.user.Username;
 import nl.tudelft.sem.template.authentication.models.AuthenticationRequestModel;
 import nl.tudelft.sem.template.authentication.models.AuthenticationResponseModel;
 import nl.tudelft.sem.template.authentication.models.ChangePasswordRequestModel;
@@ -16,7 +16,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -67,7 +66,7 @@ public class AuthenticationController {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
+                            request.getUsername(),
                             request.getPassword()));
         } catch (DisabledException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USER_DISABLED", e);
@@ -75,7 +74,7 @@ public class AuthenticationController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "INVALID_CREDENTIALS", e);
         }
 
-        final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(request.getEmail());
+        final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(request.getUsername());
         final String jwtToken = jwtTokenGenerator.generateToken(userDetails);
         return ResponseEntity.ok(new AuthenticationResponseModel(jwtToken));
     }
@@ -85,15 +84,14 @@ public class AuthenticationController {
      *
      * @param request The registration model
      * @return 200 OK if the registration is successful
-     * @throws Exception if a user with this email already exists
+     * @throws Exception if a user with this username already exists
      */
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegistrationRequestModel request) throws Exception {
-
         try {
-            Email email = new Email(request.getEmail());
+            Username username = new Username(request.getUsername());
             Password password = new Password(request.getPassword());
-            registrationService.registerUser(email, password);
+            registrationService.registerUser(username, password);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -104,27 +102,29 @@ public class AuthenticationController {
     /**
      * Allows a user to change their password.
      *
-     * @param request the request containing the users email and new password.
+     * @param request the request containing the users username and new password.
      * @return 200 OK if the change was successful.
      */
     @PostMapping("/changePassword")
     public ResponseEntity changePassword(@RequestBody ChangePasswordRequestModel request) throws Exception {
         //Verify if user is authenticated
         AuthenticationRequestModel model = new AuthenticationRequestModel();
-        model.setEmail(request.getEmail());
+        model.setUsername(request.getUsername());
         model.setPassword(request.getPassword());
         if (authenticate(model).getStatusCode().getReasonPhrase().equals("OK")) {
-            Email email = new Email(request.getEmail());
-            Password password = new Password(request.getPassword());
+            Username username = new Username(request.getUsername());
             Password newPass = new Password(request.getNewPassword());
             try {
-                registrationService.changePassword(email, newPass);
+                //Delegates the password changing to another class to avoid long methods.
+                registrationService.changePassword(username, newPass);
             } catch (Exception e) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
             }
         } else {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Improper credentials");
+            //Throw an exception if the user provided incorrect credentials
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect credentials");
         }
+        //Returns 200 OK if password changing was successful.
         return ResponseEntity.ok().build();
     }
 }

@@ -34,7 +34,7 @@ public class DefaultController {
      */
     @GetMapping("/hello")
     public ResponseEntity<String> helloWorld() {
-        return ResponseEntity.ok("Hello " + authManager.getEmail());
+        return ResponseEntity.ok("Hello " + authManager.getUsername());
 
     }
 
