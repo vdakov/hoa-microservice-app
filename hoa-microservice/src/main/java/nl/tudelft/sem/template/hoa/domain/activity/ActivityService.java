@@ -1,8 +1,9 @@
 package nl.tudelft.sem.template.hoa.domain.activity;
 
+import nl.tudelft.sem.template.hoa.domain.hoa.Hoa;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 @Service
@@ -27,9 +28,9 @@ public class ActivityService {
      * @return the activity that has been created
      * @throws Exception if an activity with the given name already exists
      */
-    public Activity createActivity(String name, Date time, String description) throws Exception {
+    public Activity createActivity(Hoa hoa, String name, GregorianCalendar time, String description) throws Exception {
         if (checkNameIsUnique(name)) {
-            Activity activity = new Activity(name, time, description);
+            Activity activity = new Activity(hoa, name, time, description);
             activityRepository.save(activity);
             return activity;
         }
@@ -53,5 +54,15 @@ public class ActivityService {
      */
     public boolean checkNameIsUnique(String name) {
         return !activityRepository.existsByName(name);
+    }
+
+    /**
+     * Returns a list of activities with the given HOA ID.
+     *
+     * @param hoaId the HOA ID
+     * @return the list of activities that belong to the given HOA
+     */
+    public List<Activity> getActivitiesByHoaId(int hoaId) {
+        return activityRepository.findAllByHoaId(hoaId);
     }
 }

@@ -11,4 +11,6 @@ public interface ActivityRepository extends JpaRepository<Activity, String> {
     List<Activity> findAll();
 
     boolean existsByName(String name);
+
+    List<Activity> findAllByHoaId(int hoaId);
 }
