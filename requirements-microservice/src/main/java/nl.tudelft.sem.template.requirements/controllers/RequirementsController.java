@@ -21,12 +21,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Hello World example controller.
- * <p>
- * This controller shows how you can extract information from the JWT token.
- * </p>
- */
 @RestController
 public class RequirementsController {
 
@@ -38,6 +32,8 @@ public class RequirementsController {
      * Instantiates a new controller.
      *
      * @param authManager Spring Security component used to authenticate and authorize the user
+     * @param requirementsService used for communication with requirements service
+     * @param reportService used for communication with reports service
      */
     @Autowired
     public RequirementsController(AuthManager authManager,
