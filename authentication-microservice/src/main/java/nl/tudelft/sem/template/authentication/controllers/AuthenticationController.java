@@ -2,11 +2,12 @@ package nl.tudelft.sem.template.authentication.controllers;
 
 import nl.tudelft.sem.template.authentication.authentication.JwtTokenGenerator;
 import nl.tudelft.sem.template.authentication.authentication.JwtUserDetailsService;
-import nl.tudelft.sem.template.authentication.domain.user.NetId;
 import nl.tudelft.sem.template.authentication.domain.user.Password;
 import nl.tudelft.sem.template.authentication.domain.user.RegistrationService;
+import nl.tudelft.sem.template.authentication.domain.user.Username;
 import nl.tudelft.sem.template.authentication.models.AuthenticationRequestModel;
 import nl.tudelft.sem.template.authentication.models.AuthenticationResponseModel;
+import nl.tudelft.sem.template.authentication.models.ChangePasswordRequestModel;
 import nl.tudelft.sem.template.authentication.models.RegistrationRequestModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -65,7 +66,7 @@ public class AuthenticationController {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            request.getNetId(),
+                            request.getUsername(),
                             request.getPassword()));
         } catch (DisabledException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USER_DISABLED", e);
@@ -73,7 +74,7 @@ public class AuthenticationController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "INVALID_CREDENTIALS", e);
         }
 
-        final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(request.getNetId());
+        final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(request.getUsername());
         final String jwtToken = jwtTokenGenerator.generateToken(userDetails);
         return ResponseEntity.ok(new AuthenticationResponseModel(jwtToken));
     }
@@ -83,19 +84,47 @@ public class AuthenticationController {
      *
      * @param request The registration model
      * @return 200 OK if the registration is successful
-     * @throws Exception if a user with this netid already exists
+     * @throws Exception if a user with this username already exists
      */
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegistrationRequestModel request) throws Exception {
-
         try {
-            NetId netId = new NetId(request.getNetId());
+            Username username = new Username(request.getUsername());
             Password password = new Password(request.getPassword());
-            registrationService.registerUser(netId, password);
+            registrationService.registerUser(username, password);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
 
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Allows a user to change their password.
+     *
+     * @param request the request containing the users username and new password.
+     * @return 200 OK if the change was successful.
+     */
+    @PostMapping("/changePassword")
+    public ResponseEntity changePassword(@RequestBody ChangePasswordRequestModel request) throws Exception {
+        //Verify if user is authenticated
+        AuthenticationRequestModel model = new AuthenticationRequestModel();
+        model.setUsername(request.getUsername());
+        model.setPassword(request.getPassword());
+        if (authenticate(model).getStatusCode().getReasonPhrase().equals("OK")) {
+            Username username = new Username(request.getUsername());
+            Password newPass = new Password(request.getNewPassword());
+            try {
+                //Delegates the password changing to another class to avoid long methods.
+                registrationService.changePassword(username, newPass);
+            } catch (Exception e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            }
+        } else {
+            //Throw an exception if the user provided incorrect credentials
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect credentials");
+        }
+        //Returns 200 OK if password changing was successful.
         return ResponseEntity.ok().build();
     }
 }
