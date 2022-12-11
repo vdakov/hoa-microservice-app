@@ -34,10 +34,11 @@ public class UserController {
      * @param displayName the name the user is initiated with
      * @return true if the creation is succesful and false if such a user already exists
      */
-    @GetMapping("/{displayName}")
-    public ResponseEntity<Boolean> createNewUser(@PathVariable("displayName") String displayName) {
+    @PostMapping("/createNewUser")
+    public ResponseEntity<Boolean> createNewUser(@RequestBody String displayName) {
         try {
-            return ResponseEntity.ok(userService.saveUser(displayName));
+            userService.saveUser(displayName);
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
         }
@@ -61,14 +62,14 @@ public class UserController {
 
     /**
      * Mapping to submit a vote in an election
-     *
+     * <p>
      * The mapping gets the Hoa and User as id's in the path (whether it should be
      * in the path is up to debate) to avoid transfering that much heavy data like objects
      *
-     * @param vote the vote submitted
+     * @param vote   the vote submitted
      * @param userId id of the user submitting the vote
-     * @param hoaId id of the association the user is submitting their vote for (since they canbe a member of multiple
-     *              associations
+     * @param hoaId  id of the association the user is submitting their vote for (since they canbe a member of multiple
+     *               associations
      * @return status of whether the submission succeeded
      */
     @PostMapping("/submitVoteElection/{userId}/{hoaId}")
@@ -86,10 +87,10 @@ public class UserController {
     /**
      * PUT mappping to change the user's vote in an election (PUT since it is just an update)
      *
-     * @param vote the vote submitted
+     * @param vote   the vote submitted
      * @param userId id of the user submitting the vote
-     * @param hoaId id of the association the user is submitting their vote for (since they canbe a member of multiple
-     *              associations
+     * @param hoaId  id of the association the user is submitting their vote for (since they canbe a member of multiple
+     *               associations
      * @return status of whether the submission succeeded
      */
     @PutMapping("/changeVoteElection/{userId}/{hoaId}")
