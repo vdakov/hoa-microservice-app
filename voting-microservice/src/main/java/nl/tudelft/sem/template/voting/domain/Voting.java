@@ -6,16 +6,16 @@ import java.util.Map;
 
 public abstract class Voting {
 
-    protected final int hoaId;
-    protected List<String> options;
-    protected Map<Integer, Integer> votes; // we have to store the votes, not persisted to the database yet
-    protected TimeKeeper timeKeeper;
+    protected transient final int hoaId;
+    protected transient List<String> options;
+    protected transient Map<Integer, Integer> votes; // we have to store the votes, not persisted to the database yet
+    protected transient TimeKeeper timeKeeper;
 
     /**
      * Initialize a voting procedure
      * @param hoaId the ID of the association within which the vote is conducted
-     * @param options
-     * @param timeKeeper
+     * @param options a list of strings denoting the options to vote for
+     * @param timeKeeper a TimeKeeper object that keeps track of when the election is over
      */
     protected Voting(int hoaId, List<String> options, TimeKeeper timeKeeper) {
         this.hoaId = hoaId;

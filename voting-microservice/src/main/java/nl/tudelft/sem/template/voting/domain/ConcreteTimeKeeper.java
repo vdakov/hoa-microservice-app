@@ -5,12 +5,11 @@ import java.time.temporal.TemporalAmount;
 
 public class ConcreteTimeKeeper implements TimeKeeper{
 
-    private Instant startTime;
-    private TemporalAmount temporalAmount;
-    private Instant endTime;
+    private transient Instant startTime;
+    private transient TemporalAmount temporalAmount;
+    private transient Instant endTime;
 
     public ConcreteTimeKeeper(Instant startTime, TemporalAmount temporalAmount) {
-        this.temporalAmount = this.temporalAmount;
         this.startTime = startTime;
         this.temporalAmount = temporalAmount;
         this.endTime = startTime.plus(temporalAmount);

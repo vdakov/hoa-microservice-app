@@ -13,7 +13,7 @@ import java.util.Map;
 
 @Service
 public class VotingService {
-    private Map<Integer, Voting> ongoingElections;
+    private transient Map<Integer, Voting> ongoingElections;
 
     public VotingService() {
         this.ongoingElections = new HashMap<>();
@@ -30,15 +30,17 @@ public class VotingService {
                                           VotingType votingType,
                                           List<String> options,
                                           TemporalAmount temporalAmount) {
-        Voting voting = null; //put in order to avoid warnings about voting not being initialized
+        Voting voting;
         if (votingType.equals(VotingType.BOARD_ELECTIONS)) {
             voting = new VotingBuilder()
                     .forHoaWithId(hoaId)
                     .withOptions(options)
                     .startInstantlyWithDuration(temporalAmount)
                     .buildBoardElections();
+            ongoingElections.put(hoaId, voting);
+        } else if(votingType.equals(VotingType.REQUIREMENTS_VOTE)) {
+            return; //TODO: build a requirements vote when that is implemented
         }
-        ongoingElections.put(hoaId, voting);
     }
 
     public boolean existingHoaVoting(int hoaId) {

@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 public class VotingController {
 
-    private VotingService votingService;
+    private final transient VotingService votingService;
     private final transient AuthManager authManager;
 
     @Autowired
@@ -41,10 +41,16 @@ public class VotingController {
 
         boolean electionOngoing = votingService.existingHoaVoting(hoaId);
         if (!electionOngoing) {
+            if (votingType.equals(VotingType.REQUIREMENTS_VOTE)) {
+                return ResponseEntity
+                        .status(HttpStatus.NOT_IMPLEMENTED)
+                        .body("");
+            }
             votingService.registerVotingStartingNow(hoaId, votingType, body, Duration.ofMinutes(1L));
             return ResponseEntity
                     .created(URI.create(String.format("/vote/%d", hoaId)))
                     .body(String.format("/vote/%d", hoaId));
+
         }
         return ResponseEntity
                 .status(HttpStatus.SEE_OTHER)
