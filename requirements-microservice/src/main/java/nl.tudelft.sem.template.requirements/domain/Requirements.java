@@ -1,9 +1,7 @@
 package nl.tudelft.sem.template.requirements.domain;
 
-import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,26 +29,6 @@ public class Requirements extends HasEvents {
     public Requirements(String name, String description) {
         this.requirementName = name;
         this.requirementDescription = description;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getRequirementName() {
-        return requirementName;
-    }
-
-    public void setRequirementName(String requirementName) {
-        this.requirementName = requirementName;
-    }
-
-    public String getRequirementDescription() {
-        return requirementDescription;
-    }
-
-    public void setRequirementDescription(String requirementDescription) {
-        this.requirementDescription = requirementDescription;
     }
 
     @Override

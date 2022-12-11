@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.Objects;
@@ -35,34 +34,6 @@ public class Report extends HasEvents{
     public Report(String reportBy, String reportedUser, Requirements requirement) {
         this.reportBy = reportBy;
         this.reportedUser = reportedUser;
-        this.requirement = requirement;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getReportBy() {
-        return reportBy;
-    }
-
-    public void setReportBy(String reportBy) {
-        this.reportBy = reportBy;
-    }
-
-    public String getReportedUser() {
-        return reportedUser;
-    }
-
-    public void setReportedUser(String reportedUser) {
-        this.reportedUser = reportedUser;
-    }
-
-    public Requirements getRequirement() {
-        return requirement;
-    }
-
-    public void setRequirement(Requirements requirement) {
         this.requirement = requirement;
     }
 
