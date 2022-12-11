@@ -20,7 +20,7 @@ public class HoaService {
     }
 
 
-    public Hoa createActivity(String name, String country, String city) throws Exception {
+    public Hoa createHoa(String name, String country, String city) throws Exception {
         Hoa hoa = new Hoa(name, country, city);
         return hoaRepository.save(hoa);
     }
