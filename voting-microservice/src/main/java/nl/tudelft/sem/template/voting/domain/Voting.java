@@ -11,7 +11,7 @@ public abstract class Voting {
     protected final transient int hoaId;
     @Getter
     protected transient List<String> options;
-    protected transient Map<Integer, Integer> votes; // we have to store the votes, not persisted to the database yet
+    protected transient Map<String, Integer> votes; // we have to store the votes, not persisted to the database yet
     protected transient TimeKeeper timeKeeper;
 
     /**
@@ -27,13 +27,19 @@ public abstract class Voting {
         this.timeKeeper = timeKeeper;
     }
 
-    public abstract boolean isVoterEligible(int userId);
+    public abstract boolean isVoterEligible(String netId);
 
-    public void castVote(int userId, int optionIndex) throws VotingException{
-        if (!isVoterEligible(userId))
+    /**
+     * Cast a vote in the running voting procedure
+     * @param netId The user who is voting
+     * @param optionIndex the index of the option the user is voting for
+     * @throws VotingException if the voter is not eligible or if the chosen option is not within the list
+     */
+    public void castVote(String netId, int optionIndex) throws VotingException{
+        if (!isVoterEligible(netId))
             throw new VotingException("Voter is not eligible");
         if (optionIndex >= options.size())
             throw new VotingException("Chosen option index is invalid");
-        votes.put(userId, optionIndex);
+        votes.put(netId, optionIndex);
     }
 }

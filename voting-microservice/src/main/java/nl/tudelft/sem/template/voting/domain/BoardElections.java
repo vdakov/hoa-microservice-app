@@ -8,7 +8,7 @@ public class BoardElections extends Voting {
         super(hoaId, options, timeKeeper);
     }
 
-    public boolean isVoterEligible(int userId) {
-        return true; // all members of an HOA are eligible to vote in a board election
+    public boolean isVoterEligible(String netId) {
+        return true; // TODO: return truth value based on user's authorities
     }
 }

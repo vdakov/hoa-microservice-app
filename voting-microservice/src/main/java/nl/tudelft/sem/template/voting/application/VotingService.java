@@ -48,9 +48,9 @@ public class VotingService {
         return ongoingElections.containsKey(hoaId);
     }
 
-    public void castVote(int hoaId, int userId, int optionIndex) throws VotingException {
+    public void castVote(int hoaId, String netId, int optionIndex) throws VotingException {
         Voting currentVoting = ongoingElections.get(hoaId);
-        currentVoting.castVote(userId, optionIndex);
+        currentVoting.castVote(netId, optionIndex);
     }
 
     public List<String> getOptions(int hoaId) {

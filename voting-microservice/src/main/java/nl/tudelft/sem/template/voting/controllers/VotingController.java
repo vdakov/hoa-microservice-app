@@ -2,6 +2,7 @@ package nl.tudelft.sem.template.voting.controllers;
 
 import nl.tudelft.sem.template.voting.application.VotingService;
 import nl.tudelft.sem.template.voting.authentication.AuthManager;
+import nl.tudelft.sem.template.voting.domain.VotingException;
 import nl.tudelft.sem.template.voting.domain.VotingType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -72,5 +73,32 @@ public class VotingController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(votingService.getOptions(hoaId));
+    }
+
+    /**
+     * A request to cast a vote
+     * @param hoaId the HOA where a vote is currently running
+     * @param optionIndex the index of the chosen option
+     * @return -
+     */
+    @PostMapping("/vote/{hoaId}/castVote")
+    public ResponseEntity<Void> castVote(@PathVariable int hoaId,
+                                            @RequestParam int optionIndex) {
+
+        if (!votingService.existingHoaVoting(hoaId)) {
+            return ResponseEntity.notFound().build();
+        }
+        try {
+            String netId = authManager.getNetId();
+            votingService.castVote(hoaId, netId, optionIndex);
+            return ResponseEntity.ok().build();
+        } catch (VotingException e) {
+            if (e.getMessage().equals("Voter is not eligible")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            } else if (e.getMessage().equals("Chosen option index is invalid")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }
