@@ -27,3 +27,8 @@ gradle-app.setting
 *.rar
 
 *.db
+
+# IDE files #
+.idea/
+.vscode/
+
