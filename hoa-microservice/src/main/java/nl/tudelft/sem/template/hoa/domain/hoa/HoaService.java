@@ -16,15 +16,15 @@ public class HoaService {
         this.hoaRepository = hoaRepository;
     }
 
-    public Hoa createActivity(String name, String country, String city) throws Exception {
+    public Hoa createHoa(String name, String country, String city) throws Exception {
         Hoa hoa = new Hoa(name, country, city);
         return hoaRepository.save(hoa);
     }
 
     /**
-     * Returns all activities in the repository.
+     * Returns all HOAs in the repository.
      *
-     * @return a list of all activities in the repository
+     * @return a list of all HOAS in the repository
      */
     public List<Hoa> getAllHoas() {
         return hoaRepository.findAll();
