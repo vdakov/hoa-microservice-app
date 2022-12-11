@@ -26,6 +26,7 @@ public class HoaController {
 
     @GetMapping("/*")
     public ResponseEntity<String> helloWorld() {
+        System.out.println("hello");
         return ResponseEntity.status(501).body("Not implemented");
     }
 

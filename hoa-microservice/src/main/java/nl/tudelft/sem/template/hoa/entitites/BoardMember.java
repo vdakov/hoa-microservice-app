@@ -1,5 +1,6 @@
 package nl.tudelft.sem.template.hoa.entitites;
 
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
@@ -9,24 +10,17 @@ import javax.persistence.Table;
 import javax.persistence.Column;
 
 
-@PrimaryKeyJoinColumn(name="id")
+@PrimaryKeyJoinColumn(name = "id")
 @Entity
 @Table
+@Data
 @NoArgsConstructor
 public class BoardMember extends User {
 
     @ManyToOne
     private Hoa board;
 
-    @Column(name="yearsOnBoard")
+    @Column(name = "yearsOnBoard")
     private int yearsOnBoard;
 
-
-    public void submitVoteRequirement(RequirementVote vote){
-
-    }
-
-    public void changeVoteRequirement(RequirementVote vote) {
-
-    }
 }

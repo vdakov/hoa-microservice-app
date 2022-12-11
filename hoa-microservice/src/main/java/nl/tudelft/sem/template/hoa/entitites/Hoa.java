@@ -3,6 +3,7 @@ package nl.tudelft.sem.template.hoa.entitites;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +18,7 @@ import javax.persistence.ManyToMany;
 
 @Data
 @Entity
-@Table(name = "hoas")
+@Table
 @NoArgsConstructor
 public class Hoa extends HasEvents {
 
@@ -40,6 +41,7 @@ public class Hoa extends HasEvents {
 
     @OneToMany
     private Set<BoardMember> boardMembers;
+
 
     /**
      * Constructor for HOA.

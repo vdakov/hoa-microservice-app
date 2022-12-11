@@ -8,63 +8,83 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/users")
 public class UserController {
-    private final transient UserService userService;
-    private final transient VoteService voteService;
 
     @Autowired
-    public UserController(UserService userService, VoteService voteService) {
-        this.userService = userService;
-        this.voteService = voteService;
-    }
+    private UserService userService;
+    @Autowired
+    private VoteService voteService;
+
 
     @GetMapping("/{displayName}")
-    public ResponseEntity createNewUser(@PathVariable("displayName") String displayName){
-        User a = new User(displayName);
-        //implement stuff for checking whether user exists in service
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<Boolean> createNewUser(@PathVariable("displayName") String displayName) {
+        try {
+            return ResponseEntity.ok(userService.saveUser(displayName));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
+        }
+
+
     }
 
     @GetMapping("/getAllUsers")
-    public ResponseEntity getAllUsers(){
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<List<User>> getAllUsers() {
+        try {
+            return ResponseEntity.ok(userService.getAllUsers());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
+        }
     }
 
-    @PostMapping("/submitVoteElection")
-    public ResponseEntity submitVoteElection(@RequestBody Vote vote, @RequestBody User user, Hoa hoa){
-        //VoteService.submit(vote,user)
-        //needs functionality for checking whether user has already voted and whetehr user exists
-        return ResponseEntity.status(HttpStatus.OK).build();
+    @PostMapping("/submitVoteElection/{userId}/{hoaId}")
+    public ResponseEntity submitVoteElection(@RequestBody ElectionVote vote,
+                                             @PathVariable("userId") int userId,
+                                             @PathVariable("hoaId") int hoaId) {
+        try {
+            voteService.submitVoteElection(userId, vote, hoaId);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
+        }
     }
 
     @PutMapping("/changeVoteElection")
-    public ResponseEntity changeVoteElection(@RequestBody Vote vote, @RequestBody User user, Hoa hoa){
-        //VoteService.changeVote(vote,user)
-        //needs functionality for checking whether user has already voted and whether user exists
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity changeVoteElection(@RequestBody ElectionVote vote,
+                                             @PathVariable("userId") int userId,
+                                             @PathVariable("hoaId") int hoaId) {
+        try {
+            voteService.changeVoteElection(userId, vote, hoaId);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
+        }
     }
 
-    @PostMapping("/submitVoteRequirement")
+    @PostMapping("/submitVoteRequirement/{userId}")
     public ResponseEntity submitVoteRequirement(@RequestBody RequirementVote vote,
-                                                @RequestBody BoardMember boardMember){
-        //VoteService.submit(vote,boardMember)
-        //needs functionality for checking whether user has already voted and whether user exists
-        return ResponseEntity.status(HttpStatus.OK).build();
+                                                @PathVariable("userId") int boardMemberId) {
+        try {
+            voteService.submitVoteRequirement(boardMemberId, vote);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
+        }
     }
 
-    @PutMapping("/changeVoteElection")
+    @PutMapping("/changeVoteElection/{userId}")
     public ResponseEntity changeVoteRequirement(@RequestBody RequirementVote vote,
-                                                @RequestBody BoardMember boardMember){
-        //VoteService.changeVote(vote,boardMember)
-        //needs functionality for checking whether user has already voted and whether user exists
-        return ResponseEntity.status(HttpStatus.OK).build();
+                                                @PathVariable("userId") int boardMemberId) {
+        try {
+            voteService.changeVoteRequirement(boardMemberId, vote);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
+        }
     }
-
-
-
-
 
 
 }

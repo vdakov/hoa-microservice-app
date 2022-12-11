@@ -17,47 +17,76 @@ import java.util.Set;
 
 
 @Entity
-@Table
 @Data
+@Table
 @Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor
 public class User extends HasEvents {
+    /**
+     * The primary key of the User class/table
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private int id;
 
+    /**
+     * The only distinguishable column of the user class so far
+     */
     @Column(name = "displayName", nullable = false, unique = true)
     private String displayName;
 
-    @ManyToMany
-    private Set<Hoa> associations;
-
+    /**
+     * Constructor of the User class
+     * @param displayName the name the user will be visible as to other people (unique? - yeah, probably)
+     */
     public User(String displayName) {
         this.displayName = displayName;
         this.associations = new HashSet<>();
     }
 
+    /**
+     * Relationship of user to the Hoa class/table
+     *
+     * This Spring annotation creates another table that links the
+     * two based on their primary keys
+     *
+     * The reason it is a "ManyToMany" relationship is that many users belong
+     * to the same association, but also a user can be a part of multiple associations
+     */
+    @ManyToMany
+    private Set<Hoa> associations;
+
 
     /**
      * Method to allow joining of a user to an association
      * TO-DO: routing to gateway
-     * TO-DO: turning joining into an application process
+     * TO-DO: turning joining into an application process since right now
+     * the user just joins
+     * IMPORTANT: check whether modifying the set modifies the table since I am not sure
      *
      * @param - The HOA the user wants to join
+     * @return - true iff the joining is successful, false otherwise
      */
-    public void joinAssociation(Hoa a) {
+    public boolean joinAssociation(Hoa a) {
+        if (associations.contains(a)) return false;
         associations.add(a);
+        return true;
     }
 
-    public void leaveAssociation(Hoa b) {
-        if (associations.contains(b)) associations.remove(b);
+    /**
+     * Method to allow the leaving of an association - analogous to upper method, but a user can always leave anyway
+     * TO-DO: Routing to gateway
+     * IMPORTANT: check whether modifying the set modifies the table since I am not sure
+     *
+     * @param b - The HOA the user wants to leave
+     * @return - true iff the leaving is successful, false otherwise (will only fail if not part of association)
+     */
+    public boolean leaveAssociation(Hoa b) {
+        if (!associations.contains(b)) return false;
+        associations.remove(b);
+        return true;
     }
 
 
-    public void submitVoteElection(Vote vote, Hoa hoa) {
-    }
-
-    public void changeVote() {
-    }
 }
