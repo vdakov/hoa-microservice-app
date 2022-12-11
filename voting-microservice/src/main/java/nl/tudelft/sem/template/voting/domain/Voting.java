@@ -12,6 +12,7 @@ public abstract class Voting {
     @Getter
     protected transient List<String> options;
     protected transient Map<String, Integer> votes; // we have to store the votes, not persisted to the database yet
+    @Getter
     protected transient TimeKeeper timeKeeper;
 
     /**
@@ -40,6 +41,30 @@ public abstract class Voting {
             throw new VotingException("Voter is not eligible");
         if (optionIndex >= options.size())
             throw new VotingException("Chosen option index is invalid");
+        if (!timeKeeper.isVoteOngoing())
+            throw new VotingException("Voting is closed");
         votes.put(netId, optionIndex);
+    }
+
+    /**
+     * Return the aggregated election results. Gets called only when the voting is closed.
+     * @return -
+     */
+    @SuppressWarnings("PMD")
+    public Map<String, Integer> getResults() {
+
+        // PMD was throwing warnings because values in the map are first zero-initialized, and then
+        // incremented; rule DataflowAnomalyAnalysis
+        Map<String, Integer> aggregatedResults = new HashMap<>();
+        for (String option : options) { // initialize the map containing aggregated results
+            aggregatedResults.put(option, 0);
+        }
+
+        for (Integer vote : votes.values()) {
+            int currentNumber = aggregatedResults.get(options.get(vote));
+            currentNumber++;
+            aggregatedResults.replace(options.get(vote), currentNumber);
+        }
+        return aggregatedResults;
     }
 }

@@ -7,6 +7,7 @@ import nl.tudelft.sem.template.voting.domain.VotingType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.net.URI;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class VotingController {
@@ -95,10 +98,40 @@ public class VotingController {
         } catch (VotingException e) {
             if (e.getMessage().equals("Voter is not eligible")) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            } else if (e.getMessage().equals("Chosen option index is invalid")) {
+            } else if (e.getMessage().equals("Chosen option index is invalid")
+                    || e.getMessage().equals("Vote is still ongoing")) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @GetMapping("/vote/{hoaId}/getEndTime")
+    public ResponseEntity<Instant> getEndTime(@PathVariable int hoaId) {
+
+        if (!votingService.existingHoaVoting(hoaId)) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(votingService.getEndTime(hoaId));
+    }
+
+    /**
+     * A request to get the results after the elections are over
+     * @param hoaId the ID of the HOA where a voting is conducted
+     * @return -
+     */
+    @GetMapping("/vote/{hoaId}/getResults")
+    @SuppressWarnings("PMD") // I could not avoid PMD throwing warnings
+    public ResponseEntity<Map<String, Integer>> getResults(@PathVariable int hoaId) {
+        Map<String, Integer> results;
+        if (!votingService.existingHoaVoting(hoaId)) {
+            return ResponseEntity.notFound().build();
+        }
+        try {
+            results = votingService.getResults(hoaId);
+        } catch (VotingException e) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(results);
     }
 }

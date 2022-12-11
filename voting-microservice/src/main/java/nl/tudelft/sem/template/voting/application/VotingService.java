@@ -6,6 +6,7 @@ import nl.tudelft.sem.template.voting.domain.VotingException;
 import nl.tudelft.sem.template.voting.domain.VotingType;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.temporal.TemporalAmount;
 import java.util.Collections;
 import java.util.HashMap;
@@ -59,5 +60,17 @@ public class VotingService {
             return requestedVoting.getOptions();
         }
         return Collections.emptyList();
+    }
+
+    public Map<String, Integer> getResults(int hoaId) throws VotingException {
+        Voting currentVoting = ongoingElections.get(hoaId);
+        if (currentVoting.getTimeKeeper().isVoteOngoing()) {
+            throw new VotingException("Vote is still ongoing");
+        }
+        return currentVoting.getResults();
+    }
+
+    public Instant getEndTime(int hoaId) {
+        return ongoingElections.get(hoaId).getTimeKeeper().getEndTime();
     }
 }
