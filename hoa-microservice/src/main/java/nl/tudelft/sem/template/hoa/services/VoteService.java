@@ -1,6 +1,7 @@
 package nl.tudelft.sem.template.hoa.services;
 
-import nl.tudelft.sem.template.hoa.entitites.*;
+import nl.tudelft.sem.template.hoa.entitites.ElectionVote;
+import nl.tudelft.sem.template.hoa.entitites.RequirementVote;
 import org.springframework.stereotype.Service;
 
 
