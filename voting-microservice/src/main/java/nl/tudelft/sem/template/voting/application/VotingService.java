@@ -7,6 +7,7 @@ import nl.tudelft.sem.template.voting.domain.VotingType;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.TemporalAmount;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class VotingService {
                     .startInstantlyWithDuration(temporalAmount)
                     .buildBoardElections();
             ongoingElections.put(hoaId, voting);
-        } else if(votingType.equals(VotingType.REQUIREMENTS_VOTE)) {
+        } else if (votingType.equals(VotingType.REQUIREMENTS_VOTE)) {
             return; //TODO: build a requirements vote when that is implemented
         }
     }
@@ -52,4 +53,11 @@ public class VotingService {
         currentVoting.castVote(userId, optionIndex);
     }
 
+    public List<String> getOptions(int hoaId) {
+        Voting requestedVoting = ongoingElections.get(hoaId);
+        if (requestedVoting != null) {
+            return requestedVoting.getOptions();
+        }
+        return Collections.emptyList();
+    }
 }

@@ -1,12 +1,15 @@
 package nl.tudelft.sem.template.voting.domain;
 
+import lombok.Getter;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public abstract class Voting {
 
-    protected transient final int hoaId;
+    protected final transient int hoaId;
+    @Getter
     protected transient List<String> options;
     protected transient Map<Integer, Integer> votes; // we have to store the votes, not persisted to the database yet
     protected transient TimeKeeper timeKeeper;
