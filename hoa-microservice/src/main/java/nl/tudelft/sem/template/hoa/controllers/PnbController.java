@@ -9,9 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -46,9 +49,9 @@ public class PnbController {
     }
 
     /**
-     * Gets example by id.
+     * Simple method for testing whether the controller is reachable
      *
-     * @return the example found in the database with the given id
+     * @return a response to an imaginary Mario
      */
     @GetMapping("/hello")
     public ResponseEntity<String> helloWorld() {
@@ -64,23 +67,23 @@ public class PnbController {
      * @throws Exception if an activity with the given name already exists
      */
     @PostMapping("/createActivity")
-    public ResponseEntity createActivity(@RequestBody ActivityModel request) throws Exception {
+    public ResponseEntity<ActivityModel> createActivity(@RequestBody ActivityModel request) throws Exception {
+
         try {
-            int year = request.getTime().getYear();
-            int month = request.getTime().getMonth();
-            int day = request.getTime().getDay();
-            GregorianCalendar time = new GregorianCalendar(year, month, day);
+            ActivityModel activityModel =
+                    activityService.createActivity(
+                            request.getHoaId(),
+                            request.getName(),
+                            request.getTime(),
+                            request.getDescription()
+                    ).toModel();
 
-            Hoa hoa = hoaService.getHoaById(request.getHoaId());
-            System.out.println(hoa);
+            return ResponseEntity.ok(activityModel);
 
-            activityService.createActivity(hoa, request.getName(), time, request.getDescription());
         } catch (Exception e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
-
-        return ResponseEntity.ok().build();
     }
 
     private List<ActivityModel> activitiesToModels(List<Activity> list){
@@ -106,8 +109,8 @@ public class PnbController {
      * @return a response entity containing the list of relevant activities
      * @throws Exception
      */
-    @PostMapping("/activitiesForHoa")
-    public ResponseEntity<List<ActivityModel>> getActivitiesForHoa(@RequestBody int hoaId) throws Exception {
+    @GetMapping("/activitiesForHoa/{hoaId}")
+    public ResponseEntity<List<ActivityModel>> getActivitiesForHoa(@PathVariable int hoaId) throws Exception {
 
         try {
             hoaService.getHoaById(hoaId); //to check if it exists
