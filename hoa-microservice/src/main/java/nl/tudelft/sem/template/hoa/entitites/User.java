@@ -1,5 +1,6 @@
 package nl.tudelft.sem.template.hoa.entitites;
 
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
@@ -17,6 +18,7 @@ import java.util.Set;
 
 @Entity
 @Table
+@Data
 @Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor
 public class User extends HasEvents {
@@ -52,11 +54,8 @@ public class User extends HasEvents {
         if (associations.contains(b)) associations.remove(b);
     }
 
-    public void createAssociation() {
 
-    }
-
-    public void submitVoteElection() {
+    public void submitVoteElection(Vote vote, Hoa hoa) {
     }
 
     public void changeVote() {

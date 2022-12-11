@@ -22,11 +22,11 @@ public class BoardMember extends User {
     private int yearsOnBoard;
 
 
-    public void voteRequirement(){
+    public void submitVoteRequirement(RequirementVote vote){
 
     }
 
-    public void changeVoteRequirement() {
+    public void changeVoteRequirement(RequirementVote vote) {
 
     }
 }

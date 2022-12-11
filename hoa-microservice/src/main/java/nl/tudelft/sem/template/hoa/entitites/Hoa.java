@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
 import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 
 @Data
 @Entity
@@ -34,7 +35,7 @@ public class Hoa extends HasEvents {
     @Column(name = "city", nullable = false)
     private String city;
 
-    @OneToMany
+    @ManyToMany
     private Set<User> members;
 
     @OneToMany
