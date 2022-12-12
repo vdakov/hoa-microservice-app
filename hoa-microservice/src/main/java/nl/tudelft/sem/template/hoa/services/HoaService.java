@@ -40,4 +40,8 @@ public class HoaService {
         if (out == null) throw new NoSuchElementException();
         return out;
     }
+
+    public boolean existsById(int hoaId){
+        return hoaRepository.existsById(hoaId);
+    }
 }

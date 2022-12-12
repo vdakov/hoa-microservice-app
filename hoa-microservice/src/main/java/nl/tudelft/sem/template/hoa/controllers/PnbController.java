@@ -30,16 +30,14 @@ import java.util.stream.Collectors;
 public class PnbController {
 
     private final transient ActivityService activityService;
-    private final transient HoaService hoaService;
 
     /**
      * Instantiates a new controller.
      *
      */
     @Autowired
-    public PnbController(ActivityService activityService, HoaService hoaService) {
+    public PnbController(ActivityService activityService) {
         this.activityService = activityService;
-        this.hoaService = hoaService;
     }
 
     /**
@@ -107,7 +105,6 @@ public class PnbController {
     public ResponseEntity<List<ActivityModel>> getActivitiesForHoa(@PathVariable int hoaId) throws Exception {
 
         try {
-            hoaService.getHoaById(hoaId); //to check if it exists
             return ResponseEntity.ok(
                     activitiesToModels(
                             activityService.getActivitiesByHoaId(hoaId)

@@ -15,4 +15,7 @@ public interface HoaRepository extends JpaRepository<Hoa, Integer> {
     Hoa save(Hoa hoa);
 
     Hoa findById(int id);
+
+    @Override
+    boolean existsById(Integer integer);
 }
