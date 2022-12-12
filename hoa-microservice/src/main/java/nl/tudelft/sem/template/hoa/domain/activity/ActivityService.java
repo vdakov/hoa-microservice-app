@@ -1,8 +1,10 @@
 package nl.tudelft.sem.template.hoa.domain.activity;
 
-import nl.tudelft.sem.template.hoa.domain.hoa.Hoa;
-import nl.tudelft.sem.template.hoa.domain.hoa.HoaService;
+import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.models.DateModel;
+import nl.tudelft.sem.template.hoa.repositories.ActivityRepository;
+import nl.tudelft.sem.template.hoa.services.HoaService;
+
 import org.springframework.stereotype.Service;
 
 import java.util.GregorianCalendar;

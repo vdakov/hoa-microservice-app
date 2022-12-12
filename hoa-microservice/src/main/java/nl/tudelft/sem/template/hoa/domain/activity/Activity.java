@@ -2,8 +2,8 @@ package nl.tudelft.sem.template.hoa.domain.activity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nl.tudelft.sem.template.hoa.domain.HasEvents;
-import nl.tudelft.sem.template.hoa.domain.hoa.Hoa;
+import nl.tudelft.sem.template.hoa.entitites.HasEvents;
+import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.models.ActivityModel;
 import nl.tudelft.sem.template.hoa.models.DateModel;
 

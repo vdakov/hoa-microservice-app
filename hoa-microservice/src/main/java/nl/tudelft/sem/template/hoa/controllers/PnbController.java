@@ -2,9 +2,9 @@ package nl.tudelft.sem.template.hoa.controllers;
 
 import nl.tudelft.sem.template.hoa.domain.activity.Activity;
 import nl.tudelft.sem.template.hoa.domain.activity.ActivityService;
-import nl.tudelft.sem.template.hoa.domain.hoa.Hoa;
-import nl.tudelft.sem.template.hoa.domain.hoa.HoaService;
 import nl.tudelft.sem.template.hoa.models.ActivityModel;
+import nl.tudelft.sem.template.hoa.services.HoaService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,16 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
