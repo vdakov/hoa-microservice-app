@@ -1,6 +1,8 @@
-package nl.tudelft.sem.template.hoa.domain.hoa;
+package nl.tudelft.sem.template.hoa.repositories;
 
 import java.util.List;
+
+import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +13,6 @@ public interface HoaRepository extends JpaRepository<Hoa, Integer> {
 
     @Override
     Hoa save(Hoa hoa);
+
+    Hoa findHoaById(int id);
 }

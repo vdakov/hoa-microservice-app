@@ -1,4 +1,4 @@
-package nl.tudelft.sem.template.hoa.domain;
+package nl.tudelft.sem.template.hoa.entitites;
 
 import java.util.ArrayList;
 import java.util.Collection;

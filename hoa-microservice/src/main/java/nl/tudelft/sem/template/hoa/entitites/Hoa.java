@@ -1,19 +1,24 @@
-package nl.tudelft.sem.template.hoa.domain.hoa;
+package nl.tudelft.sem.template.hoa.entitites;
 
+import java.util.HashSet;
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.Set;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nl.tudelft.sem.template.hoa.domain.HasEvents;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.GenerationType;
+import javax.persistence.Column;
+import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 
 @Data
 @Entity
-@Table(name = "hoas")
+@Table
 @NoArgsConstructor
 public class Hoa extends HasEvents {
 
@@ -31,6 +36,13 @@ public class Hoa extends HasEvents {
     @Column(name = "city", nullable = false)
     private String city;
 
+    @ManyToMany
+    private Set<User> members;
+
+    @OneToMany
+    private Set<BoardMember> boardMembers;
+
+
     /**
      * Constructor for HOA.
      */
@@ -38,6 +50,7 @@ public class Hoa extends HasEvents {
         this.name = name;
         this.city = city;
         this.country = country;
+        this.members = new HashSet<>();
     }
 
     public void changeName(String name) {

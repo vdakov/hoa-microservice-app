@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * The H2 config.
  */
 @Configuration
-@EnableJpaRepositories("nl.tudelft.sem.template.hoa.domain")
+@EnableJpaRepositories("nl.tudelft.sem.template.hoa.repositories")
 @PropertySource("classpath:application-dev.properties")
 @EnableTransactionManagement
 public class H2Config {
@@ -42,4 +42,6 @@ public class H2Config {
 
         return dataSource;
     }
+
+
 }

@@ -1,6 +1,9 @@
-package nl.tudelft.sem.template.hoa.domain.hoa;
+package nl.tudelft.sem.template.hoa.services;
 
 import java.util.List;
+
+import nl.tudelft.sem.template.hoa.entitites.Hoa;
+import nl.tudelft.sem.template.hoa.repositories.HoaRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,17 +19,23 @@ public class HoaService {
         this.hoaRepository = hoaRepository;
     }
 
+
     public Hoa createHoa(String name, String country, String city) throws Exception {
         Hoa hoa = new Hoa(name, country, city);
         return hoaRepository.save(hoa);
     }
 
     /**
-     * Returns all HOAs in the repository.
+     * Returns all activities in the repository.
      *
-     * @return a list of all HOAS in the repository
+     * @return a list of all activities in wthe repository
      */
     public List<Hoa> getAllHoas() {
         return hoaRepository.findAll();
     }
+
+    public Hoa getHoaById(int id) {
+        return hoaRepository.findHoaById(id);
+    }
+
 }
