@@ -24,27 +24,44 @@ public class RegistrationService {
     /**
      * Register a new user.
      *
-     * @param netId    The NetID of the user
+     * @param username    The Username of the user
      * @param password The password of the user
      * @throws Exception if the user already exists
      */
-    public AppUser registerUser(NetId netId, Password password) throws Exception {
+    public AppUser registerUser(Username username, Password password) throws Exception {
 
-        if (checkNetIdIsUnique(netId)) {
+        if (checkUsernameIsUnique(username)) {
             // Hash password
             HashedPassword hashedPassword = passwordHashingService.hash(password);
 
             // Create new account
-            AppUser user = new AppUser(netId, hashedPassword);
+            AppUser user = new AppUser(username, hashedPassword);
             userRepository.save(user);
 
             return user;
         }
 
-        throw new NetIdAlreadyInUseException(netId);
+        throw new UsernameAlreadyInUseException(username);
     }
 
-    public boolean checkNetIdIsUnique(NetId netId) {
-        return !userRepository.existsByNetId(netId);
+    public boolean checkUsernameIsUnique(Username username) {
+        return !userRepository.existsByUsername(username);
+    }
+
+    /**
+     * Changes a users password.
+     *
+     * @param username the username of the user to edit
+     * @param newPass the new password
+     * @return the user
+     * @throws Exception if anything goes wrong
+     */
+    public AppUser changePassword(Username username, Password newPass) throws Exception {
+        AppUser user = userRepository.findByUsername(username).orElseThrow();
+        HashedPassword pwd = passwordHashingService.hash(newPass);
+        user.changePassword(pwd);
+        userRepository.delete(userRepository.findByUsername(username).orElseThrow());
+        userRepository.saveAndFlush(user);
+        return user;
     }
 }
