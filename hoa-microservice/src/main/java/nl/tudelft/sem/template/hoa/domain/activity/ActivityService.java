@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class ActivityService {
@@ -36,19 +37,18 @@ public class ActivityService {
      */
     public Activity createActivity(int hoaId, String name, DateModel dateModel, String description) throws Exception {
 
-        if (checkNameIsUnique(name)) {
-            Hoa hoa = hoaService.getHoaById(hoaId);
+        if (existsByName(name)) throw new ActivityNameAlreadyInUseException(name);
 
-            int year = dateModel.getYear();
-            int month = dateModel.getMonth();
-            int day = dateModel.getDay();
-            GregorianCalendar time = new GregorianCalendar(year, month, day);
+        Hoa hoa = hoaService.getHoaById(hoaId);
 
-            Activity activity = new Activity(hoa, name, time, description);
-            activityRepository.save(activity);
-            return activity;
-        }
-        throw new ActivityNameAlreadyInUseException(name);
+        int year = dateModel.getYear();
+        int month = dateModel.getMonth();
+        int day = dateModel.getDay();
+        GregorianCalendar time = new GregorianCalendar(year, month, day);
+
+        Activity activity = new Activity(hoa, name, time, description);
+        activityRepository.save(activity);
+        return activity;
     }
 
     /**
@@ -66,8 +66,8 @@ public class ActivityService {
      * @param name the name in question
      * @return whether it is unique
      */
-    public boolean checkNameIsUnique(String name) {
-        return !activityRepository.existsByName(name);
+    public boolean existsByName(String name) {
+        return activityRepository.existsByName(name);
     }
 
     /**
@@ -77,6 +77,7 @@ public class ActivityService {
      * @return the list of activities that belong to the given HOA
      */
     public List<Activity> getActivitiesByHoaId(int hoaId) {
+        if (!hoaService.existsById(hoaId)) throw new NoSuchElementException();
         return activityRepository.findAllByHoaId(hoaId);
     }
 }
