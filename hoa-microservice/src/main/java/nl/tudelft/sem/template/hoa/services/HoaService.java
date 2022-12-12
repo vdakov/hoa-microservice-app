@@ -1,6 +1,8 @@
 package nl.tudelft.sem.template.hoa.services;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+
 
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.repositories.HoaRepository;
@@ -19,7 +21,6 @@ public class HoaService {
         this.hoaRepository = hoaRepository;
     }
 
-
     public Hoa createHoa(String name, String country, String city) throws Exception {
         Hoa hoa = new Hoa(name, country, city);
         return hoaRepository.save(hoa);
@@ -35,7 +36,8 @@ public class HoaService {
     }
 
     public Hoa getHoaById(int id) {
-        return hoaRepository.findHoaById(id);
+        Hoa out = hoaRepository.findById(id);
+        if (out == null) throw new NoSuchElementException();
+        return out;
     }
-
 }
