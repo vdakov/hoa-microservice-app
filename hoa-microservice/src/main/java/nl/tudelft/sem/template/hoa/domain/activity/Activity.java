@@ -7,6 +7,7 @@ import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.models.ActivityModel;
 import nl.tudelft.sem.template.hoa.models.DateModel;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -30,7 +31,7 @@ public class Activity extends HasEvents {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "hoaId")
     private Hoa hoa;
 

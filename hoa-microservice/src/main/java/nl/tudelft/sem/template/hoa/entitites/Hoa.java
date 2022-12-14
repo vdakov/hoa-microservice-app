@@ -6,7 +6,9 @@ import java.util.Set;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nl.tudelft.sem.template.hoa.domain.activity.Activity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -41,6 +43,9 @@ public class Hoa extends HasEvents {
 
     @OneToMany
     private Set<BoardMember> boardMembers;
+
+    @OneToMany(cascade = {CascadeType.ALL})
+    private Set<Activity> activities;
 
 
     /**
