@@ -7,6 +7,7 @@ import nl.tudelft.sem.template.commons.models.hoa.CreateHoaModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullHoaResponseModel;
 import nl.tudelft.sem.template.commons.models.hoa.HoaModel;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
+import nl.tudelft.sem.template.hoa.models.HoaModel;
 import nl.tudelft.sem.template.hoa.services.HoaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,5 +39,8 @@ public class HoaController {
         Hoa hoa = hoaService.createHoa(hoaModel.getName(), hoaModel.getCountry(), hoaModel.getCity());
         return ResponseEntity.ok(hoa);
     }
+
+
+
 
 }
