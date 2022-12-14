@@ -49,13 +49,20 @@ public class PnbControllerTest {
     private ActivityRepository activityRepository;
 
     private static final Hoa hoa1 = new Hoa("h1", "USA", "Cincinnati");
+
+    private static final Hoa hoa2 = new Hoa("h2", "Italy", "Siena");
+
     private static final Activity activity1 = new Activity(
             hoa1, "a1", new GregorianCalendar(2002, 10, 24), "desc1"
     );
     private static final Activity activity2 = new Activity(
             hoa1, "a2", new GregorianCalendar(1999, 6, 1), "desc2"
     );
-    private static final List<Activity> activities = List.of(activity1, activity2);
+    private static final Activity activity3 = new Activity(
+            hoa2, "a3", new GregorianCalendar(2020, 3, 21), "desc3"
+    );
+
+    private static final List<Activity> activities = List.of(activity1, activity2, activity3);
 
     @Autowired
     private transient HoaService mockHoaService;
@@ -71,18 +78,46 @@ public class PnbControllerTest {
     public void testAddSuccessful() throws Exception{
         when(mockHoaService.getHoaById(1)).thenReturn(hoa1);
         DateModel time = new DateModel(2020, 3, 13);
-        ActivityModel model = new ActivityModel(1, "a3", time, "president time");
+        ActivityModel model = new ActivityModel(1, "a1", time, "president time");
 
         mockMvc.perform(post("/pnb/createActivity")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.serialize(model)))
                 .andExpect(status().isOk());
 
-        Activity activity = activityRepository.findByName("a3");
-        assertThat(activity.getName()).isEqualTo("a3");
+        Activity activity = activityRepository.findByName("a1");
+        assertThat(activity.getName()).isEqualTo("a1");
         assertThat(activity.getHoa()).isEqualTo(hoa1);
         assertThat(activity.getTime()).isEqualTo(new GregorianCalendar(2020, 3, 13));
         assertThat(activity.getDescription()).isEqualTo("president time");
+    }
+
+    //@Test //blocked by adding HOAs
+    public void testGetAll() throws Exception{
+
+        when(mockHoaService.getHoaById(hoa1.getId())).thenReturn(hoa1);
+        when(mockHoaService.getHoaById(hoa2.getId())).thenReturn(hoa2);
+
+        mockMvc.perform(post("/pnb/createActivity")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.serialize(activity1.toModel())))
+                        .andExpect(status().isOk());
+
+
+        mockMvc.perform(post("/pnb/createActivity")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.serialize(activity2.toModel())))
+                        .andExpect(status().isOk());
+
+
+        mockMvc.perform(post("/pnb/createActivity")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.serialize(activity3.toModel())))
+                .andExpect(status().isOk());
+
+        List<Activity> result = activityRepository.findAll();
+
+        assertThat(result).containsExactlyInAnyOrder(activity1, activity2, activity3);
     }
 
 

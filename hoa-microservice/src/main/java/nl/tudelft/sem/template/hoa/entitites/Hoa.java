@@ -88,4 +88,8 @@ public class Hoa extends HasEvents {
         return Objects.hash(id, name, country, city);
     }
 
+    public int getId(){
+        return id;
+    }
+
 }
