@@ -1,9 +1,9 @@
 # Monday meeting 4
 
 - Date: 12-12-2022 10:15
-- Place: Erik (Simeon was interim secretary for this meeting)
+- Place: Echo
 - Chair: Steve
-- Secretary: TBD
+- Secretary: Erik (Simeon was interim secretary for this meeting)
 
 ## Agenda
 
