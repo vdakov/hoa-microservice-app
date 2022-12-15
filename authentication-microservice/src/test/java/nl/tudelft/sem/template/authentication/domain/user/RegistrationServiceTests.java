@@ -13,6 +13,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.NoSuchElementException;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 // activate profiles to have spring use mocks during auto-injection of certain beans.
@@ -68,5 +70,34 @@ public class RegistrationServiceTests {
 
         assertThat(savedUser.getUsername()).isEqualTo(testUser);
         assertThat(savedUser.getPassword()).isEqualTo(existingTestPassword);
+    }
+
+    @Test
+    public void changePassword_success() {
+        registrationService = new RegistrationService(userRepository, mockPasswordEncoder);
+
+        Username username = new Username("SomeUser");
+        HashedPassword oldPass = new HashedPassword("oldPassword");
+        AppUser testUser = new AppUser(username, oldPass);
+        userRepository.save(testUser);
+
+        Password newPass = new Password("newPassword");
+        HashedPassword newPassHashed = new HashedPassword("newPassword");
+        when(mockPasswordEncoder.hash(newPass)).thenReturn(newPassHashed);
+        AppUser updatedUser = registrationService.changePassword(username, newPass);
+
+        assertThat(updatedUser.getPassword()).isEqualTo(newPassHashed);
+    }
+
+    @Test
+    void changePassword_userDoesntExist_throwsException() {
+        Username username = new Username("SomeUser");
+        Password newPass = new Password("newPassword");
+        HashedPassword newPassHashed = new HashedPassword("newPassword");
+        when(mockPasswordEncoder.hash(newPass)).thenReturn(newPassHashed);
+
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(() -> {
+            registrationService.changePassword(username, newPass);
+        });
     }
 }

@@ -56,12 +56,12 @@ public class RegistrationService {
      * @return the user
      * @throws Exception if anything goes wrong
      */
-    public AppUser changePassword(Username username, Password newPass) throws Exception {
+    public AppUser changePassword(Username username, Password newPass) {
         AppUser user = userRepository.findByUsername(username).orElseThrow();
         HashedPassword pwd = passwordHashingService.hash(newPass);
         user.changePassword(pwd);
         userRepository.delete(userRepository.findByUsername(username).orElseThrow());
-        userRepository.saveAndFlush(user);
+        userRepository.save(user);
         return user;
     }
 }
