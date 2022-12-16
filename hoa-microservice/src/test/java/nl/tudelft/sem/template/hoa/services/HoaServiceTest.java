@@ -1,8 +1,14 @@
 package nl.tudelft.sem.template.hoa.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,4 +49,50 @@ public class HoaServiceTest {
 
         assertEquals(expectedHoa, actualHoa);
     }
+
+    @Test
+    public void testGetAllHoas() {
+        List<Hoa> expectedHoas = Collections.singletonList(new Hoa("MyHoa", "USA", "New York"));
+        when(hoaRepository.findAll()).thenReturn(expectedHoas);
+
+        List<Hoa> actualHoas = hoaService.getAllHoas();
+
+        assertEquals(expectedHoas, actualHoas);
+    }
+
+    @Test
+    public void testGetHoaById_Success() {
+        Hoa expectedHoa = new Hoa("MyHoa", "USA", "New York");
+        when(hoaRepository.findById(1)).thenReturn(expectedHoa);
+
+        Hoa actualHoa = hoaService.getHoaById(1);
+
+        assertEquals(expectedHoa, actualHoa);
+    }
+    
+    @Test
+    public void testGetHoaById_NoSuchElementException() {
+        when(hoaRepository.findById(1)).thenReturn(null);
+    
+        assertThrows(NoSuchElementException.class, () -> hoaService.getHoaById(1));
+    }
+    
+    @Test
+    public void testExistsById_True() {
+        when(hoaRepository.existsById(1)).thenReturn(true);
+    
+        boolean result = hoaService.existsById(1);
+    
+        assertTrue(result);
+    }
+    
+    @Test
+    public void testExistsById_False() {
+        when(hoaRepository.existsById(1)).thenReturn(false);
+    
+        boolean result = hoaService.existsById(1);
+    
+        assertFalse(result);
+    }
+    
 }
