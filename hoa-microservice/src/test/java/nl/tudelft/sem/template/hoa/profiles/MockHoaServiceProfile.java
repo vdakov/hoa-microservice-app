@@ -1,6 +1,5 @@
 package nl.tudelft.sem.template.hoa.profiles;
 
-import nl.tudelft.sem.template.hoa.domain.activity.ActivityService;
 import nl.tudelft.sem.template.hoa.services.HoaService;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;

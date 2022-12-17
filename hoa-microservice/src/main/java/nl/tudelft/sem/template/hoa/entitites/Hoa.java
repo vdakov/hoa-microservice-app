@@ -6,7 +6,6 @@ import java.util.Set;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nl.tudelft.sem.template.hoa.domain.activity.Activity;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;

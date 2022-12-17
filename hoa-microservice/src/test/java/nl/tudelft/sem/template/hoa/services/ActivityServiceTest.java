@@ -1,8 +1,7 @@
 package nl.tudelft.sem.template.hoa.services;
 
-import nl.tudelft.sem.template.hoa.domain.activity.Activity;
-import nl.tudelft.sem.template.hoa.domain.activity.ActivityNameAlreadyInUseException;
-import nl.tudelft.sem.template.hoa.domain.activity.ActivityService;
+import nl.tudelft.sem.template.hoa.entitites.Activity;
+import nl.tudelft.sem.template.hoa.exceptions.ActivityNameAlreadyInUseException;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.models.DateModel;
 import nl.tudelft.sem.template.hoa.repositories.ActivityRepository;

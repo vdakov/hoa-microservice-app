@@ -1,10 +1,7 @@
 package nl.tudelft.sem.template.hoa.integration;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import nl.tudelft.sem.template.hoa.Application;
-import nl.tudelft.sem.template.hoa.controllers.PnbController;
-import nl.tudelft.sem.template.hoa.domain.activity.Activity;
-import nl.tudelft.sem.template.hoa.domain.activity.ActivityService;
+import nl.tudelft.sem.template.hoa.entitites.Activity;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 
 import nl.tudelft.sem.template.hoa.integration.utils.JsonUtil;
@@ -12,7 +9,6 @@ import nl.tudelft.sem.template.hoa.models.ActivityModel;
 import nl.tudelft.sem.template.hoa.models.DateModel;
 import nl.tudelft.sem.template.hoa.repositories.ActivityRepository;
 import nl.tudelft.sem.template.hoa.repositories.HoaRepository;
-import nl.tudelft.sem.template.hoa.services.HoaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,15 +21,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;

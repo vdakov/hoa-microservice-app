@@ -1,6 +1,6 @@
 package nl.tudelft.sem.template.hoa.entities;
 
-import nl.tudelft.sem.template.hoa.domain.activity.Activity;
+import nl.tudelft.sem.template.hoa.entitites.Activity;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

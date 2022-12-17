@@ -1,9 +1,9 @@
-package nl.tudelft.sem.template.hoa.domain.activity;
+package nl.tudelft.sem.template.hoa.entitites;
 
-import lombok.Data;
 import lombok.NoArgsConstructor;
-import nl.tudelft.sem.template.hoa.entitites.HasEvents;
-import nl.tudelft.sem.template.hoa.entitites.Hoa;
+import nl.tudelft.sem.template.hoa.events.ActivityTimeWasChangedEvent;
+import nl.tudelft.sem.template.hoa.events.ActivityWasCreatedEvent;
+import nl.tudelft.sem.template.hoa.entitites.converters.TimeAttributeConverter;
 import nl.tudelft.sem.template.hoa.models.ActivityModel;
 import nl.tudelft.sem.template.hoa.models.DateModel;
 
