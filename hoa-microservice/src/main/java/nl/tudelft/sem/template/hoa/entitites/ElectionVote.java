@@ -15,4 +15,5 @@ public class ElectionVote extends Vote {
     public void setApplicantName(String applicantName) {
         this.applicantName = applicantName;
     }
+
 }

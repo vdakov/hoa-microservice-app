@@ -29,7 +29,6 @@ public class UserController {
     private transient VoteService voteService;
 
     private static final String USER_ID_LITERAL = "userId";
-
     /**
      * GET endpoint for creating a new user
      *
