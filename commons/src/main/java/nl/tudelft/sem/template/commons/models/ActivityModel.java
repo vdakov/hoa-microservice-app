@@ -1,7 +1,6 @@
-package nl.tudelft.sem.template.hoa.models;
+package nl.tudelft.sem.template.commons.models;
 
 import lombok.Data;
-import nl.tudelft.sem.template.hoa.domain.activity.Activity;
 
 @Data
 public class ActivityModel {
