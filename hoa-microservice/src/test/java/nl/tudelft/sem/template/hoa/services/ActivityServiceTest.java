@@ -1,6 +1,7 @@
 package nl.tudelft.sem.template.hoa.services;
 
 import nl.tudelft.sem.template.hoa.domain.activity.Activity;
+import nl.tudelft.sem.template.hoa.domain.activity.ActivityNameAlreadyInUseException;
 import nl.tudelft.sem.template.hoa.domain.activity.ActivityService;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.models.DateModel;
@@ -10,8 +11,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -51,6 +54,10 @@ public class ActivityServiceTest {
         when(activityRepository.existsByName("Tests")).thenReturn(false);
         assertTrue(!service.existsByName("Tests"));
         verify(activityRepository, times(1)).existsByName("Tests");
+
+        assertThrows(ActivityNameAlreadyInUseException.class,
+                () -> service.createActivity(
+                        1, "Test", new DateModel(2022, 12, 14), "desc"));
     }
 
     @Test
@@ -61,6 +68,7 @@ public class ActivityServiceTest {
         when(hoa2.getId()).thenReturn(2);
         when(hoaService.existsById(1)).thenReturn(true);
         when(hoaService.existsById(2)).thenReturn(true);
+        when(hoaService.existsById(3)).thenReturn(false);
 
         List<Activity> activities1 = Arrays.asList(mock(Activity.class), mock(Activity.class), mock(Activity.class));
         List<Activity> activities2 = Arrays.asList(mock(Activity.class), mock(Activity.class));
@@ -72,6 +80,8 @@ public class ActivityServiceTest {
 
         List<Activity> result2 = service.getActivitiesByHoaId(2);
         assertEquals(activities2, result2);
+
+        assertThrows(NoSuchElementException.class, () -> service.getActivitiesByHoaId(3));
     }
 
 

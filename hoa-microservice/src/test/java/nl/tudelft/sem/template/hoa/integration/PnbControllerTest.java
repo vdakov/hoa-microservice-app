@@ -1,5 +1,6 @@
 package nl.tudelft.sem.template.hoa.integration;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import nl.tudelft.sem.template.hoa.Application;
 import nl.tudelft.sem.template.hoa.controllers.PnbController;
 import nl.tudelft.sem.template.hoa.domain.activity.Activity;
@@ -23,6 +24,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.ArrayList;
@@ -117,9 +119,18 @@ public class PnbControllerTest {
                         .content(JsonUtil.serialize(activity3.toModel())))
                 .andExpect(status().isOk());
 
-        List<Activity> result = activityRepository.findAll();
+        MvcResult result = mockMvc.perform(get("/pnb/allActivities"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andReturn();
 
-        assertThat(result).containsExactlyInAnyOrder(activity1, activity2, activity3);
+        TypeReference<List<ActivityModel>> typeReference = new TypeReference<>() {};
+        List<ActivityModel> activityModels = JsonUtil.deserialize(result.getResponse().getContentAsString(),
+                typeReference);
+
+        assertThat(activityModels).containsExactlyInAnyOrder(activity1.toModel(),
+                                                            activity2.toModel(),
+                                                            activity3.toModel());
     }
 
     @Test
@@ -142,11 +153,52 @@ public class PnbControllerTest {
                         .content(JsonUtil.serialize(activity3.toModel())))
                 .andExpect(status().isOk());
 
-        List<Activity> result1 = activityRepository.findAllByHoaId(hoa1.getId());
-        List<Activity> result2 = activityRepository.findAllByHoaId(hoa2.getId());
+        TypeReference<List<ActivityModel>> typeReference = new TypeReference<>() {};
 
-        assertThat(result1).containsExactlyInAnyOrder(activity1, activity2);
-        assertThat(result2).containsExactlyInAnyOrder(activity3);
+        MvcResult result1 = mockMvc.perform(get("/pnb/activitiesForHoa/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andReturn();
+
+        List<ActivityModel> activityModels1 = JsonUtil.deserialize(result1.getResponse().getContentAsString(),
+                typeReference);
+
+        assertThat(activityModels1).containsExactlyInAnyOrder(activity1.toModel(),
+                activity2.toModel());
+
+
+        MvcResult result2 = mockMvc.perform(get("/pnb/activitiesForHoa/2"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andReturn();
+
+        List<ActivityModel> activityModels2 = JsonUtil.deserialize(result2.getResponse().getContentAsString(),
+                typeReference);
+
+        assertThat(activityModels2).containsExactlyInAnyOrder(activity3.toModel());
+    }
+
+    @Test
+    public void testCreateActivityFail() throws Exception{
+
+        mockMvc.perform(post("/pnb/createActivity")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.serialize(activity1.toModel())))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/pnb/createActivity")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.serialize(activity1.toModel())))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testGetByHoaIdFail() throws Exception{
+
+        TypeReference<List<ActivityModel>> typeReference = new TypeReference<>() {};
+
+        mockMvc.perform(get("/pnb/activitiesForHoa/3"))
+                .andExpect(status().isBadRequest());
     }
 
 

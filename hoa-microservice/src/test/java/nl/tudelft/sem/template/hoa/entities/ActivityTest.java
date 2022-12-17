@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.GregorianCalendar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class ActivityTest {
     private Activity activity;
@@ -53,6 +54,42 @@ public class ActivityTest {
     @Test
     public void testGetHoa(){
         assertEquals(hoa, activity.getHoa());
+    }
+
+    @Test
+    public void testEqualsSameNameAndTime() {
+        Activity activity2 = new Activity(hoa, name, time, "Different Description");
+        assertEquals(activity, activity2);
+        assertEquals(activity.hashCode(), activity2.hashCode());
+    }
+
+    @Test
+    public void testEqualsDifferentName() {
+        Activity activity2 = new Activity(hoa, "Different Name", time, description);
+        assertNotEquals(activity, activity2);
+        assertNotEquals(activity.hashCode(), activity2.hashCode());
+    }
+
+    @Test
+    public void testEqualsDifferentTime() {
+        Activity activity2 = new Activity(hoa, name, new GregorianCalendar(2022, 10, 24), description);
+        assertNotEquals(activity, activity2);
+        assertNotEquals(activity.hashCode(), activity2.hashCode());
+    }
+
+    @Test
+    public void testEqualsNull() {
+        assertNotEquals(activity, null);
+    }
+
+    @Test
+    public void testEqualsDifferentClass() {
+        assertNotEquals(activity, "Activity");
+    }
+
+    @Test
+    public void testEqualsSelf(){
+        assertEquals(activity, activity);
     }
 
 

@@ -92,12 +92,12 @@ public class Activity extends HasEvents {
             return false;
         }
         Activity activity = (Activity) o;
-        return name.equals(activity.name);
+        return name.equals(activity.name) && time.equals(activity.time);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(name, time);
     }
 
     public ActivityModel toModel(){
