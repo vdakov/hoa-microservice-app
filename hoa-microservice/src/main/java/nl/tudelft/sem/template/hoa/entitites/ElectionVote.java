@@ -7,4 +7,12 @@ public class ElectionVote extends Vote {
         super(hoaId);
         this.applicantName = applicantName;
     }
+
+    public String getApplicantName() {
+        return applicantName;
+    }
+
+    public void setApplicantName(String applicantName) {
+        this.applicantName = applicantName;
+    }
 }

@@ -14,9 +14,9 @@ import java.util.List;
 @Service
 public class UserService {
     @Autowired
-    private UserRepository userRepository;
+    private transient UserRepository userRepository;
     @Autowired
-    private HoaService hoaService;
+    private transient HoaService hoaService;
 
     /**
      * Query for getting all users currently in the table
