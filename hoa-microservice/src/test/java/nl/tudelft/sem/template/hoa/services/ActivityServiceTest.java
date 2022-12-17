@@ -46,11 +46,11 @@ public class ActivityServiceTest {
     public void testExistsByName() {
         when(activityRepository.existsByName("Test")).thenReturn(true);
         assertTrue(service.existsByName("Test"));
-        verify(activityRepository, times(1) ).existsByName("Test");
+        verify(activityRepository, times(1)).existsByName("Test");
 
         when(activityRepository.existsByName("Tests")).thenReturn(false);
         assertTrue(!service.existsByName("Tests"));
-        verify(activityRepository, times(1) ).existsByName("Tests");
+        verify(activityRepository, times(1)).existsByName("Tests");
     }
 
     @Test

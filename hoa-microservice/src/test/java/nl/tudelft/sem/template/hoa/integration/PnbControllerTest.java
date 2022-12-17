@@ -10,7 +10,9 @@ import nl.tudelft.sem.template.hoa.integration.utils.JsonUtil;
 import nl.tudelft.sem.template.hoa.models.ActivityModel;
 import nl.tudelft.sem.template.hoa.models.DateModel;
 import nl.tudelft.sem.template.hoa.repositories.ActivityRepository;
+import nl.tudelft.sem.template.hoa.repositories.HoaRepository;
 import nl.tudelft.sem.template.hoa.services.HoaService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@ActiveProfiles({"test", "mockHoaService"})
+@ActiveProfiles({"test"/*, "mockHoaService"*/})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
 public class PnbControllerTest {
@@ -47,6 +49,9 @@ public class PnbControllerTest {
 
     @Autowired
     private ActivityRepository activityRepository;
+
+    @Autowired
+    private HoaRepository hoaRepository;
 
     private static final Hoa hoa1 = new Hoa("h1", "USA", "Cincinnati");
 
@@ -62,10 +67,11 @@ public class PnbControllerTest {
             hoa2, "a3", new GregorianCalendar(2020, 3, 21), "desc3"
     );
 
-    private static final List<Activity> activities = List.of(activity1, activity2, activity3);
-
-    @Autowired
-    private transient HoaService mockHoaService;
+    @BeforeEach
+    public void setup() throws Exception{
+        hoaRepository.save(hoa1);
+        hoaRepository.save(hoa2);
+    }
 
     @Test
     public void testHello() throws Exception{
@@ -76,7 +82,6 @@ public class PnbControllerTest {
 
     @Test
     public void testAddSuccessful() throws Exception{
-        when(mockHoaService.getHoaById(1)).thenReturn(hoa1);
         DateModel time = new DateModel(2020, 3, 13);
         ActivityModel model = new ActivityModel(1, "a1", time, "president time");
 
@@ -92,11 +97,8 @@ public class PnbControllerTest {
         assertThat(activity.getDescription()).isEqualTo("president time");
     }
 
-    //@Test //blocked by adding HOAs
+    @Test
     public void testGetAll() throws Exception{
-
-        when(mockHoaService.getHoaById(hoa1.getId())).thenReturn(hoa1);
-        when(mockHoaService.getHoaById(hoa2.getId())).thenReturn(hoa2);
 
         mockMvc.perform(post("/pnb/createActivity")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -118,6 +120,33 @@ public class PnbControllerTest {
         List<Activity> result = activityRepository.findAll();
 
         assertThat(result).containsExactlyInAnyOrder(activity1, activity2, activity3);
+    }
+
+    @Test
+    public void testGetByHoaId() throws Exception{
+
+        mockMvc.perform(post("/pnb/createActivity")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.serialize(activity1.toModel())))
+                .andExpect(status().isOk());
+
+
+        mockMvc.perform(post("/pnb/createActivity")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.serialize(activity2.toModel())))
+                .andExpect(status().isOk());
+
+
+        mockMvc.perform(post("/pnb/createActivity")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.serialize(activity3.toModel())))
+                .andExpect(status().isOk());
+
+        List<Activity> result1 = activityRepository.findAllByHoaId(hoa1.getId());
+        List<Activity> result2 = activityRepository.findAllByHoaId(hoa2.getId());
+
+        assertThat(result1).containsExactlyInAnyOrder(activity1, activity2);
+        assertThat(result2).containsExactlyInAnyOrder(activity3);
     }
 
 
