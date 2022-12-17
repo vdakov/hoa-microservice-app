@@ -1,13 +1,12 @@
-package nl.tudelft.sem.template.requirements.domain;
-
-import org.springframework.data.domain.AfterDomainEventPublication;
-import org.springframework.data.domain.DomainEvents;
+package nl.tudelft.sem.template.commons.entities;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.data.domain.AfterDomainEventPublication;
+import org.springframework.data.domain.DomainEvents;
 
 /**
  * A base class for adding domain event support to an entity.
