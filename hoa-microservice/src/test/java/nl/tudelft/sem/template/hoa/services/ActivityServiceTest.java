@@ -9,10 +9,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -45,18 +48,31 @@ public class ActivityServiceTest {
     }
 
     @Test
-    public void testExistsByName() {
-        when(activityRepository.existsByName("Test")).thenReturn(true);
-        assertTrue(service.existsByName("Test"));
-        verify(activityRepository, times(1)).existsByName("Test");
+    public void testExistsByNameAndTime() {
+        GregorianCalendar time1 = new GregorianCalendar(2002, 10, 24);
+        GregorianCalendar time2 = new GregorianCalendar(2002, 10, 21);
 
-        when(activityRepository.existsByName("Tests")).thenReturn(false);
-        assertTrue(!service.existsByName("Tests"));
-        verify(activityRepository, times(1)).existsByName("Tests");
+        when(activityRepository.existsByNameAndTime("Test", time1)).thenReturn(true);
+        assertTrue(service.existsByNameAndTime("Test", time1));
+        verify(activityRepository, times(1)).existsByNameAndTime("Test", time1);
+
+        when(activityRepository.existsByNameAndTime("Tests", time1)).thenReturn(false);
+        assertFalse(service.existsByNameAndTime("Tests", time1));
+        verify(activityRepository, times(1)).existsByNameAndTime("Tests", time1);
+
+        when(activityRepository.existsByNameAndTime("Test", time2)).thenReturn(false);
+        assertFalse(service.existsByNameAndTime("Test", time2));
+        verify(activityRepository, times(1)).existsByNameAndTime("Test", time2);
 
         assertThrows(ActivityNameAlreadyInUseException.class,
                 () -> service.createActivity(
-                        1, "Test", new DateModel(2022, 12, 14), "desc"));
+                        1, "Test", new DateModel(2002, 10, 24), "desc"));
+
+        assertDoesNotThrow(() -> service.createActivity(
+                1, "Tests", new DateModel(2002, 10, 24), "desc"));
+
+        assertDoesNotThrow(() -> service.createActivity(
+                1, "Test", new DateModel(2002, 10, 21), "desc"));
     }
 
     @Test

@@ -38,14 +38,15 @@ public class ActivityService {
      */
     public Activity createActivity(int hoaId, String name, DateModel dateModel, String description) throws Exception {
 
-        if (existsByName(name)) throw new ActivityNameAlreadyInUseException(name);
-
-        Hoa hoa = hoaService.getHoaById(hoaId);
-
         int year = dateModel.getYear();
         int month = dateModel.getMonth();
         int day = dateModel.getDay();
         GregorianCalendar time = new GregorianCalendar(year, month, day);
+
+        if (existsByNameAndTime(name, time)) throw new ActivityNameAlreadyInUseException(name);
+
+        Hoa hoa = hoaService.getHoaById(hoaId);
+
 
         Activity activity = new Activity(hoa, name, time, description);
         activityRepository.save(activity);
@@ -62,13 +63,14 @@ public class ActivityService {
     }
 
     /**
-     * Checks whether an activity with the given name already exists in the repository.
+     * Checks whether an activity with the given name and time already exists in the repository.
      *
      * @param name the name in question
+     * @param time the time in question
      * @return whether it is unique
      */
-    public boolean existsByName(String name) {
-        return activityRepository.existsByName(name);
+    public boolean existsByNameAndTime(String name, GregorianCalendar time) {
+        return activityRepository.existsByNameAndTime(name, time);
     }
 
     /**
