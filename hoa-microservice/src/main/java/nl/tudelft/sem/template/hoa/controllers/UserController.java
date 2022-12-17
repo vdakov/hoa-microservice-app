@@ -24,9 +24,11 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private transient UserService userService;
     @Autowired
-    private VoteService voteService;
+    private transient VoteService voteService;
+
+    private static final String USER_ID_LITERAL = "userId";
 
     /**
      * GET endpoint for creating a new user
@@ -74,7 +76,7 @@ public class UserController {
      */
     @PostMapping("/submitVoteElection/{userId}/{hoaId}")
     public ResponseEntity submitVoteElection(@RequestBody ElectionVote vote,
-                                             @PathVariable("userId") int userId,
+                                             @PathVariable(USER_ID_LITERAL) int userId,
                                              @PathVariable("hoaId") int hoaId) {
         try {
             voteService.submitVoteElection(userId, vote, hoaId);
@@ -95,7 +97,7 @@ public class UserController {
      */
     @PutMapping("/changeVoteElection/{userId}/{hoaId}")
     public ResponseEntity changeVoteElection(@RequestBody ElectionVote vote,
-                                             @PathVariable("userId") int userId,
+                                             @PathVariable(USER_ID_LITERAL) int userId,
                                              @PathVariable("hoaId") int hoaId) {
         try {
             voteService.changeVoteElection(userId, vote, hoaId);
@@ -110,7 +112,7 @@ public class UserController {
      */
     @PostMapping("/submitVoteRequirement/{userId}")
     public ResponseEntity submitVoteRequirement(@RequestBody RequirementVote vote,
-                                                @PathVariable("userId") int boardMemberId) {
+                                                @PathVariable(USER_ID_LITERAL) int boardMemberId) {
         try {
             voteService.submitVoteRequirement(boardMemberId, vote);
             return ResponseEntity.status(HttpStatus.OK).build();
@@ -124,7 +126,7 @@ public class UserController {
      */
     @PutMapping("/changeVoteElection/{userId}")
     public ResponseEntity changeVoteRequirement(@RequestBody RequirementVote vote,
-                                                @PathVariable("userId") int boardMemberId) {
+                                                @PathVariable(USER_ID_LITERAL) int boardMemberId) {
         try {
             voteService.changeVoteRequirement(boardMemberId, vote);
             return ResponseEntity.status(HttpStatus.OK).build();
