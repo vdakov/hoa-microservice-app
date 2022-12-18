@@ -2,7 +2,8 @@ package nl.tudelft.sem.template.hoa.entitites;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import nl.tudelft.sem.template.hoa.models.FullUserResponseModel;
+import nl.tudelft.sem.template.hoa.models.SimpleUserResponseModel;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -14,6 +15,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Column;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -86,6 +88,25 @@ public class User extends HasEvents {
         if (!associations.contains(b)) return false;
         associations.remove(b);
         return true;
+    }
+
+    public SimpleUserResponseModel toSimpleModel() {
+        return new SimpleUserResponseModel(this.displayName);
+    }
+
+
+    /**
+     * Converts this User object to a FullUserResponseModel object.
+     * This DTO (Data Transfer Object) is used to prevent infinite loops when serializing the User object.
+     * @return a FullUserResponseModel object with the associations and display name from this User object
+     */
+    public FullUserResponseModel toFullModel() {
+        return new FullUserResponseModel(
+            this.getAssociations().stream().map(userHoa -> {
+                return userHoa.toUserLessModel();
+            }).collect(Collectors.toSet()), 
+            this.displayName
+        );
     }
 
 

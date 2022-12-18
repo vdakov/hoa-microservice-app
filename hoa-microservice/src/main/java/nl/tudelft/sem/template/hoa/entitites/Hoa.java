@@ -3,9 +3,12 @@ package nl.tudelft.sem.template.hoa.entitites;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nl.tudelft.sem.template.hoa.models.FullHoaResponseModel;
+import nl.tudelft.sem.template.hoa.models.SimpleHoaResponseModel;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -61,26 +64,23 @@ public class Hoa extends HasEvents {
         this.country = country;
     }
 
-    public void changeCity(String city) {
-        this.city = city;
+    /**
+     * Converts this Hoa object to a FullHoaResponseModel object.
+     * This DTO is used to prevent infinite loops when serializing the Hoa object.
+     * @return a FullHoaResponseModel object with the members and address information from this Hoa object
+     */
+    public FullHoaResponseModel toFullModel() {
+        return new FullHoaResponseModel(
+            this.members.stream().map(member -> {
+                return member.toHoaLessModel();
+            }).collect(Collectors.toSet()), 
+            this.name, this.getCountry(), this.getCity()
+        );
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof Hoa)) {
-            return false;
-        }
-        Hoa hoa = (Hoa) o;
-        return id == hoa.id && Objects.equals(name, hoa.name) && Objects.equals(country, hoa.country)
-                && Objects.equals(city, hoa.city);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, country, city);
+    public SimpleHoaResponseModel toSimpleModel() {
+        return new SimpleHoaResponseModel(this.name, this.getCountry(), this.getCity());
     }
 
 }
