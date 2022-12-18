@@ -1,16 +1,17 @@
 package nl.tudelft.sem.template.hoa.controllers;
 
 import java.util.List;
+
+import nl.tudelft.sem.template.commons.models.ResultsModel;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.commons.models.HoaModel;
+import nl.tudelft.sem.template.hoa.entitites.User;
 import nl.tudelft.sem.template.hoa.services.ClientService;
 import nl.tudelft.sem.template.hoa.services.HoaService;
+import nl.tudelft.sem.template.hoa.services.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Hello World example controller.
@@ -23,12 +24,14 @@ public class HoaController {
 
     private final transient HoaService hoaService;
     private final transient ClientService client;
+    private final transient VoteService votes;
 
 
     @Autowired
-    public HoaController(HoaService hoaService, ClientService client) {
+    public HoaController(HoaService hoaService, ClientService client, VoteService votes) {
         this.hoaService = hoaService;
         this.client = client;
+        this.votes = votes;
     }
 
 
@@ -37,6 +40,20 @@ public class HoaController {
         return ResponseEntity.ok().build();
 
     }
+
+    //will have to be extended with inheritance
+    @PostMapping("{hoaId}/receiveResults")
+    public ResponseEntity<String> getResults(@RequestBody ResultsModel results, @PathVariable("hoaId") int hoaId){
+        this.votes.storeResults(hoaId,results);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("{hoadId}/getListEligibleMembers")
+    public ResponseEntity<List<User>> getListEligibleMembers(){
+        return ResponseEntity.ok().build();
+    }
+
+
 
 
 

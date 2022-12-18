@@ -1,7 +1,7 @@
 package nl.tudelft.sem.template.hoa.controllers;
 
-import nl.tudelft.sem.template.hoa.entitites.ElectionVote;
-import nl.tudelft.sem.template.hoa.entitites.RequirementVote;
+import nl.tudelft.sem.template.hoa.entitites.ElectionResults;
+import nl.tudelft.sem.template.hoa.entitites.RequirementResults;
 import nl.tudelft.sem.template.hoa.entitites.User;
 import nl.tudelft.sem.template.hoa.services.UserService;
 import nl.tudelft.sem.template.hoa.services.VoteService;
@@ -75,11 +75,11 @@ public class UserController {
      * @return status of whether the submission succeeded
      */
     @PostMapping("/submitVoteElection/{userId}/{hoaId}")
-    public ResponseEntity submitVoteElection(@RequestBody ElectionVote vote,
+    public ResponseEntity submitVoteElection(@RequestBody ElectionResults vote,
                                              @PathVariable(USER_ID_LITERAL) int userId,
                                              @PathVariable("hoaId") int hoaId) {
         try {
-            voteService.submitVoteElection(userId, vote, hoaId);
+          //  voteService.submitVoteElection(userId, vote, hoaId);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
@@ -96,11 +96,11 @@ public class UserController {
      * @return status of whether the submission succeeded
      */
     @PutMapping("/changeVoteElection/{userId}/{hoaId}")
-    public ResponseEntity changeVoteElection(@RequestBody ElectionVote vote,
+    public ResponseEntity changeVoteElection(@RequestBody ElectionResults vote,
                                              @PathVariable(USER_ID_LITERAL) int userId,
                                              @PathVariable("hoaId") int hoaId) {
         try {
-            voteService.changeVoteElection(userId, vote, hoaId);
+           // voteService.changeVoteElection(userId, vote, hoaId);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
@@ -111,10 +111,10 @@ public class UserController {
      * Analogous POST mapping for requirement voting
      */
     @PostMapping("/submitVoteRequirement/{userId}")
-    public ResponseEntity submitVoteRequirement(@RequestBody RequirementVote vote,
+    public ResponseEntity submitVoteRequirement(@RequestBody RequirementResults vote,
                                                 @PathVariable(USER_ID_LITERAL) int boardMemberId) {
         try {
-            voteService.submitVoteRequirement(boardMemberId, vote);
+           // voteService.submitVoteRequirement(boardMemberId, vote);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
@@ -125,10 +125,10 @@ public class UserController {
      * Analogous PUT mapping for requirement voting
      */
     @PutMapping("/changeVoteElection/{userId}")
-    public ResponseEntity changeVoteRequirement(@RequestBody RequirementVote vote,
+    public ResponseEntity changeVoteRequirement(@RequestBody RequirementResults vote,
                                                 @PathVariable(USER_ID_LITERAL) int boardMemberId) {
         try {
-            voteService.changeVoteRequirement(boardMemberId, vote);
+            //voteService.changeVoteRequirement(boardMemberId, vote);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
