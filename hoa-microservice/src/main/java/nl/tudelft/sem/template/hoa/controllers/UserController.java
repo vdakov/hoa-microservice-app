@@ -3,6 +3,13 @@ package nl.tudelft.sem.template.hoa.controllers;
 import nl.tudelft.sem.template.hoa.entitites.ElectionVote;
 import nl.tudelft.sem.template.hoa.entitites.RequirementVote;
 import nl.tudelft.sem.template.hoa.entitites.User;
+import nl.tudelft.sem.template.hoa.entitites.UserHoa;
+import nl.tudelft.sem.template.hoa.exceptions.HoaDoesNotExistException;
+import nl.tudelft.sem.template.hoa.exceptions.UserDoesNotExistException;
+import nl.tudelft.sem.template.hoa.models.FullAddressModel;
+import nl.tudelft.sem.template.hoa.models.FullUserHoaModel;
+import nl.tudelft.sem.template.hoa.models.FullUserResponseModel;
+import nl.tudelft.sem.template.hoa.models.JoinModel;
 import nl.tudelft.sem.template.hoa.services.UserService;
 import nl.tudelft.sem.template.hoa.services.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/users")
@@ -54,9 +62,15 @@ public class UserController {
      * @return a list of all the users currently registered in the application
      */
     @GetMapping("/getAllUsers")
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<FullUserResponseModel>> getAllUsers() {
         try {
-            return ResponseEntity.ok(userService.getAllUsers());
+            List<User> users = userService.getAllUsers();
+
+            return ResponseEntity.ok(
+                users.stream().map(user -> {
+                    return user.toFullModel();
+                }).collect(Collectors.toList())
+            );
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
         }
@@ -135,5 +149,35 @@ public class UserController {
         }
     }
 
+
+    /**
+    * Allows a user to join an HOA (Homeowners Association).
+    * @param joinRequest a request model containing the user and HOA IDs and the user's address
+    * @return a ResponseEntity containing the newly created UserHoa connection object
+    * @throws HoaDoesNotExistException if the specified HOA does not exist
+    * @throws UserDoesNotExistException if the specified user does not exist
+    */
+    @PostMapping("joinHoa")
+    public ResponseEntity<FullUserHoaModel> joinHoa(@RequestBody JoinModel joinRequest) 
+        throws HoaDoesNotExistException, UserDoesNotExistException {
+        
+        if (joinRequest.getUserDisplayName() == null || joinRequest.getHoaName() == null 
+            || joinRequest.getCountry() == null || joinRequest.getCity() == null || joinRequest.getStreet() == null 
+            || joinRequest.getHoaName() == null || joinRequest.getPostalCode() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        FullAddressModel address = new FullAddressModel(
+            joinRequest.getCountry(), joinRequest.getCity(), 
+            joinRequest.getStreet(), joinRequest.getHouseNumber(), 
+            joinRequest.getPostalCode()
+        );
+        
+        UserHoa connection = this.userService.joinAssociation(
+            joinRequest.getHoaName(), joinRequest.getUserDisplayName(), address
+        );
+
+        return ResponseEntity.ok().body(connection.toFullModel());
+    }
 
 }

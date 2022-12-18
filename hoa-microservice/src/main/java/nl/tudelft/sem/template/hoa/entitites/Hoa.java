@@ -1,11 +1,11 @@
 package nl.tudelft.sem.template.hoa.entitites;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nl.tudelft.sem.template.hoa.models.FullHoaResponseModel;
 import nl.tudelft.sem.template.hoa.models.SimpleHoaResponseModel;
@@ -14,16 +14,21 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.NaturalId;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.GenerationType;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.OneToMany;
-import javax.persistence.ManyToMany;
 
 @Data
 @Entity
 @Table
 @NoArgsConstructor
-public class Hoa extends HasEvents {
+public class Hoa extends HasAddress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,38 +36,43 @@ public class Hoa extends HasEvents {
     private int id;
 
     @Column(name = "name", nullable = false, unique = true)
+    @NaturalId
     private String name;
 
-    @Column(name = "country", nullable = false)
-    private String country;
-
-    @Column(name = "city", nullable = false)
-    private String city;
-
-    @ManyToMany
-    private Set<User> members;
+    @OneToMany(cascade = {CascadeType.PERSIST}, mappedBy = "hoa")
+    @EqualsAndHashCode.Exclude
+    private Set<UserHoa> members = new HashSet<>();
 
     @OneToMany
-    private Set<BoardMember> boardMembers;
+    @JsonIgnore
+    private transient Set<BoardMember> boardMembers = new HashSet<>();
+
+
+    public Hoa addMember(UserHoa connection) {
+        this.members.add(connection);
+
+        return this;
+    }
 
 
     /**
      * Constructor for HOA.
      */
     public Hoa(String name, String country, String city) {
+        super(country, city);
         this.name = name;
-        this.city = city;
-        this.country = country;
         this.members = new HashSet<>();
+        this.boardMembers = new HashSet<>();
     }
 
-    public void changeName(String name) {
+    public Hoa(int id, String name, String country, String city, Set<BoardMember> boardMembers, Set<UserHoa> members) {
+        super(country, city);
+        this.id = id;
         this.name = name;
+        this.boardMembers = boardMembers;
+        this.members = members;
     }
 
-    public void changeCountry(String country) {
-        this.country = country;
-    }
 
     /**
      * Converts this Hoa object to a FullHoaResponseModel object.

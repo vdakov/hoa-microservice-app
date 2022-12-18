@@ -25,5 +25,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     boolean existsByDisplayName(String displayName);
 
-
+    User findByDisplayName(String displayName);
 }
