@@ -1,7 +1,7 @@
 package nl.tudelft.sem.template.hoa.controllers;
 
-import nl.tudelft.sem.template.hoa.entitites.ElectionVote;
-import nl.tudelft.sem.template.hoa.entitites.RequirementVote;
+import nl.tudelft.sem.template.commons.entities.ElectionVote;
+import nl.tudelft.sem.template.commons.entities.RequirementVote;
 import nl.tudelft.sem.template.hoa.entitites.User;
 import nl.tudelft.sem.template.hoa.services.UserService;
 import nl.tudelft.sem.template.hoa.services.VoteService;
@@ -90,7 +90,7 @@ public class UserController {
      *
      * @param vote   the vote submitted
      * @param userId id of the user submitting the vote
-     * @param hoaId  id of the association the user is submitting their vote for (since they canbe a member of multiple
+     * @param hoaId  id of the association the user is submitting their vote for (since they can be a member of multiple
      *               associations
      * @return status of whether the submission succeeded
      */
