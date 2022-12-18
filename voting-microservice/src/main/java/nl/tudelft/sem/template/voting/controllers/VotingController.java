@@ -115,6 +115,7 @@ public class VotingController {
         return ResponseEntity.ok(votingService.getEndTime(hoaId));
     }
 
+
     /**
      * A request to get the results after the elections are over
      * @param hoaId the ID of the HOA where a voting is conducted
