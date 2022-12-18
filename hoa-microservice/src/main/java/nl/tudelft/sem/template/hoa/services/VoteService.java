@@ -1,7 +1,6 @@
 package nl.tudelft.sem.template.hoa.services;
 
-import nl.tudelft.sem.template.hoa.entitites.ElectionVote;
-import nl.tudelft.sem.template.hoa.entitites.RequirementVote;
+import nl.tudelft.sem.template.commons.models.ResultsModel;
 import org.springframework.stereotype.Service;
 
 
@@ -15,22 +14,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class VoteService {
 
+    public void storeResults(int hoaId, ResultsModel results){
 
-    public void submitVoteElection(int id, ElectionVote vote, int hoaId) {
     }
 
-    public void changeVoteElection(int id, ElectionVote vote, int hoaId) {
+    public void calculateDistribution(){
+
     }
 
-    public void submitVoteRequirement(int id, RequirementVote vote) {
-    }
 
-    public void changeVoteRequirement(int id, RequirementVote vote) {
-    }
-
-    public void enrolElection(int id, int hoaId) {
-    }
-
-    public void unenrolElection(int id, int hoaId) {
-    }
 }
