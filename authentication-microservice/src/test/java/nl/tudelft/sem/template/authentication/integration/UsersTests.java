@@ -65,7 +65,6 @@ public class UsersTests {
         final Password testPassword = new Password("password123");
         final HashedPassword testHashedPassword = new HashedPassword("hashedTestPassword");
         when(mockPasswordEncoder.hash(testPassword)).thenReturn(testHashedPassword);
-
         RegistrationRequestModel model = new RegistrationRequestModel();
         model.setUsername(testUser.toString());
         model.setPassword(testPassword.toString());
