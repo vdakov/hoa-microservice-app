@@ -2,7 +2,8 @@ package nl.tudelft.sem.template.hoa.controllers;
 
 import java.util.List;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
-import nl.tudelft.sem.template.hoa.models.HoaModel;
+import nl.tudelft.sem.template.commons.models.HoaModel;
+import nl.tudelft.sem.template.hoa.services.ClientService;
 import nl.tudelft.sem.template.hoa.services.HoaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,17 +22,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class HoaController {
 
     private final transient HoaService hoaService;
+    private final transient ClientService client;
+
 
     @Autowired
-    public HoaController(HoaService hoaService) {
+    public HoaController(HoaService hoaService, ClientService client) {
         this.hoaService = hoaService;
+        this.client = client;
     }
+
 
     @GetMapping("/world")
     public ResponseEntity<String> helloWorld() {
         return ResponseEntity.ok().build();
 
     }
+
+
 
     @GetMapping("/all")
     public ResponseEntity<List<Hoa>> getAllHoas() {
@@ -43,6 +50,7 @@ public class HoaController {
         Hoa hoa = hoaService.createHoa(hoaModel.getName(), hoaModel.getCountry(), hoaModel.getCity());
         return ResponseEntity.ok(hoa);
     }
+
 
 
 
