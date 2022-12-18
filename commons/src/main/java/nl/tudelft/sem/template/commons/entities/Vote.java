@@ -2,7 +2,6 @@ package nl.tudelft.sem.template.commons.entities;
 
 
 import lombok.Data;
-import nl.tudelft.sem.template.commons.entities.HasEvents;
 
 @Data
 /**
