@@ -123,7 +123,7 @@ public class UserController {
     /**
      * Analogous PUT mapping for requirement voting
      */
-    @PutMapping("/changeVoteElection/{userId}")
+    @PutMapping("/changeVoteRequirement/{userId}")
     public ResponseEntity changeVoteRequirement(@RequestBody RequirementVote vote,
                                                 @PathVariable(USER_ID_LITERAL) int boardMemberId) {
         try {

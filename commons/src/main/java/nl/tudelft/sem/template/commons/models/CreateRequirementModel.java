@@ -1,4 +1,4 @@
-package nl.tudelft.sem.template.requirements.models;
+package nl.tudelft.sem.template.commons.models;
 
 import lombok.Data;
 
