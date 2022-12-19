@@ -22,6 +22,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @WebMvcTest(HoaController.class)
 public class HoaControllerTest {
@@ -76,7 +77,9 @@ public class HoaControllerTest {
         List<Hoa> hoas = Arrays.asList(hoa, hoa2);
         given(hoaService.getAllHoas()).willReturn(hoas);
 
-        String expectedJson = mapper.writeValueAsString(hoas);
+        String expectedJson = mapper.writeValueAsString(hoas.stream().map(hoa -> {
+            return hoa.toFullModel();
+        }).collect(Collectors.toList()));
 
         mvc.perform(MockMvcRequestBuilders.get("/all"))
                 .andExpect(MockMvcResultMatchers.status().isOk())

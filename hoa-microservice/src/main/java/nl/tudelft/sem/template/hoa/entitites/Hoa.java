@@ -1,11 +1,15 @@
 package nl.tudelft.sem.template.hoa.entitites;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import nl.tudelft.sem.template.hoa.models.FullHoaResponseModel;
+import nl.tudelft.sem.template.hoa.models.SimpleHoaResponseModel;
+import nl.tudelft.sem.template.commons.entities.HasEvents;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,16 +18,18 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.NaturalId;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.GenerationType;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.OneToMany;
-import javax.persistence.ManyToMany;
 
 @Data
 @Entity
 @Table
 @NoArgsConstructor
-public class Hoa extends HasEvents {
+public class Hoa extends HasAddress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,59 +40,58 @@ public class Hoa extends HasEvents {
     @NaturalId
     private String name;
 
-    @Column(name = "country", nullable = false)
-    @NaturalId
-    private String country;
-
-    @Column(name = "city", nullable = false)
-    @NaturalId
-    private String city;
-
-    @ManyToMany
-    private Set<User> members;
+    @OneToMany(cascade = {CascadeType.PERSIST}, mappedBy = "hoa")
+    @EqualsAndHashCode.Exclude
+    private Set<UserHoa> members = new HashSet<>();
 
     @OneToMany
-    private Set<BoardMember> boardMembers;
+    @JsonIgnore
+    private transient Set<BoardMember> boardMembers = new HashSet<>();
+
+
+    public Hoa addMember(UserHoa connection) {
+        this.members.add(connection);
+
+        return this;
+    }
 
 
     /**
      * Constructor for HOA.
      */
     public Hoa(String name, String country, String city) {
+        super(country, city);
         this.name = name;
-        this.city = city;
-        this.country = country;
         this.members = new HashSet<>();
+        this.boardMembers = new HashSet<>();
     }
 
-    public void changeName(String name) {
+    public Hoa(int id, String name, String country, String city, Set<BoardMember> boardMembers, Set<UserHoa> members) {
+        super(country, city);
+        this.id = id;
         this.name = name;
+        this.boardMembers = boardMembers;
+        this.members = members;
     }
 
-    public void changeCountry(String country) {
-        this.country = country;
+
+    /**
+     * Converts this Hoa object to a FullHoaResponseModel object.
+     * This DTO is used to prevent infinite loops when serializing the Hoa object.
+     * @return a FullHoaResponseModel object with the members and address information from this Hoa object
+     */
+    public FullHoaResponseModel toFullModel() {
+        return new FullHoaResponseModel(
+            this.members.stream().map(member -> {
+                return member.toHoaLessModel();
+            }).collect(Collectors.toSet()), 
+            this.name, this.getCountry(), this.getCity()
+        );
     }
 
-    public void changeCity(String city) {
-        this.city = city;
-    }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof Hoa)) {
-            return false;
-        }
-        Hoa hoa = (Hoa) o;
-        return id == hoa.id && Objects.equals(name, hoa.name) && Objects.equals(country, hoa.country)
-                && Objects.equals(city, hoa.city);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, country, city);
+    public SimpleHoaResponseModel toSimpleModel() {
+        return new SimpleHoaResponseModel(this.name, this.getCountry(), this.getCity());
     }
 
 }

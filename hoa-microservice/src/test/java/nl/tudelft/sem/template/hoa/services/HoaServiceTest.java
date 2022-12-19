@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
+import nl.tudelft.sem.template.hoa.models.CreateHoaModel;
 import nl.tudelft.sem.template.hoa.models.HoaModel;
 import nl.tudelft.sem.template.hoa.repositories.HoaRepository;
 
@@ -44,7 +45,7 @@ public class HoaServiceTest {
         Hoa expectedHoa = new Hoa("MyHoa", "USA", "New York");
         when(hoaRepository.save(expectedHoa)).thenReturn(expectedHoa);
 
-        HoaModel hoaModel = new HoaModel("MyHoa", "USA", "New York");
+        CreateHoaModel hoaModel = new CreateHoaModel("MyHoa", "USA", "New York");
         Hoa actualHoa = hoaService.createHoa(hoaModel.getName(), hoaModel.getCountry(), hoaModel.getCity());
 
         assertEquals(expectedHoa, actualHoa);
