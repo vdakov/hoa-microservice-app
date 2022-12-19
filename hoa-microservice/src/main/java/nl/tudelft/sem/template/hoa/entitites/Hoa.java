@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nl.tudelft.sem.template.hoa.models.FullHoaResponseModel;
 import nl.tudelft.sem.template.hoa.models.SimpleHoaResponseModel;
+import nl.tudelft.sem.template.commons.entities.HasEvents;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

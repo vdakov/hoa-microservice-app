@@ -1,11 +1,10 @@
 package nl.tudelft.sem.template.hoa.domain.activity;
 
-import lombok.Data;
 import lombok.NoArgsConstructor;
-import nl.tudelft.sem.template.hoa.entitites.HasEvents;
+import nl.tudelft.sem.template.commons.entities.HasEvents;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
-import nl.tudelft.sem.template.hoa.models.ActivityModel;
-import nl.tudelft.sem.template.hoa.models.DateModel;
+import nl.tudelft.sem.template.commons.models.ActivityModel;
+import nl.tudelft.sem.template.commons.models.DateModel;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;

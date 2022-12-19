@@ -2,6 +2,7 @@ package nl.tudelft.sem.template.requirements.domain;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nl.tudelft.sem.template.commons.entities.HasEvents;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +17,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "report")
 @NoArgsConstructor
-public class Report extends HasEvents{
+public class Report extends HasEvents {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)

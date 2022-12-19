@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nl.tudelft.sem.template.commons.entities.HasEvents;
 
 @Data
 @Entity

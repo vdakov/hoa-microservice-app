@@ -1,1 +1,3 @@
 rootProject.name = 'requirements-microservice'
+
+include "commons"

@@ -2,6 +2,7 @@ package nl.tudelft.sem.template.hoa.entitites;
 
 
 import lombok.Data;
+import nl.tudelft.sem.template.commons.entities.HasEvents;
 
 @Data
 /**
