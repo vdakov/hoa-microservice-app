@@ -37,6 +37,7 @@ public class HoaService {
 
     public Hoa getHoaById(int id) {
         Hoa out = hoaRepository.findById(id);
+        if (out == null) throw new NoSuchElementException();
         return out;
     }
 }

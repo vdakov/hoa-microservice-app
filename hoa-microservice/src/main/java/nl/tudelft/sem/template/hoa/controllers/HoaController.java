@@ -4,16 +4,10 @@ import java.util.List;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.services.HoaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * Hello World example controller.
@@ -43,10 +37,5 @@ public class HoaController {
         return ResponseEntity.ok(hoaService.getAllHoas());
     }
 
-    @GetMapping("/find/{hoaId}")
-    public ResponseEntity<Boolean> findHoa(@PathVariable("hoaId") int hoaId) {
-        Hoa hoa = hoaService.getHoaById(hoaId);
-        if(hoa != null) return ResponseEntity.ok(true);
-        return ResponseEntity.ok(false);
-    }
+
 }

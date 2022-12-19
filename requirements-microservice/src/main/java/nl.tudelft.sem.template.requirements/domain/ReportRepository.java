@@ -1,6 +1,5 @@
-package nl.tudelft.sem.template.requirements.repositories;
+package nl.tudelft.sem.template.requirements.domain;
 
-import nl.tudelft.sem.template.requirements.domain.Report;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

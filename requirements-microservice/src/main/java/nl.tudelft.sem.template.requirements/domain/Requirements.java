@@ -21,17 +21,13 @@ public class Requirements extends HasEvents {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @Column(name = "hoaId", nullable = false)
-    private int hoaId;
-
     @Column(name = "requirementName", nullable = false, unique = true)
     private String requirementName;
 
     @Column(name = "requirementDescription", nullable = false)
     private String requirementDescription;
 
-    public Requirements(int hoaId, String name, String description) {
-        this.hoaId = hoaId;
+    public Requirements(String name, String description) {
         this.requirementName = name;
         this.requirementDescription = description;
     }

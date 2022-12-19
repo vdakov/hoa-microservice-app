@@ -6,5 +6,4 @@ import lombok.Data;
 public class CreateRequirementModel {
     private String name;
     private String description;
-    private int hoaId;
 }
