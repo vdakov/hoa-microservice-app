@@ -24,6 +24,24 @@
  - Migrate existing shared classes to the module ✅
  - Manage dependencies between this and the other modules ✅
 
+
+### Task: Add endpoint for creating HOAs - Steve Varadi
+ - Most of functionality already in service ✅
+ - Include tests ✅
+
+#### Notes:
+ - Issue is as advertised, small enough to implement, tests are not too complicated
+
+### Task: Add endpoint for joining/leaving HOA - Steve Varadi
+ - Figure out database representation of a user being in HOA
+ - Think about users with multiple addresses, in multiple HOAs
+ - Figure out infinitely recursive serialization issue
+
+#### Notes
+ - Issue turned out way larger than advertised
+ - Functionality in service was not ready to support storing user addresses, and using an address to join 
+ - Leaving was left to a seperate issue, as joining turned out huge 
+
 ## Main problems encountered
 
 ### Lateness with merge requests
