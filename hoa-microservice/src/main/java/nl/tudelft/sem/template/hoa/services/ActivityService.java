@@ -1,14 +1,16 @@
-package nl.tudelft.sem.template.hoa.domain.activity;
+package nl.tudelft.sem.template.hoa.services;
 
+import nl.tudelft.sem.template.hoa.entitites.Activity;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
+import nl.tudelft.sem.template.hoa.exceptions.ActivityNameAlreadyInUseException;
 import nl.tudelft.sem.template.commons.models.DateModel;
 import nl.tudelft.sem.template.hoa.repositories.ActivityRepository;
-import nl.tudelft.sem.template.hoa.services.HoaService;
 
 import org.springframework.stereotype.Service;
 
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class ActivityService {
@@ -36,19 +38,19 @@ public class ActivityService {
      */
     public Activity createActivity(int hoaId, String name, DateModel dateModel, String description) throws Exception {
 
-        if (checkNameIsUnique(name)) {
-            Hoa hoa = hoaService.getHoaById(hoaId);
+        int year = dateModel.getYear();
+        int month = dateModel.getMonth();
+        int day = dateModel.getDay();
+        GregorianCalendar time = new GregorianCalendar(year, month, day);
 
-            int year = dateModel.getYear();
-            int month = dateModel.getMonth();
-            int day = dateModel.getDay();
-            GregorianCalendar time = new GregorianCalendar(year, month, day);
+        if (existsByNameAndTime(name, time)) throw new ActivityNameAlreadyInUseException(name);
 
-            Activity activity = new Activity(hoa, name, time, description);
-            activityRepository.save(activity);
-            return activity;
-        }
-        throw new ActivityNameAlreadyInUseException(name);
+        Hoa hoa = hoaService.getHoaById(hoaId);
+
+
+        Activity activity = new Activity(hoa, name, time, description);
+        activityRepository.save(activity);
+        return activity;
     }
 
     /**
@@ -61,13 +63,14 @@ public class ActivityService {
     }
 
     /**
-     * Checks whether an activity with the given name already exists in the repository.
+     * Checks whether an activity with the given name and time already exists in the repository.
      *
      * @param name the name in question
+     * @param time the time in question
      * @return whether it is unique
      */
-    public boolean checkNameIsUnique(String name) {
-        return !activityRepository.existsByName(name);
+    public boolean existsByNameAndTime(String name, GregorianCalendar time) {
+        return activityRepository.existsByNameAndTime(name, time);
     }
 
     /**
@@ -77,6 +80,7 @@ public class ActivityService {
      * @return the list of activities that belong to the given HOA
      */
     public List<Activity> getActivitiesByHoaId(int hoaId) {
+        if (!hoaService.existsById(hoaId)) throw new NoSuchElementException();
         return activityRepository.findAllByHoaId(hoaId);
     }
 }

@@ -20,7 +20,6 @@ public class UserService {
     private transient UserRepository userRepository;
     @Autowired
     private transient HoaService hoaService;
-
     @Autowired
     private transient ConnectionService connectionService;
 
@@ -70,8 +69,9 @@ public class UserService {
      * <p>
      * Note: Likely not the final implementation since the user currently can just join an association no questions asked
      *
-     * @param hoaId the id of the association to be joined
-     * @param id    the id of the user that wants to join
+     * @param hoaName the name of the association to be joined
+     * @param displayName    the display name of the user that wants to join
+     * @param address the address that the membership is based on
      * @return status on whether the joining was successful
      * @throws HoaDoesNotExistException
      * @throws UserDoesNotExistException

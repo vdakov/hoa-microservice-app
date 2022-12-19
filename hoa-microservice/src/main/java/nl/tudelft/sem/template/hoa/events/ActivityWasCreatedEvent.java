@@ -1,4 +1,4 @@
-package nl.tudelft.sem.template.hoa.domain.activity;
+package nl.tudelft.sem.template.hoa.events;
 
 /**
  * A DDD domain event that indicated an Activity was created.

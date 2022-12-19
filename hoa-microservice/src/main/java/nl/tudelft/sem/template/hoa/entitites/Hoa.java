@@ -11,6 +11,7 @@ import nl.tudelft.sem.template.commons.entities.HasEvents;
 import nl.tudelft.sem.template.commons.models.hoa.FullHoaResponseModel;
 import nl.tudelft.sem.template.commons.models.hoa.SimpleHoaResponseModel;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -25,6 +26,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.OneToMany;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table
@@ -54,6 +56,9 @@ public class Hoa extends HasAddress {
 
         return this;
     }
+
+    @OneToMany(cascade = {CascadeType.ALL})
+    private Set<Activity> activities;
 
 
     /**
@@ -92,6 +97,10 @@ public class Hoa extends HasAddress {
 
     public SimpleHoaResponseModel toSimpleModel() {
         return new SimpleHoaResponseModel(this.name, this.getCountry(), this.getCity());
+    }
+
+    public int getId(){
+        return id;
     }
 
 }

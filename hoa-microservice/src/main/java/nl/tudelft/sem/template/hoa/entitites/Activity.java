@@ -1,11 +1,14 @@
-package nl.tudelft.sem.template.hoa.domain.activity;
+package nl.tudelft.sem.template.hoa.entitites;
 
 import lombok.NoArgsConstructor;
+import nl.tudelft.sem.template.hoa.events.ActivityTimeWasChangedEvent;
+import nl.tudelft.sem.template.hoa.events.ActivityWasCreatedEvent;
+import nl.tudelft.sem.template.hoa.entitites.converters.TimeAttributeConverter;
 import nl.tudelft.sem.template.commons.entities.HasEvents;
-import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.commons.models.ActivityModel;
 import nl.tudelft.sem.template.commons.models.DateModel;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -29,7 +32,7 @@ public class Activity extends HasEvents {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "hoaId")
     private Hoa hoa;
 
@@ -90,12 +93,12 @@ public class Activity extends HasEvents {
             return false;
         }
         Activity activity = (Activity) o;
-        return name.equals(activity.name);
+        return name.equals(activity.name) && time.equals(activity.time);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(name, time);
     }
 
     public ActivityModel toModel(){
