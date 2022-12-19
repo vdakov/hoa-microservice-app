@@ -1,9 +1,10 @@
-package nl.tudelft.sem.template.hoa.models;
+package nl.tudelft.sem.template.commons.models;
 
 import lombok.Data;
-import nl.tudelft.sem.template.hoa.domain.activity.Activity;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class ActivityModel {
     private int hoaId;
     private String name;
