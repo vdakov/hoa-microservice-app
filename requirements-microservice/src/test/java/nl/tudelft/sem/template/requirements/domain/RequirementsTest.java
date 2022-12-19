@@ -3,9 +3,7 @@ package nl.tudelft.sem.template.requirements.domain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
+import static org.junit.jupiter.api.Assertions.*;
 
 class RequirementsTest {
 
@@ -13,13 +11,13 @@ class RequirementsTest {
 
     @BeforeEach
     void setUp() {
-        requirement1 = new Requirements(1, "First requirement", "Some details idk");
+        requirement1 = new Requirements("First requirement", "Some details idk");
     }
 
     @Test
     void testEquals() {
-        Requirements requirement2 = new Requirements(1, "First requirement", "Some details idk");
-        Requirements requirement3 = new Requirements(1, "First requirements", "Some detail idk");
+        Requirements requirement2 = new Requirements("First requirement", "Some details idk");
+        Requirements requirement3 = new Requirements("First requirements", "Some detail idk");
         assertEquals(requirement1, requirement1);
         assertEquals(requirement1, requirement2);
         assertNotEquals(requirement1, requirement3);

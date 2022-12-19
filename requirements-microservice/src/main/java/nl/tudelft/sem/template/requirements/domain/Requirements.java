@@ -24,7 +24,7 @@ public class Requirements extends HasEvents {
     @Column(name = "hoaId", nullable = false)
     private int hoaId;
 
-    @Column(name = "requirementName", nullable = false)
+    @Column(name = "requirementName", nullable = false, unique = true)
     private String requirementName;
 
     @Column(name = "requirementDescription", nullable = false)
@@ -41,13 +41,12 @@ public class Requirements extends HasEvents {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Requirements that = (Requirements) o;
-        return id == that.id && hoaId == that.hoaId
-                && requirementName.equals(that.requirementName)
+        return id == that.id && requirementName.equals(that.requirementName)
                 && requirementDescription.equals(that.requirementDescription);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, hoaId, requirementName, requirementDescription);
+        return Objects.hash(id, requirementName, requirementDescription);
     }
 }
