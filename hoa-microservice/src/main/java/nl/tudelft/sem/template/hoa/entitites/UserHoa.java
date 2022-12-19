@@ -9,16 +9,14 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nl.tudelft.sem.template.hoa.models.FullAddressModel;
-import nl.tudelft.sem.template.hoa.models.FullUserHoaModel;
-import nl.tudelft.sem.template.hoa.models.HoaLessUserHoaModel;
-import nl.tudelft.sem.template.hoa.models.SimpleHoaResponseModel;
-import nl.tudelft.sem.template.hoa.models.SimpleUserResponseModel;
-import nl.tudelft.sem.template.hoa.models.UserLessUserHoaModel;
+import nl.tudelft.sem.template.commons.models.hoa.FullAddressModel;
+import nl.tudelft.sem.template.commons.models.hoa.FullUserHoaModel;
+import nl.tudelft.sem.template.commons.models.hoa.HoaLessUserHoaModel;
+import nl.tudelft.sem.template.commons.models.hoa.SimpleHoaResponseModel;
+import nl.tudelft.sem.template.commons.models.hoa.SimpleUserResponseModel;
+import nl.tudelft.sem.template.commons.models.hoa.UserLessUserHoaModel;
 
 @Entity
 @Data

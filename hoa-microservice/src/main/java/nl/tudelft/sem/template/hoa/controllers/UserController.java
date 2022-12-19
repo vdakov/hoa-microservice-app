@@ -1,15 +1,15 @@
 package nl.tudelft.sem.template.hoa.controllers;
 
+import nl.tudelft.sem.template.commons.models.hoa.FullAddressModel;
+import nl.tudelft.sem.template.commons.models.hoa.FullUserHoaModel;
+import nl.tudelft.sem.template.commons.models.hoa.FullUserResponseModel;
+import nl.tudelft.sem.template.commons.models.hoa.JoinModel;
 import nl.tudelft.sem.template.hoa.entitites.ElectionVote;
 import nl.tudelft.sem.template.hoa.entitites.RequirementVote;
 import nl.tudelft.sem.template.hoa.entitites.User;
 import nl.tudelft.sem.template.hoa.entitites.UserHoa;
 import nl.tudelft.sem.template.hoa.exceptions.HoaDoesNotExistException;
 import nl.tudelft.sem.template.hoa.exceptions.UserDoesNotExistException;
-import nl.tudelft.sem.template.hoa.models.FullAddressModel;
-import nl.tudelft.sem.template.hoa.models.FullUserHoaModel;
-import nl.tudelft.sem.template.hoa.models.FullUserResponseModel;
-import nl.tudelft.sem.template.hoa.models.JoinModel;
 import nl.tudelft.sem.template.hoa.services.UserService;
 import nl.tudelft.sem.template.hoa.services.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
