@@ -1,15 +1,16 @@
 package nl.tudelft.sem.template.requirements.controllers;
 
-import nl.tudelft.sem.template.requirements.authentication.AuthManager;
 import nl.tudelft.sem.template.requirements.domain.Report;
-import nl.tudelft.sem.template.requirements.domain.ReportService;
+import nl.tudelft.sem.template.requirements.services.ReportService;
 import nl.tudelft.sem.template.requirements.domain.Requirements;
-import nl.tudelft.sem.template.requirements.domain.RequirementsService;
+import nl.tudelft.sem.template.requirements.services.RequirementsService;
 import nl.tudelft.sem.template.commons.models.CreateReportModel;
 import nl.tudelft.sem.template.commons.models.CreateRequirementModel;
 import nl.tudelft.sem.template.requirements.models.ReportResponseModel;
 import nl.tudelft.sem.template.requirements.models.RequirementsResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -27,22 +29,18 @@ import java.util.Optional;
 @RequestMapping("/requirements")
 public class RequirementsController {
 
-    private final transient AuthManager authManager;
     private final transient RequirementsService requirementsService;
     private final transient ReportService reportService;
 
     /**
      * Instantiates a new controller.
      *
-     * @param authManager Spring Security component used to authenticate and authorize the user
      * @param requirementsService used for communication with requirements service
      * @param reportService used for communication with reports service
      */
     @Autowired
-    public RequirementsController(AuthManager authManager,
-                                  RequirementsService requirementsService,
+    public RequirementsController(RequirementsService requirementsService,
                                   ReportService reportService) {
-        this.authManager = authManager;
         this.requirementsService = requirementsService;
         this.reportService = reportService;
     }
@@ -54,7 +52,7 @@ public class RequirementsController {
      */
     @GetMapping("/hello")
     public ResponseEntity<String> helloWorld() {
-        return ResponseEntity.ok("Hello " + authManager.getNetId());
+        return ResponseEntity.ok("Hello World");
 
     }
 
@@ -68,9 +66,26 @@ public class RequirementsController {
     public ResponseEntity createRequirement(@RequestBody CreateRequirementModel request) throws Exception {
 
         try {
-            String name = request.getName();
-            String description = request.getDescription();
-            requirementsService.createRequirement(name, description);
+//            String name = request.getName();
+//            String description = request.getDescription();
+//            requirementsService.createRequirement(name, description);
+
+            int hoaId = request.getHoaId();
+
+            System.out.println("Got something " + request.getHoaId() + request.getDescription());
+
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity entity = new HttpEntity(null, null);
+            String url = "http://localhost:8090/hoa/find/" + hoaId;
+
+            boolean hoaExists = Boolean.TRUE.equals(restTemplate.exchange(url, HttpMethod.GET, entity, Boolean.class).getBody());
+            if(hoaExists) {
+                String name = request.getName();
+                String description = request.getDescription();
+                requirementsService.createRequirement(hoaId, name, description);
+            }
+            else throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT);
+
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -91,7 +106,7 @@ public class RequirementsController {
             int brokenRequirementId = request.getBrokenRequirementId();
             Optional<Requirements> requirement = requirementsService.get(brokenRequirementId);
             if (requirement.isPresent()) {
-                String reportBy = authManager.getNetId();
+                String reportBy = "placeholder";
                 String reportedUser = request.getReportedUser();
                 reportService.createReport(reportBy, reportedUser, requirement.get());
             } else {

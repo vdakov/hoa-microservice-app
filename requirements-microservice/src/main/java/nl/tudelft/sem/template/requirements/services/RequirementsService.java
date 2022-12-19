@@ -1,8 +1,10 @@
-package nl.tudelft.sem.template.requirements.domain;
+package nl.tudelft.sem.template.requirements.services;
 
 import java.util.List;
 import java.util.Optional;
 
+import nl.tudelft.sem.template.requirements.domain.Requirements;
+import nl.tudelft.sem.template.requirements.repositories.RequirementsRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,8 +16,8 @@ public class RequirementsService {
         this.requirementsRepository = requirementsRepository;
     }
 
-    public Requirements createRequirement(String name, String description) throws Exception {
-        Requirements req = new Requirements(name, description);
+    public Requirements createRequirement(int hoaId, String name, String description) throws Exception {
+        Requirements req = new Requirements(hoaId, name, description);
         return requirementsRepository.save(req);
     }
 
