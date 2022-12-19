@@ -1,5 +1,6 @@
 package nl.tudelft.sem.template.hoa.models;
 
+
 import java.util.Set;
 
 import lombok.Data;

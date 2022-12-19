@@ -1,4 +1,4 @@
-package nl.tudelft.sem.template.hoa.domain.activity;
+package nl.tudelft.sem.template.hoa.entitites.converters;
 
 import lombok.SneakyThrows;
 

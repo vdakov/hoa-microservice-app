@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
+import nl.tudelft.sem.template.hoa.models.HoaModel;
 import nl.tudelft.sem.template.hoa.models.CreateHoaModel;
 import nl.tudelft.sem.template.hoa.models.FullHoaResponseModel;
 import nl.tudelft.sem.template.hoa.services.HoaService;
@@ -33,10 +34,11 @@ public class HoaController {
     }
 
     @PostMapping("/createHoa")
-    public ResponseEntity<Hoa> createHoa(@RequestBody CreateHoaModel hoaModel) throws Exception {
+    public ResponseEntity<Hoa> createHoa(@RequestBody HoaModel hoaModel) throws Exception {
         Hoa hoa = hoaService.createHoa(hoaModel.getName(), hoaModel.getCountry(), hoaModel.getCity());
         return ResponseEntity.ok(hoa);
     }
+
 
 
 
