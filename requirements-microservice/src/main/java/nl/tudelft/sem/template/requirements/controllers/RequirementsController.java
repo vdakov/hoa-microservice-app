@@ -1,10 +1,9 @@
 package nl.tudelft.sem.template.requirements.controllers;
 
-import nl.tudelft.sem.template.requirements.authentication.AuthManager;
 import nl.tudelft.sem.template.requirements.domain.Report;
-import nl.tudelft.sem.template.requirements.domain.ReportService;
+import nl.tudelft.sem.template.requirements.services.ReportService;
+import nl.tudelft.sem.template.requirements.services.RequirementsService;
 import nl.tudelft.sem.template.requirements.domain.Requirements;
-import nl.tudelft.sem.template.requirements.domain.RequirementsService;
 import nl.tudelft.sem.template.commons.models.CreateReportModel;
 import nl.tudelft.sem.template.commons.models.CreateRequirementModel;
 import nl.tudelft.sem.template.requirements.models.ReportResponseModel;
@@ -27,22 +26,18 @@ import java.util.Optional;
 @RequestMapping("/requirements")
 public class RequirementsController {
 
-    private final transient AuthManager authManager;
     private final transient RequirementsService requirementsService;
     private final transient ReportService reportService;
 
     /**
      * Instantiates a new controller.
      *
-     * @param authManager Spring Security component used to authenticate and authorize the user
      * @param requirementsService used for communication with requirements service
      * @param reportService used for communication with reports service
      */
     @Autowired
-    public RequirementsController(AuthManager authManager,
-                                  RequirementsService requirementsService,
+    public RequirementsController(RequirementsService requirementsService,
                                   ReportService reportService) {
-        this.authManager = authManager;
         this.requirementsService = requirementsService;
         this.reportService = reportService;
     }
@@ -54,7 +49,7 @@ public class RequirementsController {
      */
     @GetMapping("/hello")
     public ResponseEntity<String> helloWorld() {
-        return ResponseEntity.ok("Hello " + authManager.getNetId());
+        return ResponseEntity.ok("Hello World");
 
     }
 
@@ -91,7 +86,7 @@ public class RequirementsController {
             int brokenRequirementId = request.getBrokenRequirementId();
             Optional<Requirements> requirement = requirementsService.get(brokenRequirementId);
             if (requirement.isPresent()) {
-                String reportBy = authManager.getNetId();
+                String reportBy = "placeholder";
                 String reportedUser = request.getReportedUser();
                 reportService.createReport(reportBy, reportedUser, requirement.get());
             } else {

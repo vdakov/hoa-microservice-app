@@ -1,8 +1,10 @@
-package nl.tudelft.sem.template.requirements.domain;
+package nl.tudelft.sem.template.requirements.services;
 
 import java.util.List;
 import java.util.Optional;
 
+import nl.tudelft.sem.template.requirements.domain.Requirements;
+import nl.tudelft.sem.template.requirements.repositories.RequirementsRepository;
 import org.springframework.stereotype.Service;
 
 @Service
