@@ -7,6 +7,7 @@ import org.hibernate.annotations.NaturalId;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nl.tudelft.sem.template.commons.entities.HasEvents;
 
 @MappedSuperclass
 @Data

@@ -3,7 +3,6 @@ package nl.tudelft.sem.template.hoa.entitites;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-<<<<<<< hoa-microservice/src/main/java/nl/tudelft/sem/template/hoa/entitites/User.java
 import nl.tudelft.sem.template.hoa.models.FullUserResponseModel;
 import nl.tudelft.sem.template.hoa.models.SimpleUserResponseModel;
 import nl.tudelft.sem.template.commons.entities.HasEvents;
