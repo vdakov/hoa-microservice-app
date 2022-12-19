@@ -9,6 +9,8 @@ import nl.tudelft.sem.template.commons.models.CreateRequirementModel;
 import nl.tudelft.sem.template.requirements.models.ReportResponseModel;
 import nl.tudelft.sem.template.requirements.models.RequirementsResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,10 +19,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/requirements")
@@ -63,9 +67,21 @@ public class RequirementsController {
     public ResponseEntity createRequirement(@RequestBody CreateRequirementModel request) throws Exception {
 
         try {
-            String name = request.getName();
-            String description = request.getDescription();
-            requirementsService.createRequirement(name, description);
+            int hoaId = request.getHoaId();
+
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity entity = new HttpEntity(null, null);
+            String url = "http://localhost:8090/hoa/find/" + hoaId;
+
+            boolean hoaExists = Boolean.TRUE.equals(restTemplate
+                    .exchange(url, HttpMethod.GET, entity, Boolean.class).getBody());
+            if (hoaExists) {
+                String name = request.getName();
+                String description = request.getDescription();
+                requirementsService.createRequirement(hoaId, name, description);
+            } else {
+                throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT);
+            }
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -86,9 +102,8 @@ public class RequirementsController {
             int brokenRequirementId = request.getBrokenRequirementId();
             Optional<Requirements> requirement = requirementsService.get(brokenRequirementId);
             if (requirement.isPresent()) {
-                String reportBy = "placeholder";
-                String reportedUser = request.getReportedUser();
-                reportService.createReport(reportBy, reportedUser, requirement.get());
+                String reportedUser = request.getReportedUser(); //TODO: check if user exists in HOA (tomorrow)
+                reportService.createReport(reportedUser, requirement.get());
             } else {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Requirement does not exist");
             }
@@ -108,8 +123,26 @@ public class RequirementsController {
     @GetMapping("/getRequirements/{hoaId}")
     public ResponseEntity<RequirementsResponseModel> getRequirements(@PathVariable("hoaId") int hoaId)
             throws Exception {
-        List<Requirements> requirementsList = requirementsService.getAll();
-        return ResponseEntity.ok(new RequirementsResponseModel(requirementsList));
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity entity = new HttpEntity(null, null);
+            String url = "http://localhost:8090/hoa/find/" + hoaId;
+
+            boolean hoaExists = Boolean.TRUE.equals(restTemplate
+                    .exchange(url, HttpMethod.GET, entity, Boolean.class).getBody());
+
+            if (hoaExists) {
+                List<Requirements> requirementsList = requirementsService.getAll()
+                        .stream().filter(o -> o.getHoaId() == hoaId)
+                        .collect(Collectors.toList());
+                return ResponseEntity.ok(new RequirementsResponseModel(requirementsList));
+            } else {
+                throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT);
+            }
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+
     }
 
     /**
@@ -118,9 +151,26 @@ public class RequirementsController {
      * @return
      * @throws Exception
      */
-    @GetMapping("/showAllReports/{hoaId}")
+    @GetMapping("/getReports/{hoaId}")
     public ResponseEntity<ReportResponseModel> getReports(@PathVariable("hoaId") int hoaId) {
-        List<Report> reportList = reportService.getAll();
-        return ResponseEntity.ok(new ReportResponseModel(reportList));
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity entity = new HttpEntity(null, null);
+            String url = "http://localhost:8090/hoa/find/" + hoaId;
+
+            boolean hoaExists = Boolean.TRUE.equals(restTemplate
+                    .exchange(url, HttpMethod.GET, entity, Boolean.class).getBody());
+
+            if (hoaExists) {
+                List<Report> reportList = reportService.getAll().stream()
+                        .filter(o -> o.getRequirement().getHoaId() == hoaId)
+                        .collect(Collectors.toList());
+                return ResponseEntity.ok(new ReportResponseModel(reportList));
+            } else {
+                throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT);
+            }
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 }

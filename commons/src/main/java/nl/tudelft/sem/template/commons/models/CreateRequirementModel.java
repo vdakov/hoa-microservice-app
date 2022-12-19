@@ -8,4 +8,5 @@ import lombok.NoArgsConstructor;
 public class CreateRequirementModel {
     private String name;
     private String description;
+    private int hoaId;
 }

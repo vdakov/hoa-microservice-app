@@ -16,8 +16,8 @@ public class RequirementsService {
         this.requirementsRepository = requirementsRepository;
     }
 
-    public Requirements createRequirement(String name, String description) throws Exception {
-        Requirements req = new Requirements(name, description);
+    public Requirements createRequirement(int hoaId, String name, String description) throws Exception {
+        Requirements req = new Requirements(hoaId, name, description);
         return requirementsRepository.save(req);
     }
 
