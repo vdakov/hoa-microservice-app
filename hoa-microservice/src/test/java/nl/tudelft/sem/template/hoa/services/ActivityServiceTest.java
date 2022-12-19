@@ -1,9 +1,9 @@
 package nl.tudelft.sem.template.hoa.services;
 
+import nl.tudelft.sem.template.commons.models.DateModel;
 import nl.tudelft.sem.template.hoa.entitites.Activity;
 import nl.tudelft.sem.template.hoa.exceptions.ActivityNameAlreadyInUseException;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
-import nl.tudelft.sem.template.hoa.models.DateModel;
 import nl.tudelft.sem.template.hoa.repositories.ActivityRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

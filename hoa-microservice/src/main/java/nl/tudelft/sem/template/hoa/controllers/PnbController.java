@@ -2,7 +2,7 @@ package nl.tudelft.sem.template.hoa.controllers;
 
 import nl.tudelft.sem.template.hoa.entitites.Activity;
 import nl.tudelft.sem.template.hoa.services.ActivityService;
-import nl.tudelft.sem.template.hoa.models.ActivityModel;
+import nl.tudelft.sem.template.commons.models.ActivityModel;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

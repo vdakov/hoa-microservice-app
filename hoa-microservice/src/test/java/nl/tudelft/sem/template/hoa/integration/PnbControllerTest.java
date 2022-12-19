@@ -1,12 +1,12 @@
 package nl.tudelft.sem.template.hoa.integration;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import nl.tudelft.sem.template.commons.models.ActivityModel;
+import nl.tudelft.sem.template.commons.models.DateModel;
 import nl.tudelft.sem.template.hoa.entitites.Activity;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 
 import nl.tudelft.sem.template.hoa.integration.utils.JsonUtil;
-import nl.tudelft.sem.template.hoa.models.ActivityModel;
-import nl.tudelft.sem.template.hoa.models.DateModel;
 import nl.tudelft.sem.template.hoa.repositories.ActivityRepository;
 import nl.tudelft.sem.template.hoa.repositories.HoaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -87,7 +86,7 @@ public class PnbControllerTest {
 
         Activity activity = activityRepository.findByName("a1");
         assertThat(activity.getName()).isEqualTo("a1");
-        assertThat(activity.getHoa()).isEqualTo(hoa1);
+        assertThat(activity.getHoa().getId()).isEqualTo(hoa1.getId());
         assertThat(activity.getTime()).isEqualTo(new GregorianCalendar(2020, 3, 13));
         assertThat(activity.getDescription()).isEqualTo("president time");
     }
