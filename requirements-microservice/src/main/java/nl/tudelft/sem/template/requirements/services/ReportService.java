@@ -15,8 +15,8 @@ public class ReportService {
         this.reportRepository = reportRepository;
     }
 
-    public Report createReport(String reportBy, String reportedUser, Requirements requirement) throws Exception {
-        Report req = new Report(reportBy, reportedUser, requirement);
+    public Report createReport(String reportedUser, Requirements requirement) throws Exception {
+        Report req = new Report(reportedUser, requirement);
         return reportRepository.save(req);
     }
 
