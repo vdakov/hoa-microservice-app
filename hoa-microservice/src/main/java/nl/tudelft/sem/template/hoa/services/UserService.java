@@ -1,11 +1,11 @@
 package nl.tudelft.sem.template.hoa.services;
 
+import nl.tudelft.sem.template.commons.models.hoa.FullAddressModel;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.entitites.User;
 import nl.tudelft.sem.template.hoa.entitites.UserHoa;
 import nl.tudelft.sem.template.hoa.exceptions.HoaDoesNotExistException;
 import nl.tudelft.sem.template.hoa.exceptions.UserDoesNotExistException;
-import nl.tudelft.sem.template.hoa.models.FullAddressModel;
 import nl.tudelft.sem.template.hoa.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,6 @@ public class UserService {
     private transient UserRepository userRepository;
     @Autowired
     private transient HoaService hoaService;
-
     @Autowired
     private transient ConnectionService connectionService;
 
@@ -70,8 +69,9 @@ public class UserService {
      * <p>
      * Note: Likely not the final implementation since the user currently can just join an association no questions asked
      *
-     * @param hoaId the id of the association to be joined
-     * @param id    the id of the user that wants to join
+     * @param hoaName the name of the association to be joined
+     * @param displayName    the display name of the user that wants to join
+     * @param address the address that the membership is based on
      * @return status on whether the joining was successful
      * @throws HoaDoesNotExistException
      * @throws UserDoesNotExistException

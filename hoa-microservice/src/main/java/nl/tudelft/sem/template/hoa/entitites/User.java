@@ -3,9 +3,10 @@ package nl.tudelft.sem.template.hoa.entitites;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import nl.tudelft.sem.template.hoa.models.FullUserResponseModel;
-import nl.tudelft.sem.template.hoa.models.SimpleUserResponseModel;
 import nl.tudelft.sem.template.commons.entities.HasEvents;
+import nl.tudelft.sem.template.commons.models.hoa.FullUserResponseModel;
+import nl.tudelft.sem.template.commons.models.hoa.SimpleUserResponseModel;
+
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;

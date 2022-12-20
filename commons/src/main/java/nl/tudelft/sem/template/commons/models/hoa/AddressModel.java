@@ -1,19 +1,16 @@
-package nl.tudelft.sem.template.hoa.models;
+package nl.tudelft.sem.template.commons.models.hoa;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class CreateHoaModel {
-    private String name;
+public abstract class AddressModel {
     private String country;
     private String city;
 
-    public CreateHoaModel(String name, String country, String city) {
-        this.name = name;
+    public AddressModel(String country, String city) {
         this.country = country;
         this.city = city;
     }
-
 }

@@ -19,9 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import nl.tudelft.sem.template.commons.models.hoa.CreateHoaModel;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
-import nl.tudelft.sem.template.hoa.models.CreateHoaModel;
-import nl.tudelft.sem.template.hoa.models.HoaModel;
 import nl.tudelft.sem.template.hoa.repositories.HoaRepository;
 
 

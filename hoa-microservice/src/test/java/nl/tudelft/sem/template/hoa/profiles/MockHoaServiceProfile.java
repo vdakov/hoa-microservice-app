@@ -1,6 +1,6 @@
 package nl.tudelft.sem.template.hoa.profiles;
 
-import nl.tudelft.sem.template.hoa.services.ActivityService;
+import nl.tudelft.sem.template.hoa.services.HoaService;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,9 +20,9 @@ import org.springframework.context.annotation.Profile;
  *.
  * A configuration profile to allow injection of a mock TokenGenerator.
  */
-@Profile("mockActivityService")
+@Profile("mockHoaService")
 @Configuration
-public class MockActivityServiceProfile {
+public class MockHoaServiceProfile {
 
     /**
      * Mocks the TokenGenerator.
@@ -31,7 +31,7 @@ public class MockActivityServiceProfile {
      */
     @Bean
     @Primary  // marks this bean as the first bean to use when trying to inject a TokenGenerator
-    public ActivityService getMockActivityService() {
-        return Mockito.mock(ActivityService.class);
+    public HoaService getMockHoaService() {
+        return Mockito.mock(HoaService.class);
     }
 }

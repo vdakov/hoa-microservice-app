@@ -23,4 +23,5 @@ public interface HoaRepository extends JpaRepository<Hoa, Integer> {
     
     @Query(value = "SELECT h FROM Hoa h WHERE h.name = :name AND h.country = :country AND h.city = :city")
     Hoa findByNaturalId(@Param("name") String name, @Param("country") String country, @Param("city") String city);
+
 }
