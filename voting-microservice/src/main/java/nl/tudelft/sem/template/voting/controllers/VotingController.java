@@ -135,4 +135,11 @@ public class VotingController {
         }
         return ResponseEntity.ok(results);
     }
+
+
+    @GetMapping("/hello")
+    public ResponseEntity<String> hello() {
+        System.out.println("Hello");
+        return ResponseEntity.ok().build();
+    }
 }
