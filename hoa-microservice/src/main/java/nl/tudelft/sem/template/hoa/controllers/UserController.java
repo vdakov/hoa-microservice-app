@@ -79,7 +79,7 @@ public class UserController {
                                              @PathVariable(USER_ID_LITERAL) int userId,
                                              @PathVariable("hoaId") int hoaId) {
         try {
-          //  voteService.submitVoteElection(userId, vote, hoaId);
+            //  voteService.submitVoteElection(userId, vote, hoaId);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
@@ -100,7 +100,7 @@ public class UserController {
                                              @PathVariable(USER_ID_LITERAL) int userId,
                                              @PathVariable("hoaId") int hoaId) {
         try {
-           // voteService.changeVoteElection(userId, vote, hoaId);
+            // voteService.changeVoteElection(userId, vote, hoaId);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
@@ -114,7 +114,7 @@ public class UserController {
     public ResponseEntity submitVoteRequirement(@RequestBody RequirementResults vote,
                                                 @PathVariable(USER_ID_LITERAL) int boardMemberId) {
         try {
-           // voteService.submitVoteRequirement(boardMemberId, vote);
+            // voteService.submitVoteRequirement(boardMemberId, vote);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
