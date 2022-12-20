@@ -18,14 +18,15 @@ public class RequirementsService {
 
     public Requirements createRequirement(int hoaId, String name, String description) throws Exception {
         Requirements req = new Requirements(hoaId, name, description);
-        return requirementsRepository.save(req);
+        requirementsRepository.save(req);
+        return req;
     }
 
     public List<Requirements> getAll() {
         return requirementsRepository.findAll();
     }
 
-    public Optional<Requirements> get(int id) {
+    public Requirements findById(int id) {
         return requirementsRepository.findById(id);
     }
 

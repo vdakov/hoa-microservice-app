@@ -10,11 +10,13 @@ class ReportTest {
 
     private Report report1;
     private Requirements requirement1;
+    private Requirements requirement2;
 
 
     @BeforeEach
     void setup() {
         requirement1 = new Requirements(1, "First requirement", "Some details idk");
+        requirement2 = new Requirements(2, "First requirement", "Some details idk");
         report1 = new Report("sem2", requirement1);
     }
 
@@ -22,9 +24,11 @@ class ReportTest {
     void testEquals() {
         Report report2 = new Report("sem3", requirement1);
         Report report3 = new Report("sem2", requirement1);
+        Report report4 = new Report("sem2", requirement2);
         assertEquals(report1, report1);
         assertEquals(report1, report3);
         assertNotEquals(report1, report2);
+        assertNotEquals(report3, report4);
         assertNotEquals(report1, null);
     }
 
@@ -60,5 +64,16 @@ class ReportTest {
         Requirements requirement2 = new Requirements(1, "Second requirement", "Some useless details");
         report1.setRequirement(requirement2);
         assertEquals(requirement2, report1.getRequirement());
+    }
+
+    @Test
+    void hashcode() {
+        int hash1 = report1.hashCode();
+        int hash2 = report1.hashCode();
+
+        assertEquals(hash1, hash2);
+        Report report2 = new Report("sem40", requirement1);
+        hash2 = report2.hashCode();
+        assertNotEquals(hash1, hash2);
     }
 }

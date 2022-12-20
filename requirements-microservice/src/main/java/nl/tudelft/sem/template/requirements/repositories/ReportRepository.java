@@ -11,4 +11,5 @@ public interface ReportRepository extends JpaRepository<Report, Integer> {
     @Override
     List<Report> findAll();
 
+    Report findById(int id);
 }

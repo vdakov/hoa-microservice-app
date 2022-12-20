@@ -18,10 +18,15 @@ public class ReportService {
 
     public Report createReport(String reportedUser, Requirements requirement) throws Exception {
         Report req = new Report(reportedUser, requirement);
-        return reportRepository.save(req);
+        reportRepository.save(req);
+        return req;
     }
 
     public List<Report> getAll() {
         return reportRepository.findAll();
+    }
+
+    public Report find(int id) {
+        return reportRepository.findById(id);
     }
 }

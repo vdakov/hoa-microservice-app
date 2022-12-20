@@ -31,6 +31,11 @@ class RequirementsTest {
     }
 
     @Test
+    void getHoaId() {
+        assertEquals(1, requirement1.getHoaId());
+    }
+
+    @Test
     void getRequirementName() {
         assertEquals("First requirement", requirement1.getRequirementName());
     }
@@ -47,6 +52,12 @@ class RequirementsTest {
     }
 
     @Test
+    void setHoaId() {
+        requirement1.setHoaId(2);
+        assertEquals(2, requirement1.getHoaId());
+    }
+
+    @Test
     void setRequirementName() {
         requirement1.setRequirementName("Another boring name");
         assertEquals("Another boring name", requirement1.getRequirementName());
@@ -56,5 +67,16 @@ class RequirementsTest {
     void setRequirementDescription() {
         requirement1.setRequirementDescription("Another boring description");
         assertEquals("Another boring description", requirement1.getRequirementDescription());
+    }
+
+    @Test
+    void hashcode() {
+        int hash1 = requirement1.hashCode();
+        int hash2 = requirement1.hashCode();
+
+        assertEquals(hash1, hash2);
+        Requirements requirement2 = new Requirements(1, "Second requirement", "Some useless details");
+        hash2 = requirement2.hashCode();
+        assertNotEquals(hash1, hash2);
     }
 }

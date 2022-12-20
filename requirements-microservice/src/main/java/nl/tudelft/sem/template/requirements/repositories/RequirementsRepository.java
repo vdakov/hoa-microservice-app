@@ -12,4 +12,5 @@ public interface RequirementsRepository extends JpaRepository<Requirements, Inte
     @Override
     List<Requirements> findAll();
 
+    Requirements findById(int id);
 }
