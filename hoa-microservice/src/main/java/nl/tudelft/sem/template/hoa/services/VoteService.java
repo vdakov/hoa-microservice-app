@@ -6,7 +6,9 @@ import nl.tudelft.sem.template.hoa.entitites.ElectionResults;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.entitites.RequirementResults;
 import nl.tudelft.sem.template.hoa.entitites.User;
+import nl.tudelft.sem.template.hoa.repositories.HoaRepository;
 import nl.tudelft.sem.template.hoa.repositories.ResultsRepository;
+import nl.tudelft.sem.template.hoa.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -25,13 +27,13 @@ import java.util.Map;
 public class VoteService {
 
     private transient ResultsRepository resultsRepository;
-    private transient HoaService hoaService;
-    private transient UserService userService;
+    private transient HoaRepository hoaRepository;
+    private transient UserRepository userRepository;
 
-    public VoteService(ResultsRepository resultsRepository, HoaService hoaService, UserService userService) {
+    public VoteService(ResultsRepository resultsRepository, HoaRepository hoaRepository, UserRepository userRepository) {
         this.resultsRepository = resultsRepository;
-        this.hoaService = hoaService;
-        this.userService = userService;
+        this.hoaRepository = hoaRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -39,14 +41,14 @@ public class VoteService {
      * @param results the results of the election
      */
     public void storeElectionResults(int hoaId, ElectionResultsModel results) {
-        Hoa hoa = hoaService.getHoaById(hoaId);
-        User winner = userService.getUser(Collections.max(results.getVoteDistributions().entrySet(),
+        Hoa hoa = hoaRepository.findById(hoaId);
+        User winner = userRepository.findUserById(Collections.max(results.getVoteDistributions().entrySet(),
                 Comparator.comparingInt(Map.Entry::getValue)).getKey());
         resultsRepository.save(new ElectionResults(hoa, results.getNumberOfVotes(), results.getVoteDistributions(), winner));
     }
 
     public void storeRequirementResults(int hoaId, RequirementResultsModel results) {
-        Hoa hoa = hoaService.getHoaById(hoaId);
+        Hoa hoa = hoaRepository.findById(hoaId);
 
         resultsRepository.save(new RequirementResults(hoa, results.getNumberOfVotes(), results.getVotedFor(),
                 results.isPassed()));
