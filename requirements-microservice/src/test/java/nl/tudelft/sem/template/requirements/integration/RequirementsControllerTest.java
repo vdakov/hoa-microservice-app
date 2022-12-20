@@ -2,7 +2,6 @@ package nl.tudelft.sem.template.requirements.integration;
 
 import nl.tudelft.sem.template.commons.models.CreateReportModel;
 import nl.tudelft.sem.template.commons.models.CreateRequirementModel;
-import nl.tudelft.sem.template.requirements.controllers.RequirementsController;
 import nl.tudelft.sem.template.requirements.domain.Report;
 import nl.tudelft.sem.template.requirements.domain.Requirements;
 import nl.tudelft.sem.template.requirements.integration.utils.JsonUtil;
@@ -10,27 +9,18 @@ import nl.tudelft.sem.template.requirements.repositories.ReportRepository;
 import nl.tudelft.sem.template.requirements.repositories.RequirementsRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Spy;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -54,8 +44,6 @@ public class RequirementsControllerTest {
     @Autowired
     private ReportRepository reportRepository;
 
-    private RequirementsController requirementsController;
-
     Requirements requirement1;
     Requirements requirement2;
     Report report1;
@@ -65,7 +53,6 @@ public class RequirementsControllerTest {
         requirement1 = new Requirements(1, "First requirement", "Some details idk");
         requirement2 = new Requirements(2, "Second requirement", "More details");
         report1 = new Report("sem2", requirement1);
-        requirementsController = mock(RequirementsController.class);
     }
 
 
@@ -97,7 +84,6 @@ public class RequirementsControllerTest {
         Requirements req = requirementsRepository.findAll().get(0);
         assertThat(req.getRequirementName()).isEqualTo("First requirement");
         assertThat(req.getRequirementDescription()).isEqualTo("Some details idk");
-        //assertThat(req.getHoaId()).isEqualTo(1);
     }
 
     @Test
@@ -152,14 +138,8 @@ public class RequirementsControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andReturn();
 
-        //mockMvc.perform(get("/requirements/getRequirements/-10000000"))
-        //.andExpect(status().isBadRequest()).andReturn();
-
-        //TypeReference<List<CreateRequirementModel>> typeReference = new TypeReference<>() {};
-        //List<CreateRequirementModel> requirementsList = JsonUtil.deserialize(result.getResponse().getContentAsString(),
-        //typeReference); TODO: figure out this deserializetionsfefigrij shit
-        assertThat(result.getResponse().getContentAsString())
-                .contains("First requirement");
+        //TODO: use deserializer
+        assertThat(result.getResponse().getContentAsString()).contains("First requirement");
         assertThat(result.getResponse().getContentAsString()).doesNotContain("Second requirement");
     }
 
@@ -176,7 +156,6 @@ public class RequirementsControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andReturn();
 
-        assertThat(result.getResponse().getContentAsString())
-                .contains("First requirement");
+        assertThat(result.getResponse().getContentAsString()).contains("First requirement");
     }
 }

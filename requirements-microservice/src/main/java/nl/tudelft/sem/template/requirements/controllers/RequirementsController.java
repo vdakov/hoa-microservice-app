@@ -1,5 +1,7 @@
 package nl.tudelft.sem.template.requirements.controllers;
 
+import nl.tudelft.sem.template.commons.models.DeleteRequirementModel;
+import nl.tudelft.sem.template.commons.models.UpdateRequirementModel;
 import nl.tudelft.sem.template.requirements.domain.Report;
 import nl.tudelft.sem.template.requirements.services.ReportService;
 import nl.tudelft.sem.template.requirements.services.RequirementsService;
@@ -54,9 +56,14 @@ public class RequirementsController {
     @GetMapping("/hello")
     public ResponseEntity<String> helloWorld() {
         return ResponseEntity.ok("Hello World");
-
     }
 
+    /**
+     * This method will query the hoa microservice in order to check if the hoa exists
+     * TODO: maybe change this so that it queries all of the existing HOAs (could make integration testing easier)
+     * @param hoaId the id of the hoa
+     * @return true/false
+     */
     public boolean hoaExists(int hoaId) {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = new HttpEntity(null, null);
@@ -93,6 +100,50 @@ public class RequirementsController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
 
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Changes an existing requirement for the HOA members
+     * TODO: Link with voting microservice in order to start a vote
+     * @param request Name and description of the requirement
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/changeRequirement")
+    public ResponseEntity changeRequirement(@RequestBody UpdateRequirementModel request) throws Exception {
+        try {
+            Requirements requirement = requirementsService.findById(request.getRequirementId());
+            if (requirement != null) {
+                requirementsService.updateRequirement(requirement, request.getNewName(), request.getNewDescription());
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Requirement not found.");
+            }
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Deletes an existing requirement if it's not needed anymore for the HOA members
+     * TODO: Link with voting microservice in order to start a vote
+     * @param request Name and description of the requirement
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/deleteRequirement")
+    public ResponseEntity deleteRequirement(@RequestBody DeleteRequirementModel request) throws Exception {
+        try {
+            Requirements requirement = requirementsService.findById(request.getRequirementId());
+            if (requirement != null) {
+                requirementsService.deleteRequirement(requirement);
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Requirement not found.");
+            }
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
         return ResponseEntity.ok().build();
     }
 
@@ -169,7 +220,7 @@ public class RequirementsController {
                             .collect(Collectors.toList());
                     return ResponseEntity.ok(new ReportResponseModel(reportList));
                 } else {
-                    throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT);
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
                 }
             } else {
                 List<Report> reportList = reportService.getAll()
