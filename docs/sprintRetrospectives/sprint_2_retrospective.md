@@ -42,6 +42,15 @@
  - Functionality in service was not ready to support storing user addresses, and using an address to join 
  - Leaving was left to a seperate issue, as joining turned out huge 
 
+### Task: Write endpoints to connect the gateway to other microservices (Gijs)
+ - Bearer tokens are passed along between endpoints to stay authenticated
+ - Requirements, PNB and voting routing endpoints are implemented
+ 
+#### Notes
+ - HOA routing functionality not yet in place because the functionality itself was not yet implemented.
+ - The HTTP requests and bearer tokens took a significant amount of time to figure out (4+ hours)
+ - No tests have been written yet.
+
 ## Main problems encountered
 
 ### Lateness with merge requests
