@@ -1,11 +1,11 @@
 package nl.tudelft.sem.template.hoa.services;
 
+import nl.tudelft.sem.template.commons.models.hoa.FullAddressModel;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.entitites.User;
 import nl.tudelft.sem.template.hoa.entitites.UserHoa;
 import nl.tudelft.sem.template.hoa.exceptions.HoaDoesNotExistException;
 import nl.tudelft.sem.template.hoa.exceptions.UserDoesNotExistException;
-import nl.tudelft.sem.template.hoa.models.FullAddressModel;
 import nl.tudelft.sem.template.hoa.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

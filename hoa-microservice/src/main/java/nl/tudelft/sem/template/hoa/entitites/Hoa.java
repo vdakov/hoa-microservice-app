@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import nl.tudelft.sem.template.hoa.models.FullHoaResponseModel;
-import nl.tudelft.sem.template.hoa.models.SimpleHoaResponseModel;
 import nl.tudelft.sem.template.commons.entities.HasEvents;
+import nl.tudelft.sem.template.commons.models.hoa.FullHoaResponseModel;
+import nl.tudelft.sem.template.commons.models.hoa.SimpleHoaResponseModel;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;

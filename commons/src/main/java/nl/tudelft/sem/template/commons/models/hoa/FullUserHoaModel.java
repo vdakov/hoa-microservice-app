@@ -1,4 +1,4 @@
-package nl.tudelft.sem.template.hoa.models;
+package nl.tudelft.sem.template.commons.models.hoa;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
