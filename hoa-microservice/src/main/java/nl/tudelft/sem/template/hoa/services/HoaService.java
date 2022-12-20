@@ -44,4 +44,12 @@ public class HoaService {
     public boolean existsById(int hoaId){
         return hoaRepository.existsById(hoaId);
     }
+
+    public Object getAll() {
+        return null;
+    }
+
+    public Object getListEligibleMembers() {
+        return null;
+    }
 }

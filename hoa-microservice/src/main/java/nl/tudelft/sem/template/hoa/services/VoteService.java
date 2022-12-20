@@ -2,7 +2,6 @@ package nl.tudelft.sem.template.hoa.services;
 
 import nl.tudelft.sem.template.commons.models.ElectionResultsModel;
 import nl.tudelft.sem.template.commons.models.RequirementResultsModel;
-import nl.tudelft.sem.template.commons.models.ResultsModel;
 import nl.tudelft.sem.template.hoa.entitites.ElectionResults;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.entitites.RequirementResults;
@@ -11,11 +10,11 @@ import nl.tudelft.sem.template.hoa.repositories.HoaRepository;
 import nl.tudelft.sem.template.hoa.repositories.ResultsRepository;
 import nl.tudelft.sem.template.hoa.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -30,11 +29,17 @@ import java.util.Map;
 public class VoteService {
 
     @Autowired
-    ResultsRepository resultsRepository;
+    private transient ResultsRepository resultsRepository;
     @Autowired
-    HoaRepository hoaRepository;
+    private transient HoaRepository hoaRepository;
     @Autowired
-    UserRepository userRepository;
+    private transient UserRepository userRepository;
+
+    public VoteService(ResultsRepository resultsRepository, HoaRepository hoaRepository, UserRepository userRepository) {
+        this.resultsRepository = resultsRepository;
+        this.hoaRepository = hoaRepository;
+        this.userRepository = userRepository;
+    }
 
     /**
      * @param hoaId   the id of the hoa
