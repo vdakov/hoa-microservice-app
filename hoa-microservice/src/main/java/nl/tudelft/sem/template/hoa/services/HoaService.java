@@ -4,21 +4,24 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 
+import nl.tudelft.sem.template.commons.models.ElectionResultsModel;
+import nl.tudelft.sem.template.commons.models.RequirementResultsModel;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.repositories.HoaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class HoaService {
-    private final transient HoaRepository hoaRepository;
 
-    /**
-     * Creates a new hoa service with the given repository.
-     *
-     * @param hoaRepository the repository
-     */
-    public HoaService(HoaRepository hoaRepository) {
+    private transient HoaRepository hoaRepository;
+
+    private transient VoteService voteService;
+
+    @Autowired
+    public HoaService(HoaRepository hoaRepository, VoteService voteService) {
         this.hoaRepository = hoaRepository;
+        this.voteService = voteService;
     }
 
     public Hoa createHoa(String name, String country, String city) throws Exception {
@@ -41,15 +44,17 @@ public class HoaService {
         return out;
     }
 
-    public boolean existsById(int hoaId){
+    public boolean existsById(int hoaId) {
         return hoaRepository.existsById(hoaId);
     }
 
-    public Object getAll() {
-        return null;
+    public void storeElectionResults(int hoaId, ElectionResultsModel results) {
+        voteService.storeElectionResults(hoaId, results);
     }
 
-    public Object getListEligibleMembers() {
-        return null;
+    public void storeRequirementResults(int hoaId, RequirementResultsModel results) {
+        voteService.storeRequirementResults(hoaId, results);
     }
+
+
 }

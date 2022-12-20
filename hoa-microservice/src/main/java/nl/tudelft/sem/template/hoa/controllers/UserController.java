@@ -4,7 +4,6 @@ import nl.tudelft.sem.template.hoa.entitites.ElectionResults;
 import nl.tudelft.sem.template.hoa.entitites.RequirementResults;
 import nl.tudelft.sem.template.hoa.entitites.User;
 import nl.tudelft.sem.template.hoa.services.UserService;
-import nl.tudelft.sem.template.hoa.services.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +24,6 @@ public class UserController {
 
     @Autowired
     private transient UserService userService;
-    @Autowired
-    private transient VoteService voteService;
 
     private static final String USER_ID_LITERAL = "userId";
 

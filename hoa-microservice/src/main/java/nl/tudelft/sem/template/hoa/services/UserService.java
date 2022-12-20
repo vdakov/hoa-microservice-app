@@ -5,6 +5,7 @@ import nl.tudelft.sem.template.hoa.entitites.User;
 import nl.tudelft.sem.template.hoa.exceptions.UserDoesNotExistException;
 import nl.tudelft.sem.template.hoa.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
