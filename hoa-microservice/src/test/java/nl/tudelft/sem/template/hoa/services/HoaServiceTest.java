@@ -30,13 +30,16 @@ import nl.tudelft.sem.template.hoa.repositories.HoaRepository;
 public class HoaServiceTest {
     @Mock
     private HoaRepository hoaRepository;
+    @Mock
+    private VoteService voteService;
 
     @InjectMocks
     private HoaService hoaService;
 
+
     @BeforeEach
     public void setup() {
-        hoaService = new HoaService(hoaRepository);
+        hoaService = new HoaService(hoaRepository, voteService);
     }
 
     @Test
@@ -69,30 +72,30 @@ public class HoaServiceTest {
 
         assertEquals(expectedHoa, actualHoa);
     }
-    
+
     @Test
     public void testGetHoaById_NoSuchElementException() {
         when(hoaRepository.findById(1)).thenReturn(null);
-    
+
         assertThrows(NoSuchElementException.class, () -> hoaService.getHoaById(1));
     }
-    
+
     @Test
     public void testExistsById_True() {
         when(hoaRepository.existsById(1)).thenReturn(true);
-    
+
         boolean result = hoaService.existsById(1);
-    
+
         assertTrue(result);
     }
-    
+
     @Test
     public void testExistsById_False() {
         when(hoaRepository.existsById(1)).thenReturn(false);
-    
+
         boolean result = hoaService.existsById(1);
-    
+
         assertFalse(result);
     }
-    
+
 }

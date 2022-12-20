@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -28,15 +29,12 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class HoaController {
 
     private final transient HoaService hoaService;
-    private final transient VoteService votes;
-
 
     @Autowired
-    public HoaController(HoaService hoaService, VoteService votes) {
     public HoaController(HoaService hoaService) {
         this.hoaService = hoaService;
-        this.votes = votes;
     }
+
 
     public HttpEntity buildEntity(String token, Object body) {
         HttpHeaders headers = new HttpHeaders();
@@ -45,6 +43,9 @@ public class HoaController {
         return entity;
     }
 
+    /**
+     * Test for sample routing to voting microservice
+     */
     @GetMapping("/testRemote")
     public void testRemote() {
         String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
@@ -59,26 +60,20 @@ public class HoaController {
     }
 
 
-    @GetMapping("/world")
-    public ResponseEntity<String> helloWorld() {
-        System.out.println("Hello");
+
+    @PostMapping("{hoaId}/receiveElectionResults")
+    public ResponseEntity<String> getElectionResults(@RequestBody ElectionResultsModel results,
+                                                     @PathVariable("hoaId") int hoaId) {
+        hoaService.storeElectionResults(hoaId, results);
         return ResponseEntity.ok().build();
-
     }
-//
-//    @PostMapping("{hoaId}/receiveElectionResults")
-//    public ResponseEntity<String> getElectionResults(@RequestBody ElectionResultsModel results,
-//                                                     @PathVariable("hoaId") int hoaId) {
-//        this.votes.storeElectionResults(hoaId, results);
-//        return ResponseEntity.ok().build();
-//    }
 
-//    @PostMapping("{hoaId}/receiveRequirementResults")
-//    public ResponseEntity<String> getRequirementResults(@RequestBody RequirementResultsModel results,
-//                                                        @PathVariable("hoaId") int hoaId) {
-//        this.votes.storeRequirementResults(hoaId, results);
-//        return ResponseEntity.ok().build();
-//    }
+    @PostMapping("{hoaId}/receiveRequirementResults")
+    public ResponseEntity<String> getRequirementResults(@RequestBody RequirementResultsModel results,
+                                                        @PathVariable("hoaId") int hoaId) {
+        hoaService.storeRequirementResults(hoaId, results);
+        return ResponseEntity.ok().build();
+    }
 
     @GetMapping("{hoadId}/getListEligibleMembers")
     public ResponseEntity<List<User>> getListEligibleMembers() {
