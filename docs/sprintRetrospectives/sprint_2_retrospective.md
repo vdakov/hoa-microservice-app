@@ -70,11 +70,15 @@ logic for how voting distributions are stored
 
 ## Main problems encountered
 
-### Lateness with merge requests
+### Lateness with merge requests:
 
-We had the same problem as in Sprint 1: barely any functionality was actually done by the end of Saturday (which we agreed on), and by Monday, we still have people who have not submitted anything. Reviews and approvals are also lacking. We are unsure about solutions, as Sprint 3 is only 4 days long, and with the beginning of the winter break approaching, members of the team are less and less motivated to contribute.
+We had the same problem as in Sprint 1: barely any functionality was actually done by the end of Saturday (which we agreed on), and by Monday, we still have people who have not submitted anything. Reviews and approvals are also lacking. We are unsure about solutions, as Sprint 3 is only 4 days long, and with the beginning of the winter break approaching, members of the team are less and less motivated to contribute. 
+Since multiple members are not in the country, having physical meetings is also not really a solution. 
+Our aim for the last sprint is to focus on merging our functionality (which is still dispersed in multiple branches), and on testing it.
+We all aim to have clearer communication on the issues we are tackling and what we expect from others.
 
 ### Constant refactorings:
 Due to being unsure on part of the implementations on how microservice
 communicate with each other, some team members were stuck in an endless
-loop of refactoring their code to fit with the overall structure of the project
+loop of refactoring their code to fit with the overall structure of the project.
+Our aim to fix this, again, is just clearer communication, especially in the fields where we rely on each other's code.
