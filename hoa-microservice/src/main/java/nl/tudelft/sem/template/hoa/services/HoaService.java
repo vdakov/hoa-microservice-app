@@ -53,6 +53,8 @@ public class HoaService {
 
     public Hoa getByNaturalId(String name, String country, String city) {
         return this.hoaRepository.findByNaturalId(name, country, city);
+    }
+
     public void storeElectionResults(int hoaId, ElectionResultsModel results) {
         voteService.storeElectionResults(hoaId, results);
     }

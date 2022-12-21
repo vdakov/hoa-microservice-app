@@ -3,13 +3,12 @@ package nl.tudelft.sem.template.hoa.controllers;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nl.tudelft.sem.template.commons.models.hoa.CreateHoaModel;
+import nl.tudelft.sem.template.commons.models.ElectionResultsModel;
+import nl.tudelft.sem.template.commons.models.RequirementResultsModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullHoaResponseModel;
 import nl.tudelft.sem.template.commons.models.hoa.HoaModel;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
-import nl.tudelft.sem.template.commons.models.HoaModel;
 import nl.tudelft.sem.template.hoa.entitites.User;
-import nl.tudelft.sem.template.hoa.models.HoaModel;
 import nl.tudelft.sem.template.hoa.services.HoaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;

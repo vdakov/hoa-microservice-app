@@ -1,5 +1,9 @@
 package nl.tudelft.sem.template.hoa.controllers;
 
+import nl.tudelft.sem.template.commons.models.hoa.FullAddressModel;
+import nl.tudelft.sem.template.commons.models.hoa.FullUserHoaModel;
+import nl.tudelft.sem.template.commons.models.hoa.FullUserResponseModel;
+import nl.tudelft.sem.template.commons.models.hoa.JoinModel;
 import nl.tudelft.sem.template.hoa.entitites.ElectionResults;
 import nl.tudelft.sem.template.hoa.entitites.RequirementResults;
 import nl.tudelft.sem.template.hoa.entitites.User;
