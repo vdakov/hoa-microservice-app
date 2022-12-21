@@ -19,6 +19,7 @@ public class RequirementResults extends Results {
     private int votedFor;
     private boolean passed;
 
+
     /**
      * Currently only a skeleton that will be expanded once the microservices are linked
      *

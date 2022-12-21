@@ -2,6 +2,8 @@ package nl.tudelft.sem.template.hoa.services;
 
 import nl.tudelft.sem.template.commons.models.ElectionResultsModel;
 import nl.tudelft.sem.template.commons.models.RequirementResultsModel;
+import nl.tudelft.sem.template.commons.models.VotingModel;
+import nl.tudelft.sem.template.commons.models.VotingType;
 import nl.tudelft.sem.template.hoa.entitites.ElectionResults;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.entitites.RequirementResults;
@@ -52,6 +54,22 @@ public class VoteService {
 
         resultsRepository.save(new RequirementResults(hoa, results.getNumberOfVotes(), results.getVotedFor(),
                 results.isPassed()));
+    }
+
+    public VotingModel startElectionVote(int hoaId) {
+        Hoa hoa = hoaRepository.findById(hoaId);
+        int numEligibleVotes = hoa.getMembers().size();
+        VotingType type = VotingType.ELECTIONS_VOTE;
+
+        return new VotingModel(hoaId, type, numEligibleVotes);
+    }
+
+    public VotingModel startRequirementVote(int hoaId) {
+        Hoa hoa = hoaRepository.findById(hoaId);
+        int numEligibleVotes = hoa.getMembers().size();
+        VotingType type = VotingType.REQUIREMENTS_VOTE;
+
+        return new VotingModel(hoaId, type, numEligibleVotes);
     }
 
 

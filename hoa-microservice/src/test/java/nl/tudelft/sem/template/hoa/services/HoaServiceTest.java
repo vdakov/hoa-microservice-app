@@ -92,7 +92,6 @@ public class HoaServiceTest {
     @Test
     public void testExistsById_False() {
         when(hoaRepository.existsById(1)).thenReturn(false);
-
         boolean result = hoaService.existsById(1);
 
         assertFalse(result);

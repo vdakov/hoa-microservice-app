@@ -55,13 +55,6 @@ public class HoaService {
         return this.hoaRepository.findByNaturalId(name, country, city);
     }
 
-    public void storeElectionResults(int hoaId, ElectionResultsModel results) {
-        voteService.storeElectionResults(hoaId, results);
-    }
-
-    public void storeRequirementResults(int hoaId, RequirementResultsModel results) {
-        voteService.storeRequirementResults(hoaId, results);
-    }
 
 
 }
