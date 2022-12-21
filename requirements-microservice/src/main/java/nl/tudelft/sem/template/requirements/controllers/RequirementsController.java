@@ -1,7 +1,12 @@
 package nl.tudelft.sem.template.requirements.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import nl.tudelft.sem.template.commons.models.DeleteRequirementModel;
 import nl.tudelft.sem.template.commons.models.UpdateRequirementModel;
+import nl.tudelft.sem.template.commons.models.hoa.FullHoaResponseModel;
+import nl.tudelft.sem.template.commons.models.hoa.HoaLessUserHoaModel;
+import nl.tudelft.sem.template.commons.models.hoa.SimpleUserResponseModel;
+import nl.tudelft.sem.template.commons.models.notification.NotificationCreateReq;
 import nl.tudelft.sem.template.requirements.domain.Report;
 import nl.tudelft.sem.template.requirements.services.ReportService;
 import nl.tudelft.sem.template.requirements.services.RequirementsService;
@@ -24,8 +29,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -73,6 +78,31 @@ public class RequirementsController {
     }
 
     /**
+     * bruh
+     * @param req
+     * @param hoaId
+     */
+    public void createRequirementNotification(Requirements req, int hoaId) throws JsonProcessingException {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity entity = new HttpEntity(null, null);
+        String url = "http://localhost:8090/hoa/getHoaMembers/" + hoaId;
+
+        FullHoaResponseModel hoa = restTemplate.exchange(url, HttpMethod.GET, entity, FullHoaResponseModel.class).getBody();
+        if (hoa.getMembers().size() == 0) return;
+        List<String> usernames = new ArrayList<>();
+        for (HoaLessUserHoaModel usr: hoa.getMembers()) {
+            usernames.add(usr.getUser().getDisplayName());
+        }
+        NotificationCreateReq body = new NotificationCreateReq(usernames,
+                req.getRequirementName(),
+                req.getRequirementDescription());
+
+        entity = new HttpEntity(JsonUtil.serialize(body), null);
+        url = "http://localhost:8081/notification/processNotification/";
+        restTemplate.exchange(url, HttpMethod.POST, entity, FullHoaResponseModel.class);
+    }
+
+    /**
      * Creates a new requirement for the HOA members
      * @param request Name and description of the requirement
      * @return
@@ -89,7 +119,8 @@ public class RequirementsController {
                 if (hoaExists(hoaId)) {
                     String name = request.getName();
                     String description = request.getDescription();
-                    requirementsService.createRequirement(hoaId, name, description);
+                    Requirements req = requirementsService.createRequirement(hoaId, name, description);
+                    createRequirementNotification(req, hoaId);
                 } else {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
                 }

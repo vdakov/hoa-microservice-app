@@ -47,4 +47,13 @@ public class HoaController {
         if (hoa != null) return ResponseEntity.ok(true);
         return ResponseEntity.ok(false);
     }
+
+    @GetMapping("/getHoaMembers/{hoaId}")
+    public ResponseEntity<FullHoaResponseModel> notifyNewRequirement(@PathVariable("hoaId") int hoaId) {
+        Hoa hoa = hoaService.getHoaById(hoaId);
+        if (hoa != null) {
+            return ResponseEntity.ok(hoa.toFullModel());
+        }
+        return ResponseEntity.badRequest().build();
+    }
 }

@@ -17,12 +17,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -36,42 +41,21 @@ public class Notification {
     private Long id;
 
     @ElementCollection
-    private List<AppUser> users;
-
-    @ElementCollection
-    private List<Boolean> markedRead;
+    @CollectionTable(name = "user_mapping",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")})
+    @MapKeyColumn(name = "userName")
+    @Column(name = "markedRead")
+    private Map<String, Boolean> users;
 
     @Column(name = "event", nullable = false)
     private Event event;
 
-    public Notification(Event event) {
-        this.users = new ArrayList<>();
-        this.markedRead = new ArrayList<>();
+    public Notification(Event event, List<String> usernames) {
+        this.users = new HashMap<>();
+        for (String user: usernames) {
+            users.put(user, false);
+        }
         this.event = event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
-    }
-
-    public List<AppUser> getUsers() {
-        return users;
-    }
-
-    public List<Boolean> getMarkedRead() {
-        return markedRead;
-    }
-
-    public void setUsers(List<AppUser> users) {
-        this.users = users;
-    }
-
-    public void setMarkedRead(List<Boolean> markedRead) {
-        this.markedRead = markedRead;
-    }
-
-    public Event getEvent() {
-        return event;
     }
 
     public Long getId() {
@@ -80,5 +64,21 @@ public class Notification {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Map<String, Boolean> getUsers() {
+        return users;
+    }
+
+    public void setUsers(HashMap<String, Boolean> users) {
+        this.users = users;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
     }
 }

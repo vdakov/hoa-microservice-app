@@ -160,12 +160,6 @@ public class UserController {
     @PostMapping("joinHoa")
     public ResponseEntity<FullUserHoaModel> joinHoa(@RequestBody JoinModel joinRequest) 
         throws HoaDoesNotExistException, UserDoesNotExistException {
-        
-        if (joinRequest.getUserDisplayName() == null || joinRequest.getHoaName() == null 
-            || joinRequest.getCountry() == null || joinRequest.getCity() == null || joinRequest.getStreet() == null 
-            || joinRequest.getHoaName() == null || joinRequest.getPostalCode() == null) {
-            return ResponseEntity.badRequest().build();
-        }
 
         FullAddressModel address = new FullAddressModel(
             joinRequest.getCountry(), joinRequest.getCity(), 
