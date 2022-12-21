@@ -13,11 +13,13 @@ import nl.tudelft.sem.template.commons.entities.notification.ChangeRequirementEv
 import nl.tudelft.sem.template.commons.entities.notification.CreateRequirementEvent;
 import nl.tudelft.sem.template.commons.entities.notification.DeleteRequirementEvent;
 import nl.tudelft.sem.template.commons.entities.notification.Event;
+import nl.tudelft.sem.template.commons.entities.notification.ReportEvent;
 import nl.tudelft.sem.template.commons.models.notification.NewNotification;
 import nl.tudelft.sem.template.commons.models.notification.NotificationChangeReq;
 import nl.tudelft.sem.template.commons.models.notification.NotificationCreateReq;
 import nl.tudelft.sem.template.commons.models.notification.NotificationDeleteReq;
 import nl.tudelft.sem.template.commons.models.notification.NotificationModel;
+import nl.tudelft.sem.template.commons.models.notification.NotificationReport;
 import nl.tudelft.sem.template.commons.models.notification.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -192,6 +194,14 @@ public class NotificationController {
                 del.setRequirementName(delete.getRequirementName());
                 del.setRequirementDescription(delete.getRequirementDescription());
                 notificationService.createNotification(del, delete.getUsernames());
+                break;
+            case REPORT:
+                TypeReference<NotificationReport> typeReport = new TypeReference<>() {};
+                NotificationReport report = JsonUtil.deserialize(body, typeReport);
+                ReportEvent rep = new ReportEvent();
+                rep.setBrokenRequirementName(report.getBrokenRequirementName());
+                rep.setBrokenRequirementDescription(report.getBrokenRequirementDescription());
+                notificationService.createNotification(rep, report.getUsernames());
                 break;
             default:
                 break;

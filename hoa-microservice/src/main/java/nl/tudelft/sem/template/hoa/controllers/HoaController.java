@@ -38,7 +38,7 @@ public class HoaController {
     @PostMapping("/createHoa")
     public ResponseEntity<FullHoaResponseModel> createHoa(@RequestBody HoaRequestModel hoaModel) throws Exception {
         Hoa hoa = hoaService.createHoa(hoaModel.getName(), hoaModel.getCountry(), hoaModel.getCity());
-        return ResponseEntity.ok(hoa.toFullModel());
+        return ResponseEntity.ok(hoa);
     }
 
     @GetMapping("/find/{hoaId}")

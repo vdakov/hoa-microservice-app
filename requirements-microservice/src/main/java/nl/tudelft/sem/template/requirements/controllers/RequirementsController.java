@@ -9,6 +9,7 @@ import nl.tudelft.sem.template.commons.models.hoa.SimpleUserResponseModel;
 import nl.tudelft.sem.template.commons.models.notification.NotificationChangeReq;
 import nl.tudelft.sem.template.commons.models.notification.NotificationCreateReq;
 import nl.tudelft.sem.template.commons.models.notification.NotificationDeleteReq;
+import nl.tudelft.sem.template.commons.models.notification.NotificationReport;
 import nl.tudelft.sem.template.requirements.domain.Report;
 import nl.tudelft.sem.template.requirements.services.ReportService;
 import nl.tudelft.sem.template.requirements.services.RequirementsService;
@@ -41,6 +42,8 @@ public class RequirementsController {
 
     private final transient RequirementsService requirementsService;
     private final transient ReportService reportService;
+
+    private final transient String processUrl = "http://localhost:8081/notification/processNotification/";
 
     /**
      * Instantiates a new controller.
@@ -117,8 +120,7 @@ public class RequirementsController {
 
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity entity = new HttpEntity(JsonUtil.serialize(body), null);
-            String url = "http://localhost:8081/notification/processNotification/";
-            restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+            restTemplate.exchange(processUrl, HttpMethod.POST, entity, String.class);
         }
     }
     /**
@@ -139,8 +141,7 @@ public class RequirementsController {
 
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity entity = new HttpEntity(JsonUtil.serialize(body), null);
-            String url = "http://localhost:8081/notification/processNotification/";
-            restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+            restTemplate.exchange(processUrl, HttpMethod.POST, entity, String.class);
         }
     }
 
@@ -160,9 +161,25 @@ public class RequirementsController {
 
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity entity = new HttpEntity(JsonUtil.serialize(body), null);
-            String url = "http://localhost:8081/notification/processNotification/";
-            restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+            restTemplate.exchange(processUrl, HttpMethod.POST, entity, String.class);
         }
+    }
+
+    /**
+     * Method used to send a report notification to the gateway
+     * @param req broken requirement
+     * @param user username
+     */
+    public void reportNotification(Requirements req, String user) throws JsonProcessingException {
+        List<String> username = new ArrayList<>();
+        username.add(user);
+        NotificationReport report = new NotificationReport(username,
+                req.getRequirementName(),
+                req.getRequirementDescription());
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity entity = new HttpEntity(JsonUtil.serialize(report), null);
+        restTemplate.exchange(processUrl, HttpMethod.POST, entity, String.class);
     }
 
 
@@ -257,12 +274,18 @@ public class RequirementsController {
     public ResponseEntity report(@RequestBody CreateReportModel request) throws Exception {
         try {
             int brokenRequirementId = request.getBrokenRequirementId();
-            Requirements requirement = requirementsService.findById(brokenRequirementId);
-            if (requirement != null) {
-                String reportedUser = request.getReportedUser(); //TODO: check if user exists in HOA (tomorrow)
-                reportService.createReport(reportedUser, requirement);
+            // TODO: figure out integration testing without skipping microservices
+            if (brokenRequirementId != -1) {
+                Requirements requirement = requirementsService.findById(brokenRequirementId);
+                if (requirement != null) {
+                    String reportedUser = request.getReportedUser(); //TODO: check if user exists in HOA (tomorrow)
+                    reportService.createReport(reportedUser, requirement);
+                    reportNotification(requirement, reportedUser);
+                } else {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Requirement does not exist");
+                }
             } else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Requirement does not exist");
+                reportService.createReport(request.getReportedUser(), requirementsService.findById(-brokenRequirementId));
             }
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
