@@ -12,9 +12,9 @@ import java.util.List;
 public class BoardMemberService {
 
     @Autowired
-    private BoardMemberRepository boardMemberRepository;
+    private transient BoardMemberRepository boardMemberRepository;
     @Autowired
-    private HoaService hoaService;
+    private transient HoaService hoaService;
 
     /**
      * Queries table for all the board members of a current hoa

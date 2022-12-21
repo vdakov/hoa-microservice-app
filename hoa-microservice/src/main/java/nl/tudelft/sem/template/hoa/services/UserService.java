@@ -1,7 +1,10 @@
 package nl.tudelft.sem.template.hoa.services;
 
+import nl.tudelft.sem.template.commons.models.hoa.FullAddressModel;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.entitites.User;
+import nl.tudelft.sem.template.hoa.entitites.UserHoa;
+import nl.tudelft.sem.template.hoa.exceptions.HoaDoesNotExistException;
 import nl.tudelft.sem.template.hoa.exceptions.UserDoesNotExistException;
 import nl.tudelft.sem.template.hoa.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +17,11 @@ import java.util.List;
 @Service
 public class UserService {
     @Autowired
-    private UserRepository userRepository;
+    private transient UserRepository userRepository;
     @Autowired
-    private HoaService hoaService;
+    private transient HoaService hoaService;
+    @Autowired
+    private transient ConnectionService connectionService;
 
     /**
      * Query for getting all users currently in the table
@@ -53,9 +58,10 @@ public class UserService {
      * @return status on whetehr the leaving was succesful
      */
     public boolean leaveAssociation(int hoaId, int id) throws UserDoesNotExistException {
-        if (!userRepository.existsById(id)) throw new UserDoesNotExistException("User not in system!");
-        Hoa hoa = hoaService.getHoaById(hoaId);
-        return userRepository.findUserById(id).leaveAssociation(hoa);
+
+        // TODO in later MR (this one is already way too big)
+
+        return false;
     }
 
     /**
@@ -63,14 +69,35 @@ public class UserService {
      * <p>
      * Note: Likely not the final implementation since the user currently can just join an association no questions asked
      *
-     * @param hoaId the id of the association to be joined
-     * @param id    the id of the user that wants to join
+     * @param hoaName the name of the association to be joined
+     * @param displayName    the display name of the user that wants to join
+     * @param address the address that the membership is based on
      * @return status on whether the joining was successful
+     * @throws HoaDoesNotExistException
+     * @throws UserDoesNotExistException
      */
-    public boolean joinAssociation(int hoaId, int id) throws UserDoesNotExistException {
-        if (!userRepository.existsById(id)) throw new UserDoesNotExistException("User not in system!");
-        Hoa hoa = hoaService.getHoaById(hoaId);
-        return userRepository.findUserById(id).joinAssociation(hoa);
+    public UserHoa joinAssociation(String hoaName, String displayName, FullAddressModel address)
+            throws HoaDoesNotExistException, UserDoesNotExistException {
+        
+        if (!userRepository.existsByDisplayName(displayName))
+            throw new UserDoesNotExistException("User not in system!");
+        
+        Hoa hoa = hoaService.getByNaturalId(hoaName, address.getCountry(), address.getCity());
+
+        if (hoa == null) 
+            throw new HoaDoesNotExistException("Hoa with given attributes doesn't exits!");
+
+        User user = userRepository.findByDisplayName(displayName);
+
+        UserHoa connection = new UserHoa(user, hoa, address);
+
+        user.joinAssociation(connection);
+        hoa.addMember(connection);
+
+        connection.setUser(user);
+        connection.setHoa(hoa);
+
+        return connectionService.createConnection(connection);
     }
 
     /**
@@ -79,7 +106,7 @@ public class UserService {
      * @param id the id of the user whose associations we want to check
      * @return the list of the associations
      */
-    public List<Hoa> getListOfAssociations(int id) {
+    public List<UserHoa> getListOfAssociations(int id) {
         return new ArrayList<>(userRepository.findUserById(id).getAssociations());
     }
 

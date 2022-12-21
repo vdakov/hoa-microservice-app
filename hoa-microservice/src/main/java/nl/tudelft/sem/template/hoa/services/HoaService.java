@@ -3,8 +3,9 @@ package nl.tudelft.sem.template.hoa.services;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-
+import nl.tudelft.sem.template.commons.models.hoa.HoaModel;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
+import nl.tudelft.sem.template.hoa.exceptions.HoaDoesNotExistException;
 import nl.tudelft.sem.template.hoa.repositories.HoaRepository;
 import org.springframework.stereotype.Service;
 
@@ -40,4 +41,13 @@ public class HoaService {
         if (out == null) throw new NoSuchElementException();
         return out;
     }
+
+    public boolean existsById(int hoaId) {
+        return this.hoaRepository.existsById(hoaId);
+    }
+
+    public Hoa getByNaturalId(String name, String country, String city) {
+        return this.hoaRepository.findByNaturalId(name, country, city);
+    }
+
 }
