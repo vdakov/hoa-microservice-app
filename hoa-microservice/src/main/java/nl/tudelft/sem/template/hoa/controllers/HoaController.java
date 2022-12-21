@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import nl.tudelft.sem.template.commons.models.hoa.CreateHoaModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullHoaResponseModel;
-import nl.tudelft.sem.template.commons.models.hoa.HoaModel;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.services.HoaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +35,9 @@ public class HoaController {
     }
 
     @PostMapping("/createHoa")
-    public ResponseEntity<Hoa> createHoa(@RequestBody HoaModel hoaModel) throws Exception {
+    public ResponseEntity<FullHoaResponseModel> createHoa(@RequestBody CreateHoaModel hoaModel) throws Exception {
         Hoa hoa = hoaService.createHoa(hoaModel.getName(), hoaModel.getCountry(), hoaModel.getCity());
-        return ResponseEntity.ok(hoa);
+        return ResponseEntity.ok(hoa.toFullModel());
     }
 
 }
