@@ -120,5 +120,9 @@ public class UserService {
         return userRepository.findUserById(id);
     }
 
+    public boolean isInHoa(String displayName, String hoaName, String country, String city) {
+        return this.userRepository.isInHoa(displayName, hoaName, country, city);
+    }
+
 
 }

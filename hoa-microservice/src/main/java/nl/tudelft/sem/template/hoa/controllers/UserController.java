@@ -5,6 +5,7 @@ import nl.tudelft.sem.template.commons.entities.RequirementVote;
 import nl.tudelft.sem.template.commons.models.hoa.FullAddressModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullUserHoaModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullUserResponseModel;
+import nl.tudelft.sem.template.commons.models.hoa.IsInHoaRequestModel;
 import nl.tudelft.sem.template.commons.models.hoa.JoinModel;
 import nl.tudelft.sem.template.hoa.entitites.User;
 import nl.tudelft.sem.template.hoa.entitites.UserHoa;
@@ -177,6 +178,15 @@ public class UserController {
         );
 
         return ResponseEntity.ok().body(connection.toFullModel());
+    }
+
+    @GetMapping("isInHoa")
+    public ResponseEntity<Boolean> isInHoa(@RequestBody IsInHoaRequestModel req) {
+        if (req.anyNull()) 
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(
+            this.userService.isInHoa(req.getDisplayName(), req.getName(), req.getCountry(), req.getCity())
+        );
     }
 
 }
