@@ -17,6 +17,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
@@ -38,7 +39,7 @@ public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private int id;
 
     @ElementCollection
     @CollectionTable(name = "user_mapping",
@@ -48,6 +49,7 @@ public class Notification {
     private Map<String, Boolean> users;
 
     @Column(name = "event", nullable = false)
+    @Lob
     private Event event;
 
     public Notification(Event event, List<String> usernames) {
@@ -58,11 +60,15 @@ public class Notification {
         this.event = event;
     }
 
-    public Long getId() {
+    public Notification() {
+
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -70,7 +76,7 @@ public class Notification {
         return users;
     }
 
-    public void setUsers(HashMap<String, Boolean> users) {
+    public void setUsers(Map<String, Boolean> users) {
         this.users = users;
     }
 

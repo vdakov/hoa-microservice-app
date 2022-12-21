@@ -22,6 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -70,7 +71,7 @@ public class NotificationController {
     }
 
     /**
-     * stupid javadoc
+     * Testing, will be removed
      * @return
      */
     @GetMapping("/whoami")
@@ -78,7 +79,7 @@ public class NotificationController {
         try {
             AppUser user = parseUserFromToken();
             if (user != null) {
-                return ResponseEntity.ok("Hello World " + user.getUsername().toString());
+                return ResponseEntity.ok("Hello " + user.getUsername().toString());
             } else {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ok");
             }
@@ -88,7 +89,7 @@ public class NotificationController {
     }
 
     /**
-     * stupid javadoc
+     * Retrieves the notifications for a specific user
      * @return
      */
     @GetMapping("/getNotifications")
@@ -99,8 +100,8 @@ public class NotificationController {
                 List<Notification> notificationList = notificationService.getAll();
                 List<Event> ret = new ArrayList<>();
                 for (Notification n: notificationList) {
-
-                    Map<String, Boolean> users = n.getUsers();
+                    n.getEvent().setId(n.getId());
+                    Map<String, Boolean> users = n.getUsers(); // map of users and a boolean for markedRead
                     for (String user: users.keySet()) {
                         if (user.equals(parseUserFromToken().getUsername().toString()) && !users.get(user)) {
                             // check our user and markedRead
@@ -120,30 +121,60 @@ public class NotificationController {
     }
 
     /**
-     * LOL
+     * Marks a notification as read for a specific user
+     * @param id notification id
+     * @return
+     */
+    @PostMapping("/markRead/{id}")
+    public ResponseEntity markRead(@PathVariable("id") int id) {
+        try {
+            if (parseUserFromToken() != null) {
+                Notification notification = notificationService.findById(id);
+                if (notification != null) {
+                    Map<String, Boolean> users = notification.getUsers();
+                    for (String user: users.keySet()) {
+                        if (user.equals(parseUserFromToken().getUsername().toString())) {
+                            users.put(user, true);
+                            break;
+                        }
+                    }
+                    notification.setUsers(users);
+                    notificationService.updateNotification(notification);
+                    return ResponseEntity.ok("Notification with id " + id + " marked as read");
+                } else {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid notification");
+                }
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid user");
+            }
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    /**
+     * Process the notification received from other microservices
      * @param body
      * @return
      */
     @PostMapping("/processNotification")
     public ResponseEntity processor(@RequestBody String body) throws Exception {
-        System.out.println("I ARRIVED");
-        System.out.println(body);
         //this is horrible
         String type = body.substring(body.indexOf("\"notificationType\":\"") + 20);
         type = type.substring(0, type.indexOf("\""));
-        System.out.println(type);
         NotificationType notificationType = NotificationType.valueOf(type);
 
-        System.out.println(body);
+        //TODO: switch statement based on notification types
         if (notificationType == NotificationType.CREATE_REQUIREMENT) {
             TypeReference<NotificationCreateReq> typeReference = new TypeReference<>() {};
             NotificationCreateReq model = JsonUtil.deserialize(body, typeReference);
             CreateRequirementEvent cr = new CreateRequirementEvent();
             cr.setRequirementName(model.getRequirementName());
             cr.setRequirementDescription(model.getRequirementDescription());
-            System.out.println("Saved");
             notificationService.createNotification(cr, model.getUsernames());
         }
         return null;
     }
+
+
 }

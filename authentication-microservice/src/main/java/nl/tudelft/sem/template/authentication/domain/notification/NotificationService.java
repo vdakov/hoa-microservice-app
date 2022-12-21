@@ -29,6 +29,10 @@ public class NotificationService {
         notificationRepository.delete(notification);
     }
 
+    public void updateNotification(Notification notification) throws Exception {
+        notificationRepository.save(notification);
+    }
+
     public List<Notification> getAll() {
         return notificationRepository.findAll();
     }
