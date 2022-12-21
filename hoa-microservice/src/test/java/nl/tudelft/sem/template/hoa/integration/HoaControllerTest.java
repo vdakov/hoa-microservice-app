@@ -60,7 +60,7 @@ public class HoaControllerTest {
 
         String expectedJson = mapper.writeValueAsString(hoa);
 
-        mvc.perform(MockMvcRequestBuilders.post("/createHoa")
+        mvc.perform(MockMvcRequestBuilders.post("/hoa/createHoa")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(expectedJson))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -81,7 +81,7 @@ public class HoaControllerTest {
             return hoa.toFullModel();
         }).collect(Collectors.toList()));
 
-        mvc.perform(MockMvcRequestBuilders.get("/all"))
+        mvc.perform(MockMvcRequestBuilders.get("/hoa/all"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(expectedJson));
 
