@@ -9,9 +9,11 @@ import nl.tudelft.sem.template.authentication.domain.notification.Notification;
 import nl.tudelft.sem.template.authentication.domain.notification.NotificationService;
 import nl.tudelft.sem.template.authentication.domain.user.AppUser;
 import nl.tudelft.sem.template.authentication.domain.user.Username;
+import nl.tudelft.sem.template.commons.entities.notification.ChangeRequirementEvent;
 import nl.tudelft.sem.template.commons.entities.notification.CreateRequirementEvent;
 import nl.tudelft.sem.template.commons.entities.notification.Event;
 import nl.tudelft.sem.template.commons.models.notification.NewNotification;
+import nl.tudelft.sem.template.commons.models.notification.NotificationChangeReq;
 import nl.tudelft.sem.template.commons.models.notification.NotificationCreateReq;
 import nl.tudelft.sem.template.commons.models.notification.NotificationModel;
 import nl.tudelft.sem.template.commons.models.notification.NotificationType;
@@ -90,7 +92,7 @@ public class NotificationController {
 
     /**
      * Retrieves the notifications for a specific user
-     * @return
+     * @return a list of notifications
      */
     @GetMapping("/getNotifications")
     public ResponseEntity<NotificationModel> getNotification() {
@@ -123,7 +125,7 @@ public class NotificationController {
     /**
      * Marks a notification as read for a specific user
      * @param id notification id
-     * @return
+     * @return ResponseEntity based on success/failure
      */
     @PostMapping("/markRead/{id}")
     public ResponseEntity markRead(@PathVariable("id") int id) {
@@ -154,26 +156,36 @@ public class NotificationController {
 
     /**
      * Process the notification received from other microservices
-     * @param body
-     * @return
+     * @param body JSON containing information about the notification
      */
     @PostMapping("/processNotification")
-    public ResponseEntity processor(@RequestBody String body) throws Exception {
-        //this is horrible
+    public void processor(@RequestBody String body) throws Exception {
         String type = body.substring(body.indexOf("\"notificationType\":\"") + 20);
         type = type.substring(0, type.indexOf("\""));
         NotificationType notificationType = NotificationType.valueOf(type);
 
-        //TODO: switch statement based on notification types
-        if (notificationType == NotificationType.CREATE_REQUIREMENT) {
-            TypeReference<NotificationCreateReq> typeReference = new TypeReference<>() {};
-            NotificationCreateReq model = JsonUtil.deserialize(body, typeReference);
-            CreateRequirementEvent cr = new CreateRequirementEvent();
-            cr.setRequirementName(model.getRequirementName());
-            cr.setRequirementDescription(model.getRequirementDescription());
-            notificationService.createNotification(cr, model.getUsernames());
+        switch(notificationType) {
+            case CREATE_REQUIREMENT:
+                TypeReference<NotificationCreateReq> typeCreate = new TypeReference<>() {};
+                NotificationCreateReq create = JsonUtil.deserialize(body, typeCreate);
+                CreateRequirementEvent cr = new CreateRequirementEvent();
+                cr.setRequirementName(create.getRequirementName());
+                cr.setRequirementDescription(create.getRequirementDescription());
+                notificationService.createNotification(cr, create.getUsernames());
+                break;
+            case CHANGE_REQUIREMENT:
+                TypeReference<NotificationChangeReq> typeChange = new TypeReference<>() {};
+                NotificationChangeReq change = JsonUtil.deserialize(body, typeChange);
+                ChangeRequirementEvent ch = new ChangeRequirementEvent();
+                ch.setNewName(change.getNewName());
+                ch.setNewDescription(change.getNewDescription());
+                ch.setOldName(change.getOldName());
+                ch.setOldDescription(change.getOldDescription());
+                notificationService.createNotification(ch, change.getUsernames());
+                break;
+            default:
+                break;
         }
-        return null;
     }
 
 

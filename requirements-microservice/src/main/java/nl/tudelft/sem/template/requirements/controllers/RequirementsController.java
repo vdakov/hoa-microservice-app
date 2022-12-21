@@ -6,6 +6,7 @@ import nl.tudelft.sem.template.commons.models.UpdateRequirementModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullHoaResponseModel;
 import nl.tudelft.sem.template.commons.models.hoa.HoaLessUserHoaModel;
 import nl.tudelft.sem.template.commons.models.hoa.SimpleUserResponseModel;
+import nl.tudelft.sem.template.commons.models.notification.NotificationChangeReq;
 import nl.tudelft.sem.template.commons.models.notification.NotificationCreateReq;
 import nl.tudelft.sem.template.requirements.domain.Report;
 import nl.tudelft.sem.template.requirements.services.ReportService;
@@ -78,29 +79,71 @@ public class RequirementsController {
     }
 
     /**
-     * bruh
-     * @param req
-     * @param hoaId
+     * Get a list of hoa members (will be used for remembering which users will receive the notification)
+     * @param hoaId id of the hoa
+     * @return a list of usernames
      */
-    public void createRequirementNotification(Requirements req, int hoaId) throws JsonProcessingException {
+    public List<String> getHoaMembers(int hoaId) {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = new HttpEntity(null, null);
         String url = "http://localhost:8090/hoa/getHoaMembers/" + hoaId;
 
         FullHoaResponseModel hoa = restTemplate.exchange(url, HttpMethod.GET, entity, FullHoaResponseModel.class).getBody();
-        if (hoa.getMembers().size() == 0) return;
-        List<String> usernames = new ArrayList<>();
-        for (HoaLessUserHoaModel usr: hoa.getMembers()) {
-            usernames.add(usr.getUser().getDisplayName());
+        if (hoa != null) {
+            if (hoa.getMembers().size() == 0) return null;
+            List<String> usernames = new ArrayList<>();
+            for (HoaLessUserHoaModel usr: hoa.getMembers()) {
+                usernames.add(usr.getUser().getDisplayName());
+            }
+            return usernames;
+        } else {
+            return null;
         }
-        NotificationCreateReq body = new NotificationCreateReq(usernames,
-                req.getRequirementName(),
-                req.getRequirementDescription());
-
-        entity = new HttpEntity(JsonUtil.serialize(body), null);
-        url = "http://localhost:8081/notification/processNotification/";
-        restTemplate.exchange(url, HttpMethod.POST, entity, FullHoaResponseModel.class);
     }
+
+    /**
+     * Method used to send a new requirement created notification to the gateway
+     * @param req the new requirement
+     * @param hoaId the id of the HOA
+     */
+    public void createRequirementNotification(Requirements req, int hoaId) throws JsonProcessingException {
+        List<String> usernames = getHoaMembers(hoaId);
+
+        if (usernames != null) {
+            NotificationCreateReq body = new NotificationCreateReq(usernames,
+                    req.getRequirementName(),
+                    req.getRequirementDescription());
+
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity entity = new HttpEntity(JsonUtil.serialize(body), null);
+            String url = "http://localhost:8081/notification/processNotification/";
+            restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+        }
+    }
+    /**
+     * Method used to send a new changed requirement notification to the gateway
+     * @param req the new and old details of the requirement
+     * @param hoaId the id of the HOA
+     */
+    public void changeRequirementNotification(Requirements req, int hoaId, String newName, String newDescription)
+            throws JsonProcessingException {
+        List<String> usernames = getHoaMembers(hoaId);
+
+        if (usernames != null) {
+            NotificationChangeReq body = new NotificationChangeReq(usernames,
+                    req.getRequirementName(),
+                    req.getRequirementDescription(),
+                    newName,
+                    newDescription);
+
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity entity = new HttpEntity(JsonUtil.serialize(body), null);
+            String url = "http://localhost:8081/notification/processNotification/";
+            restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+        }
+    }
+
+
 
     /**
      * Creates a new requirement for the HOA members
@@ -146,6 +189,8 @@ public class RequirementsController {
         try {
             Requirements requirement = requirementsService.findById(request.getRequirementId());
             if (requirement != null) {
+                changeRequirementNotification(requirement, requirement.getHoaId(), request.getNewName(),
+                        request.getNewDescription());
                 requirementsService.updateRequirement(requirement, request.getNewName(), request.getNewDescription());
             } else {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Requirement not found.");

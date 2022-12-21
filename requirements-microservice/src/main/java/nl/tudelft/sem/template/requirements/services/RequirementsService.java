@@ -22,7 +22,6 @@ public class RequirementsService {
     }
 
     public void updateRequirement(Requirements requirement, String newName, String newDescription) throws Exception {
-        requirementsRepository.delete(requirement);
         requirement.setRequirementName(newName);
         requirement.setRequirementDescription(newDescription);
         requirementsRepository.save(requirement);
