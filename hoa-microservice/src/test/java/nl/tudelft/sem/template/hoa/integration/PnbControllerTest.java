@@ -80,8 +80,8 @@ public class PnbControllerTest {
         ActivityModel model = new ActivityModel(1, "a1", time, "president time");
 
         mockMvc.perform(post("/pnb/createActivity")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.serialize(model)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.serialize(model)))
                 .andExpect(status().isOk());
 
         Activity activity = activityRepository.findByName("a1");
@@ -97,13 +97,13 @@ public class PnbControllerTest {
         mockMvc.perform(post("/pnb/createActivity")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.serialize(activity1.toModel())))
-                        .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
 
         mockMvc.perform(post("/pnb/createActivity")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.serialize(activity2.toModel())))
-                        .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
 
         mockMvc.perform(post("/pnb/createActivity")
@@ -121,8 +121,8 @@ public class PnbControllerTest {
                 typeReference);
 
         assertThat(activityModels).containsExactlyInAnyOrder(activity1.toModel(),
-                                                            activity2.toModel(),
-                                                            activity3.toModel());
+                activity2.toModel(),
+                activity3.toModel());
     }
 
     @Test
