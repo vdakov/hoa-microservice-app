@@ -1,4 +1,4 @@
-package nl.tudelft.sem.template.hoa.entitites;
+package nl.tudelft.sem.template.commons.entities;
 
 public class ElectionVote extends Vote {
     private String applicantName;
@@ -15,4 +15,5 @@ public class ElectionVote extends Vote {
     public void setApplicantName(String applicantName) {
         this.applicantName = applicantName;
     }
+
 }

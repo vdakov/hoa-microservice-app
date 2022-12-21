@@ -1,11 +1,11 @@
 package nl.tudelft.sem.template.hoa.controllers;
 
+import nl.tudelft.sem.template.commons.entities.ElectionVote;
+import nl.tudelft.sem.template.commons.entities.RequirementVote;
 import nl.tudelft.sem.template.commons.models.hoa.FullAddressModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullUserHoaModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullUserResponseModel;
 import nl.tudelft.sem.template.commons.models.hoa.JoinModel;
-import nl.tudelft.sem.template.hoa.entitites.ElectionVote;
-import nl.tudelft.sem.template.hoa.entitites.RequirementVote;
 import nl.tudelft.sem.template.hoa.entitites.User;
 import nl.tudelft.sem.template.hoa.entitites.UserHoa;
 import nl.tudelft.sem.template.hoa.exceptions.HoaDoesNotExistException;
@@ -37,7 +37,6 @@ public class UserController {
     private transient VoteService voteService;
 
     private static final String USER_ID_LITERAL = "userId";
-
     /**
      * GET endpoint for creating a new user
      *
@@ -105,7 +104,7 @@ public class UserController {
      *
      * @param vote   the vote submitted
      * @param userId id of the user submitting the vote
-     * @param hoaId  id of the association the user is submitting their vote for (since they canbe a member of multiple
+     * @param hoaId  id of the association the user is submitting their vote for (since they can be a member of multiple
      *               associations
      * @return status of whether the submission succeeded
      */
@@ -138,7 +137,7 @@ public class UserController {
     /**
      * Analogous PUT mapping for requirement voting
      */
-    @PutMapping("/changeVoteElection/{userId}")
+    @PutMapping("/changeVoteRequirement/{userId}")
     public ResponseEntity changeVoteRequirement(@RequestBody RequirementVote vote,
                                                 @PathVariable(USER_ID_LITERAL) int boardMemberId) {
         try {

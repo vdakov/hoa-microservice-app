@@ -5,23 +5,26 @@ import nl.tudelft.sem.template.requirements.domain.Report;
 import nl.tudelft.sem.template.requirements.domain.ReportService;
 import nl.tudelft.sem.template.requirements.domain.Requirements;
 import nl.tudelft.sem.template.requirements.domain.RequirementsService;
-import nl.tudelft.sem.template.requirements.models.CreateReportModel;
-import nl.tudelft.sem.template.requirements.models.CreateRequirementModel;
+import nl.tudelft.sem.template.commons.models.CreateReportModel;
+import nl.tudelft.sem.template.commons.models.CreateRequirementModel;
 import nl.tudelft.sem.template.requirements.models.ReportResponseModel;
 import nl.tudelft.sem.template.requirements.models.RequirementsResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/requirements")
 public class RequirementsController {
 
     private final transient AuthManager authManager;
@@ -103,12 +106,12 @@ public class RequirementsController {
 
     /**
      * Returns a list of all requirements TODO: once HOA is done, change this to return only requirements within the HOA
-     * @param request
+     * @param hoaId the ID of the hoa to get the list of requirements for.
      * @return
      * @throws Exception
      */
-    @GetMapping("/getRequirements")
-    public ResponseEntity<RequirementsResponseModel> getRequirements(@RequestBody RequirementsResponseModel request)
+    @GetMapping("/getRequirements/{hoaId}")
+    public ResponseEntity<RequirementsResponseModel> getRequirements(@PathVariable("hoaId") int hoaId)
             throws Exception {
         List<Requirements> requirementsList = requirementsService.getAll();
         return ResponseEntity.ok(new RequirementsResponseModel(requirementsList));
@@ -116,13 +119,12 @@ public class RequirementsController {
 
     /**
      * Returns a list of all reports TODO: once HOA is done, change this to return only reports within the HOA
-     * @param request
+     * @param hoaId the ID of the hoa to get the lsit of reports for.
      * @return
      * @throws Exception
      */
-    @GetMapping("/showAllReports")
-    public ResponseEntity<ReportResponseModel> getRequirements(@RequestBody ReportResponseModel request)
-            throws Exception {
+    @GetMapping("/showAllReports/{hoaId}")
+    public ResponseEntity<ReportResponseModel> getReports(@PathVariable("hoaId") int hoaId) {
         List<Report> reportList = reportService.getAll();
         return ResponseEntity.ok(new ReportResponseModel(reportList));
     }

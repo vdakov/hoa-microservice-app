@@ -1,4 +1,4 @@
-package nl.tudelft.sem.template.hoa.entitites;
+package nl.tudelft.sem.template.commons.entities;
 
 public class RequirementVote extends Vote {
 
