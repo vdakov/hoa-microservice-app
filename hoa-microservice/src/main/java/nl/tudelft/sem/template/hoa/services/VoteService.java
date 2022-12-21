@@ -18,13 +18,7 @@ import java.util.Comparator;
 import java.util.Map;
 
 
-/**
- * Skeleton implementation for voting service
- * <p>
- * Will likely be filled with HTTP request to be given to the voting microservice, but currently only left like
- * this to minimize refactoring of other classes and will be expanded depending on the implementation of
- * the Voting Microservice and how it will be implemented
- */
+
 @Service
 public class VoteService {
 
@@ -49,6 +43,9 @@ public class VoteService {
         resultsRepository.save(new ElectionResults(hoa, results.getNumberOfVotes(), results.getVoteDistributions(), winner));
     }
 
+    /**
+     * Converts the DTO object received into a DB object for the HOA and stores it
+     */
     public void storeRequirementResults(int hoaId, RequirementResultsModel results) {
         Hoa hoa = hoaRepository.findById(hoaId);
 
@@ -56,6 +53,9 @@ public class VoteService {
                 results.isPassed()));
     }
 
+    /**
+     * Creates a DTO for starting an election vote once requested from Gateway Microservice
+     */
     public VotingModel startElectionVote(int hoaId) {
         Hoa hoa = hoaRepository.findById(hoaId);
         int numEligibleVotes = hoa.getMembers().size();
@@ -64,6 +64,9 @@ public class VoteService {
         return new VotingModel(hoaId, type, numEligibleVotes);
     }
 
+    /**
+     * Creates a DTO for starting a requirement vote once requested from Gateway
+     */
     public VotingModel startRequirementVote(int hoaId) {
         Hoa hoa = hoaRepository.findById(hoaId);
         int numEligibleVotes = hoa.getMembers().size();

@@ -55,11 +55,7 @@ public class VoteController {
         ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
         System.out.println(response);
     }
-    /*
-    - isVoteGoingOn
-    - startElectionVote
-    - startRequirementVote
-     */
+
 
     /**
      * Test for internal routing: WILL DELETE AFTER TOKEN PASSING IS ADDED
@@ -69,7 +65,13 @@ public class VoteController {
         System.out.println("hello");
     }
 
-
+    /**
+     * Receives the DTO from Voting to be later stored in the DB
+     *
+     * @param results the DTO from the request body
+     * @param hoaId   the id of the associations this is for
+     * @return status of the message
+     */
     @PostMapping("{hoaId}/receiveElectionResults")
     public ResponseEntity<String> getElectionResults(@RequestBody ElectionResultsModel results,
                                                      @PathVariable("hoaId") int hoaId) {
@@ -77,6 +79,9 @@ public class VoteController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Analogous with above JavaDoc
+     */
     @PostMapping("{hoaId}/receiveRequirementResults")
     public ResponseEntity<String> getRequirementResults(@RequestBody RequirementResultsModel results,
                                                         @PathVariable("hoaId") int hoaId) {
@@ -84,6 +89,9 @@ public class VoteController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Endpoint for getting a list of eligible members in the HOA (used for requirement votings)
+     */
     @GetMapping("{hoadId}/getListEligibleMembers")
     public ResponseEntity<List<User>> getListEligibleMembers() {
         return ResponseEntity.ok().build();
@@ -91,6 +99,9 @@ public class VoteController {
 
     /**
      * Endpoint for telling the voting microservice to start an election vote
+     * <p>
+     * Inside of it has implementation for sending the HTTP request (not part of the business logic,
+     * which is why it is here.) All that is left to do is to complete the token setup.
      */
     @GetMapping("/initializeElectionVoting/{hoaId}")
     public ResponseEntity<String> startElectionVote(@PathVariable("hoaId") int hoaId) {
@@ -110,6 +121,9 @@ public class VoteController {
 
     /**
      * Endpoint for telling the voting microservice to start a requirement vote
+     * <p>
+     * Inside of it has implementation for sending the HTTP request (not part of the business logic,
+     * which is why it is here.) All that is left to do is to complete the token setup.
      */
     @GetMapping("/initializeRequirementVoting/{hoaId}")
     public ResponseEntity<String> startRequirementVote(@PathVariable("hoaId") int hoaId) {
