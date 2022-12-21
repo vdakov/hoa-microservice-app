@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class NotificationModel {
+    private final String description = "Your un-read notifications are below. To delete a notification, go to /notification/markRead/id";
     private List<Event> notificationList;
 
     public NotificationModel(List<Event> notificationList) {

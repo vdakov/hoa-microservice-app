@@ -11,10 +11,12 @@ import nl.tudelft.sem.template.authentication.domain.user.AppUser;
 import nl.tudelft.sem.template.authentication.domain.user.Username;
 import nl.tudelft.sem.template.commons.entities.notification.ChangeRequirementEvent;
 import nl.tudelft.sem.template.commons.entities.notification.CreateRequirementEvent;
+import nl.tudelft.sem.template.commons.entities.notification.DeleteRequirementEvent;
 import nl.tudelft.sem.template.commons.entities.notification.Event;
 import nl.tudelft.sem.template.commons.models.notification.NewNotification;
 import nl.tudelft.sem.template.commons.models.notification.NotificationChangeReq;
 import nl.tudelft.sem.template.commons.models.notification.NotificationCreateReq;
+import nl.tudelft.sem.template.commons.models.notification.NotificationDeleteReq;
 import nl.tudelft.sem.template.commons.models.notification.NotificationModel;
 import nl.tudelft.sem.template.commons.models.notification.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,6 +184,14 @@ public class NotificationController {
                 ch.setOldName(change.getOldName());
                 ch.setOldDescription(change.getOldDescription());
                 notificationService.createNotification(ch, change.getUsernames());
+                break;
+            case DELETE_REQUIREMENT:
+                TypeReference<NotificationDeleteReq> typeDelete = new TypeReference<>() {};
+                NotificationDeleteReq delete = JsonUtil.deserialize(body, typeDelete);
+                DeleteRequirementEvent del = new DeleteRequirementEvent();
+                del.setRequirementName(delete.getRequirementName());
+                del.setRequirementDescription(delete.getRequirementDescription());
+                notificationService.createNotification(del, delete.getUsernames());
                 break;
             default:
                 break;

@@ -8,6 +8,7 @@ import nl.tudelft.sem.template.commons.models.hoa.HoaLessUserHoaModel;
 import nl.tudelft.sem.template.commons.models.hoa.SimpleUserResponseModel;
 import nl.tudelft.sem.template.commons.models.notification.NotificationChangeReq;
 import nl.tudelft.sem.template.commons.models.notification.NotificationCreateReq;
+import nl.tudelft.sem.template.commons.models.notification.NotificationDeleteReq;
 import nl.tudelft.sem.template.requirements.domain.Report;
 import nl.tudelft.sem.template.requirements.services.ReportService;
 import nl.tudelft.sem.template.requirements.services.RequirementsService;
@@ -143,6 +144,27 @@ public class RequirementsController {
         }
     }
 
+    /**
+     * Method used to send a 'delete requirement' notification to the gateway
+     * @param req the details of the requirement
+     * @param hoaId the id of the HOA
+     */
+    public void deleteRequirementNotification(Requirements req, int hoaId)
+            throws JsonProcessingException {
+        List<String> usernames = getHoaMembers(hoaId);
+
+        if (usernames != null) {
+            NotificationDeleteReq body = new NotificationDeleteReq(usernames,
+                    req.getRequirementName(),
+                    req.getRequirementDescription());
+
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity entity = new HttpEntity(JsonUtil.serialize(body), null);
+            String url = "http://localhost:8081/notification/processNotification/";
+            restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+        }
+    }
+
 
 
     /**
@@ -213,6 +235,7 @@ public class RequirementsController {
         try {
             Requirements requirement = requirementsService.findById(request.getRequirementId());
             if (requirement != null) {
+                deleteRequirementNotification(requirement, requirement.getHoaId());
                 requirementsService.deleteRequirement(requirement);
             } else {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Requirement not found.");
