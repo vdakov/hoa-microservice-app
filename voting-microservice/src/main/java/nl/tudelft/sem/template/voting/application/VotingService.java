@@ -62,7 +62,7 @@ public class VotingService {
         return Collections.emptyList();
     }
 
-    public Map<String, Integer> getResults(int hoaId) throws VotingException {
+    public Map<Integer, Integer> getResults(int hoaId) throws VotingException {
         Vote currentVote = ongoingElections.get(hoaId);
         if (currentVote.getTimeKeeper().isVoteOngoing()) {
             throw new VotingException("Vote is still ongoing");

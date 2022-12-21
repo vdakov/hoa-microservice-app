@@ -51,19 +51,19 @@ public abstract class Vote {
      * @return -
      */
     @SuppressWarnings("PMD")
-    public Map<String, Integer> getResults() {
+    public Map<Integer, Integer> getResults() {
 
         // PMD was throwing warnings because values in the map are first zero-initialized, and then
         // incremented; rule DataflowAnomalyAnalysis
-        Map<String, Integer> aggregatedResults = new HashMap<>();
-        for (String option : options) { // initialize the map containing aggregated results
+        Map<Integer, Integer> aggregatedResults = new HashMap<>();
+        for (int option = 0; option < this.options.size(); option++) { // initialize the map containing aggregated results
             aggregatedResults.put(option, 0);
         }
 
         for (Integer vote : votes.values()) {
-            int currentNumber = aggregatedResults.get(options.get(vote));
+            int currentNumber = aggregatedResults.get(vote);
             currentNumber++;
-            aggregatedResults.replace(options.get(vote), currentNumber);
+            aggregatedResults.replace(vote, currentNumber);
         }
         return aggregatedResults;
     }

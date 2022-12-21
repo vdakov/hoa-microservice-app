@@ -122,8 +122,8 @@ public class VoteController {
      */
     @GetMapping("/vote/{hoaId}/getResults")
     @SuppressWarnings("PMD") // I could not avoid PMD throwing warnings
-    public ResponseEntity<Map<String, Integer>> getResults(@PathVariable int hoaId) {
-        Map<String, Integer> results;
+    public ResponseEntity<Map<Integer, Integer>> getResults(@PathVariable int hoaId) {
+        Map<Integer, Integer> results;
         if (!votingService.existingHoaVoting(hoaId)) {
             return ResponseEntity.notFound().build();
         }
