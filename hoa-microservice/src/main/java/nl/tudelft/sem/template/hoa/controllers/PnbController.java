@@ -1,9 +1,8 @@
 package nl.tudelft.sem.template.hoa.controllers;
 
-import nl.tudelft.sem.template.hoa.domain.activity.Activity;
-import nl.tudelft.sem.template.hoa.domain.activity.ActivityService;
+import nl.tudelft.sem.template.hoa.entitites.Activity;
+import nl.tudelft.sem.template.hoa.services.ActivityService;
 import nl.tudelft.sem.template.commons.models.ActivityModel;
-import nl.tudelft.sem.template.hoa.services.HoaService;
 
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,16 +30,14 @@ import java.util.stream.Collectors;
 public class PnbController {
 
     private final transient ActivityService activityService;
-    private final transient HoaService hoaService;
 
     /**
      * Instantiates a new controller.
      *
      */
     @Autowired
-    public PnbController(ActivityService activityService, HoaService hoaService) {
+    public PnbController(ActivityService activityService) {
         this.activityService = activityService;
-        this.hoaService = hoaService;
     }
 
     /**
@@ -108,7 +105,6 @@ public class PnbController {
     public ResponseEntity<List<ActivityModel>> getActivitiesForHoa(@PathVariable int hoaId) throws Exception {
 
         try {
-            hoaService.getHoaById(hoaId); //to check if it exists
             return ResponseEntity.ok(
                     activitiesToModels(
                             activityService.getActivitiesByHoaId(hoaId)
