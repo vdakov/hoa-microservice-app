@@ -5,7 +5,7 @@ import java.util.Set;
 import lombok.Data;
 
 @Data
-public class HoaModel extends CreateHoaModel {
+public class HoaModel extends HoaRequestModel {
 
     private Set<FullUserHoaModel> members;
     private Set<BoardMemberModel> boardMembers;

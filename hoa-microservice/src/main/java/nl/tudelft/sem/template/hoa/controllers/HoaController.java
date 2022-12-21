@@ -3,7 +3,7 @@ package nl.tudelft.sem.template.hoa.controllers;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nl.tudelft.sem.template.commons.models.hoa.CreateHoaModel;
+import nl.tudelft.sem.template.commons.models.hoa.HoaRequestModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullHoaResponseModel;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.services.HoaService;
@@ -36,7 +36,7 @@ public class HoaController {
     }
 
     @PostMapping("/createHoa")
-    public ResponseEntity<FullHoaResponseModel> createHoa(@RequestBody CreateHoaModel hoaModel) throws Exception {
+    public ResponseEntity<FullHoaResponseModel> createHoa(@RequestBody HoaRequestModel hoaModel) throws Exception {
         Hoa hoa = hoaService.createHoa(hoaModel.getName(), hoaModel.getCountry(), hoaModel.getCity());
         return ResponseEntity.ok(hoa.toFullModel());
     }
