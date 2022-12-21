@@ -75,7 +75,7 @@ class RequirementsTest {
         int hash2 = requirement1.hashCode();
 
         assertEquals(hash1, hash2);
-        Requirements requirement2 = new Requirements(1, "Second requirement","Details");
+        Requirements requirement2 = new Requirements(1, "Second requirement", "Details");
         hash2 = requirement2.hashCode();
         assertNotEquals(hash1, hash2);
     }
