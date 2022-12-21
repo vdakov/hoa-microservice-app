@@ -1,9 +1,7 @@
 package nl.tudelft.sem.template.hoa.argumentMatchers;
 
-import nl.tudelft.sem.template.hoa.entitites.ElectionResults;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.entitites.RequirementResults;
-import nl.tudelft.sem.template.hoa.entitites.User;
 import org.mockito.ArgumentMatcher;
 
 
