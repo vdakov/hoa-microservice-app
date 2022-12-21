@@ -15,8 +15,8 @@ class ReportTest {
 
     @BeforeEach
     void setup() {
-        requirement1 = new Requirements(1, "First requirement", "Some details idk");
-        requirement2 = new Requirements(2, "First requirement", "Some details idk");
+        requirement1 = new Requirements(1, "First requirement", "You need to give us money");
+        requirement2 = new Requirements(2, "First requirement", "You don't have to park");
         report1 = new Report("sem2", requirement1);
     }
 
@@ -61,7 +61,7 @@ class ReportTest {
 
     @Test
     void setRequirement() {
-        Requirements requirement2 = new Requirements(1, "Second requirement", "Some useless details");
+        Requirements requirement2 = new Requirements(1, "Second requirement", "Second description");
         report1.setRequirement(requirement2);
         assertEquals(requirement2, report1.getRequirement());
     }

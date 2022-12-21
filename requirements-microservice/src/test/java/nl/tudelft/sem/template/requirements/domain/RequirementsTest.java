@@ -12,13 +12,13 @@ class RequirementsTest {
 
     @BeforeEach
     void setUp() {
-        requirement1 = new Requirements(1, "First requirement", "Some details idk");
+        requirement1 = new Requirements(1, "First requirement", "You have to park");
     }
 
     @Test
     void testEquals() {
-        Requirements requirement2 = new Requirements(1, "First requirement", "Some details idk");
-        Requirements requirement3 = new Requirements(1, "First requirements", "Some detail idk");
+        Requirements requirement2 = new Requirements(1, "First requirement", "You have to park");
+        Requirements requirement3 = new Requirements(1, "First requirements", "You have to park");
         assertEquals(requirement1, requirement1);
         assertEquals(requirement1, requirement2);
         assertNotEquals(requirement1, requirement3);
@@ -42,7 +42,7 @@ class RequirementsTest {
 
     @Test
     void getRequirementDescription() {
-        assertEquals("Some details idk", requirement1.getRequirementDescription());
+        assertEquals("You have to park", requirement1.getRequirementDescription());
     }
 
     @Test
@@ -59,14 +59,14 @@ class RequirementsTest {
 
     @Test
     void setRequirementName() {
-        requirement1.setRequirementName("Another boring name");
-        assertEquals("Another boring name", requirement1.getRequirementName());
+        requirement1.setRequirementName("Third requirement");
+        assertEquals("Third requirement", requirement1.getRequirementName());
     }
 
     @Test
     void setRequirementDescription() {
-        requirement1.setRequirementDescription("Another boring description");
-        assertEquals("Another boring description", requirement1.getRequirementDescription());
+        requirement1.setRequirementDescription("Third description");
+        assertEquals("Third description", requirement1.getRequirementDescription());
     }
 
     @Test
@@ -75,7 +75,7 @@ class RequirementsTest {
         int hash2 = requirement1.hashCode();
 
         assertEquals(hash1, hash2);
-        Requirements requirement2 = new Requirements(1, "Second requirement", "Some useless details");
+        Requirements requirement2 = new Requirements(1, "Second requirement","Details");
         hash2 = requirement2.hashCode();
         assertNotEquals(hash1, hash2);
     }

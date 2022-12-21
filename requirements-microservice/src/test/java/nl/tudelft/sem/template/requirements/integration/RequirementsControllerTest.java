@@ -50,7 +50,7 @@ public class RequirementsControllerTest {
 
     @BeforeEach
     void setup() {
-        requirement1 = new Requirements(1, "First requirement", "Some details idk");
+        requirement1 = new Requirements(1, "First requirement", "Some details");
         requirement2 = new Requirements(2, "Second requirement", "More details");
         report1 = new Report("sem2", requirement1);
     }
@@ -83,7 +83,7 @@ public class RequirementsControllerTest {
 
         Requirements req = requirementsRepository.findAll().get(0);
         assertThat(req.getRequirementName()).isEqualTo("First requirement");
-        assertThat(req.getRequirementDescription()).isEqualTo("Some details idk");
+        assertThat(req.getRequirementDescription()).isEqualTo("Some details");
     }
 
     @Test

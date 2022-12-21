@@ -31,7 +31,7 @@ public class GatewayController {
     private static final String USER_ID_LITERAL = "userId";
     private static final String HOA_ID_LITERAL = "hoaId";
     /**
-     * Instantiates a new UsersController.
+     * Instantiates a new GatewayController.
      */
     @Autowired
     public GatewayController() {
