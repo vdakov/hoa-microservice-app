@@ -21,13 +21,17 @@ public class Requirements extends HasEvents {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @Column(name = "requirementName", nullable = false, unique = true)
+    @Column(name = "hoaId", nullable = false)
+    private int hoaId;
+
+    @Column(name = "requirementName", nullable = false)
     private String requirementName;
 
     @Column(name = "requirementDescription", nullable = false)
     private String requirementDescription;
 
-    public Requirements(String name, String description) {
+    public Requirements(int hoaId, String name, String description) {
+        this.hoaId = hoaId;
         this.requirementName = name;
         this.requirementDescription = description;
     }
@@ -37,12 +41,13 @@ public class Requirements extends HasEvents {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Requirements that = (Requirements) o;
-        return id == that.id && requirementName.equals(that.requirementName)
+        return id == that.id && hoaId == that.hoaId
+                && requirementName.equals(that.requirementName)
                 && requirementDescription.equals(that.requirementDescription);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, requirementName, requirementDescription);
+        return Objects.hash(id, hoaId, requirementName, requirementDescription);
     }
 }
