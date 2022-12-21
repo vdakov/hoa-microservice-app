@@ -7,31 +7,28 @@ import java.time.temporal.TemporalAmount;
 import java.util.List;
 
 @NoArgsConstructor
-public class VotingBuilder implements Builder{
+public class ElectionVoteBuilder implements VoteBuilder {
     private int hoaId;
     private List<String> options;
     private TimeKeeper timeKeeper;
-    public Builder forHoaWithId(int hoaId) {
+    public VoteBuilder forHoaWithId(int hoaId) {
         this.hoaId = hoaId;
         return this;
     }
-    public Builder withOptions(List<String> options) {
+    public VoteBuilder withOptions(List<String> options) {
         this.options = options;
         return this;
     }
-    public Builder withTimeKeeper(TimeKeeper timeKeeper) {
+    public VoteBuilder withTimeKeeper(TimeKeeper timeKeeper) {
         this.timeKeeper = timeKeeper;
         return this;
     }
-    public Builder startInstantlyWithDuration(TemporalAmount temporalAmount) {
+    public VoteBuilder startInstantlyWithDuration(TemporalAmount temporalAmount) {
         this.timeKeeper = new ConcreteTimeKeeper(Instant.now(), temporalAmount);
         return this;
     }
-    public Voting buildRequirementsVote() {
-        return null; //TODO: implement RequirementsVote once different permission levels are implemented
-    }
 
-    public Voting buildBoardElections() {
-        return new BoardElections(hoaId, options, timeKeeper);
+    public Vote build() {
+        return new ElectionVote(hoaId, options, timeKeeper);
     }
 }

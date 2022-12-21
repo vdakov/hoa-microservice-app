@@ -2,9 +2,9 @@ package nl.tudelft.sem.template.voting.domain;
 
 import java.util.List;
 
-public class BoardElections extends Voting {
+public class ElectionVote extends Vote {
 
-    public BoardElections(int hoaId, List<String> options, TimeKeeper timeKeeper) {
+    public ElectionVote(int hoaId, List<String> options, TimeKeeper timeKeeper) {
         super(hoaId, options, timeKeeper);
     }
 

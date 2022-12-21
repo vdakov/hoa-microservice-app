@@ -21,13 +21,13 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class VotingController {
+public class VoteController {
 
     private final transient VotingService votingService;
     private final transient AuthManager authManager;
 
     @Autowired
-    public VotingController(VotingService votingService, AuthManager authManager) {
+    public VoteController(VotingService votingService, AuthManager authManager) {
         this.votingService = votingService;
         this.authManager = authManager;
     }
@@ -52,7 +52,7 @@ public class VotingController {
                         .status(HttpStatus.NOT_IMPLEMENTED)
                         .body("");
             }
-            votingService.registerVotingStartingNow(hoaId, votingType, body, Duration.ofMinutes(1L));
+            votingService.registerVoteStartingNow(hoaId, votingType, body, Duration.ofMinutes(1L));
             return ResponseEntity
                     .created(URI.create(String.format("/vote/%d", hoaId)))
                     .body(String.format("/vote/%d", hoaId));

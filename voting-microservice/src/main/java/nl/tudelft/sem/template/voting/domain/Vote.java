@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class Voting {
+public abstract class Vote {
 
     protected final transient int hoaId;
     @Getter
@@ -21,7 +21,7 @@ public abstract class Voting {
      * @param options a list of strings denoting the options to vote for
      * @param timeKeeper a TimeKeeper object that keeps track of when the election is over
      */
-    protected Voting(int hoaId, List<String> options, TimeKeeper timeKeeper) {
+    protected Vote(int hoaId, List<String> options, TimeKeeper timeKeeper) {
         this.hoaId = hoaId;
         this.options = options;
         this.votes = new HashMap<>();

@@ -1,7 +1,7 @@
 package nl.tudelft.sem.template.voting.application;
 
-import nl.tudelft.sem.template.voting.domain.Voting;
-import nl.tudelft.sem.template.voting.domain.VotingBuilder;
+import nl.tudelft.sem.template.voting.domain.Vote;
+import nl.tudelft.sem.template.voting.domain.ElectionVoteBuilder;
 import nl.tudelft.sem.template.voting.domain.VotingException;
 import nl.tudelft.sem.template.voting.domain.VotingType;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Service
 public class VotingService {
-    private transient Map<Integer, Voting> ongoingElections;
+    private transient Map<Integer, Vote> ongoingElections;
 
     public VotingService() {
         this.ongoingElections = new HashMap<>();
@@ -28,18 +28,18 @@ public class VotingService {
      * @param options the available options to choose from in the voting
      * @param temporalAmount the duration of the elections
      */
-    public void registerVotingStartingNow(int hoaId,
-                                          VotingType votingType,
-                                          List<String> options,
-                                          TemporalAmount temporalAmount) {
-        Voting voting;
+    public void registerVoteStartingNow(int hoaId,
+                                        VotingType votingType,
+                                        List<String> options,
+                                        TemporalAmount temporalAmount) {
+        Vote vote;
         if (votingType.equals(VotingType.BOARD_ELECTIONS)) {
-            voting = new VotingBuilder()
+            vote = new ElectionVoteBuilder()
                     .forHoaWithId(hoaId)
                     .withOptions(options)
                     .startInstantlyWithDuration(temporalAmount)
-                    .buildBoardElections();
-            ongoingElections.put(hoaId, voting);
+                    .build();
+            ongoingElections.put(hoaId, vote);
         } else if (votingType.equals(VotingType.REQUIREMENTS_VOTE)) {
             return; //TODO: build a requirements vote when that is implemented
         }
@@ -50,24 +50,24 @@ public class VotingService {
     }
 
     public void castVote(int hoaId, String netId, int optionIndex) throws VotingException {
-        Voting currentVoting = ongoingElections.get(hoaId);
-        currentVoting.castVote(netId, optionIndex);
+        Vote currentVote = ongoingElections.get(hoaId);
+        currentVote.castVote(netId, optionIndex);
     }
 
     public List<String> getOptions(int hoaId) {
-        Voting requestedVoting = ongoingElections.get(hoaId);
-        if (requestedVoting != null) {
-            return requestedVoting.getOptions();
+        Vote requestedVote = ongoingElections.get(hoaId);
+        if (requestedVote != null) {
+            return requestedVote.getOptions();
         }
         return Collections.emptyList();
     }
 
     public Map<String, Integer> getResults(int hoaId) throws VotingException {
-        Voting currentVoting = ongoingElections.get(hoaId);
-        if (currentVoting.getTimeKeeper().isVoteOngoing()) {
+        Vote currentVote = ongoingElections.get(hoaId);
+        if (currentVote.getTimeKeeper().isVoteOngoing()) {
             throw new VotingException("Vote is still ongoing");
         }
-        return currentVoting.getResults();
+        return currentVote.getResults();
     }
 
     public Instant getEndTime(int hoaId) {
