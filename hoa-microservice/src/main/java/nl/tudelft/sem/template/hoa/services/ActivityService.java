@@ -62,6 +62,16 @@ public class ActivityService {
         return activityRepository.findAll();
     }
 
+
+    /**
+     * Returns all activities that a certain username is associated with.
+     *
+     * @return a list of activities
+     */
+    public List<Activity> getAllActivitiesForUsername(String username) {
+        return activityRepository.findActivitiesForUser(username);
+    }
+
     /**
      * Checks whether an activity with the given name and time already exists in the repository.
      *

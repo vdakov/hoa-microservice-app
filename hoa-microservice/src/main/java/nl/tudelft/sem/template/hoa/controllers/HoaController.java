@@ -47,5 +47,4 @@ public class HoaController {
         if (hoa != null) return ResponseEntity.ok(true);
         return ResponseEntity.ok(false);
     }
-
 }

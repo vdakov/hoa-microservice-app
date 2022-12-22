@@ -1,5 +1,7 @@
 package nl.tudelft.sem.template.authentication.controllers;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import nl.tudelft.sem.template.commons.models.ActivityModel;
 import nl.tudelft.sem.template.commons.models.CreateRequirementModel;
 import nl.tudelft.sem.template.commons.models.VotingModel;
@@ -22,6 +24,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.function.Function;
+
 @RestController
 @RequestMapping("/gateway")
 public class GatewayController {
@@ -36,6 +40,15 @@ public class GatewayController {
     public GatewayController() {
     }
 
+    private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = getClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parser().setSigningKey("exampleSecret").parseClaimsJws(token).getBody();
+    }
+
     public HttpEntity buildEntity(String token, Object body) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
@@ -44,7 +57,7 @@ public class GatewayController {
     }
 
     /**
-     * Routing method used to retrieve activities for a certain HOA, if authorized.
+     * Routing method used to retrieve activities for HOAs that the user is member of.
      *
      * @return The responseEntity passed back from the method in the HOA microservice.
      */
@@ -53,11 +66,11 @@ public class GatewayController {
         //Get bearer token
         String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                 .getRequest().getHeader(AUTHORIZATION_LITERAL);
-        System.out.println(token);
+        String username = getClaimFromToken(token.split(" ")[1], Claims::getSubject);
 
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, null);
-        String url = "http://localhost:8090/pnb/allActivities";
+        HttpEntity entity = buildEntity(token.split(" ")[1], null);
+        String url = "http://localhost:8090/pnb/allActivitiesForUser/" + username;
         return restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
     }
 
