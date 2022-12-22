@@ -126,7 +126,7 @@ public class GatewayController {
      * @param hoaId the ID of the hoa to submit the vote to.
      * @return the ResponseEntity passed back from the method in the HOA microservice.
      */
-    @PutMapping("/users/changeVote/{userId}/{hoaId}")
+    @PostMapping("/users/changeVote/{userId}/{hoaId}")
     public ResponseEntity changeVoteElection(@RequestBody VotingModel vote,
                                              @PathVariable(USER_ID_LITERAL) int userId,
                                              @PathVariable(HOA_ID_LITERAL) int hoaId) {
@@ -137,7 +137,7 @@ public class GatewayController {
         //temporary
         String url = "http://localhost:8082/vote/"+ hoaId + "/castVote";
 
-        return restTemplate.exchange(url, HttpMethod.PUT, entity, Object.class);
+        return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
     }
 
 
