@@ -92,7 +92,7 @@ public class GatewayController {
         String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                 .getRequest().getHeader(AUTHORIZATION_LITERAL);
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, null);
+        HttpEntity entity = buildEntity(token, model);
         String url = "http://localhost:8090/pnb/createActivity";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, ActivityModel.class);
