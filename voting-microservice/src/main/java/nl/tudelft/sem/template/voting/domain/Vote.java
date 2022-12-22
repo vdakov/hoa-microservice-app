@@ -26,6 +26,7 @@ public abstract class Vote {
         this.options = options;
         this.votes = new HashMap<>();
         this.timeKeeper = timeKeeper;
+
     }
 
     public abstract boolean isVoterEligible(String netId);
