@@ -5,6 +5,8 @@ import io.jsonwebtoken.Jwts;
 import nl.tudelft.sem.template.commons.models.ActivityModel;
 import nl.tudelft.sem.template.commons.models.CreateRequirementModel;
 import nl.tudelft.sem.template.commons.models.VotingModel;
+import nl.tudelft.sem.template.commons.models.hoa.FullHoaResponseModel;
+import nl.tudelft.sem.template.commons.models.hoa.HoaRequestModel;
 import nl.tudelft.sem.template.commons.models.UpdateRequirementModel;
 import nl.tudelft.sem.template.commons.models.DeleteRequirementModel;
 import nl.tudelft.sem.template.commons.models.CreateReportModel;
@@ -33,6 +35,8 @@ public class GatewayController {
     private static final String AUTHORIZATION_LITERAL = "Authorization";
     private static final String USER_ID_LITERAL = "userId";
     private static final String HOA_ID_LITERAL = "hoaId";
+    private static String token;
+
     /**
      * Instantiates a new GatewayController.
      */
@@ -49,11 +53,19 @@ public class GatewayController {
         return Jwts.parser().setSigningKey("exampleSecret").parseClaimsJws(token).getBody();
     }
 
-    public HttpEntity buildEntity(String token, Object body) {
+    /**
+     * Builds a standardized HTTP entity to pass along with HTTP requests
+     * @param body The body of the request, can be null.
+     * @return an HttpEntity with the provided body
+     */
+    public HttpEntity buildEntity(Object body) {
+        token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getRequest().getHeader(AUTHORIZATION_LITERAL);
+        //Remove the "bearer" from the beginning of the token.
+        token = token.split(" ")[1];
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
-        HttpEntity entity = new HttpEntity<>(body, headers);
-        return entity;
+        return new HttpEntity(body, headers);
     }
 
     /**
@@ -69,7 +81,7 @@ public class GatewayController {
         String username = getClaimFromToken(token.split(" ")[1], Claims::getSubject);
 
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token.split(" ")[1], null);
+        HttpEntity entity = buildEntity(null);
         String url = "http://localhost:8090/pnb/allActivitiesForUser/" + username;
         return restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
     }
@@ -82,11 +94,8 @@ public class GatewayController {
      */
     @GetMapping("/pnb/activitiesForHoa/{hoaId}")
     public ResponseEntity activitiesForHoa(@PathVariable(HOA_ID_LITERAL) int hoaId) {
-        //Get bearer token
-        String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest().getHeader(AUTHORIZATION_LITERAL);
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, null);
+        HttpEntity entity = buildEntity(null);
         String url = "http://localhost:8090/pnb/activitiesForHoa/" + hoaId;
 
         return restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
@@ -100,11 +109,8 @@ public class GatewayController {
      */
     @PostMapping("/pnb/createActivity")
     public ResponseEntity<ActivityModel> createActivity(@RequestBody ActivityModel model) {
-        //Get bearer token
-        String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest().getHeader(AUTHORIZATION_LITERAL);
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, model);
+        HttpEntity entity = buildEntity(model);
         String url = "http://localhost:8090/pnb/createActivity";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, ActivityModel.class);
@@ -113,20 +119,17 @@ public class GatewayController {
     /**
      * Routing method used for casting a vote in an election.
      *
-     * @param vote The vote to cast.
+     * @param vote   The vote to cast.
      * @param userId The ID of the user that casts the vote.
-     * @param hoaId The ID of the HOA for which the election is running.
+     * @param hoaId  The ID of the HOA for which the election is running.
      * @return the responseEntity passed back from the method in the HOA microservice.
      */
     @PostMapping("/users/castVote/{userId}/{hoaId}")
     public ResponseEntity castVote(@RequestBody VotingModel vote,
                                              @PathVariable(USER_ID_LITERAL) int userId,
                                              @PathVariable(HOA_ID_LITERAL) int hoaId) {
-        //Get bearer token
-        String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest().getHeader(AUTHORIZATION_LITERAL);
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, vote);
+        HttpEntity entity = buildEntity(vote);
         String url = "http://localhost:8082/vote/"+ hoaId + "/castVote";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
@@ -134,26 +137,23 @@ public class GatewayController {
 
     /**
      * Routing method used for changing your vote in an election
-     * @param vote the new vote to submit.
+     *
+     * @param vote   the new vote to submit.
      * @param userId the ID of the user that is submitting the vote.
-     * @param hoaId the ID of the hoa to submit the vote to.
+     * @param hoaId  the ID of the hoa to submit the vote to.
      * @return the ResponseEntity passed back from the method in the HOA microservice.
      */
     @PostMapping("/users/changeVote/{userId}/{hoaId}")
     public ResponseEntity changeVoteElection(@RequestBody VotingModel vote,
                                              @PathVariable(USER_ID_LITERAL) int userId,
                                              @PathVariable(HOA_ID_LITERAL) int hoaId) {
-        String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest().getHeader(AUTHORIZATION_LITERAL);
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, vote);
+        HttpEntity entity = buildEntity(vote);
         //temporary
         String url = "http://localhost:8082/vote/"+ hoaId + "/castVote";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
     }
-
-
 
 
     /**
@@ -164,10 +164,8 @@ public class GatewayController {
      */
     @PostMapping("/requirements/createRequirement")
     public ResponseEntity createRequirement(@RequestBody CreateRequirementModel model) {
-        String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest().getHeader(AUTHORIZATION_LITERAL);
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, model);
+        HttpEntity entity = buildEntity(model);
         String url = "http://localhost:8089/requirements/createRequirement";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
@@ -181,10 +179,8 @@ public class GatewayController {
      */
     @PostMapping("/requirements/changeRequirement")
     public ResponseEntity updateRequirement(@RequestBody UpdateRequirementModel model) {
-        String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest().getHeader(AUTHORIZATION_LITERAL);
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, model);
+        HttpEntity entity = buildEntity(model);
         String url = "http://localhost:8089/requirements/changeRequirement";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
@@ -198,10 +194,8 @@ public class GatewayController {
      */
     @PostMapping("/requirements/deleteRequirement")
     public ResponseEntity deleteRequirement(@RequestBody DeleteRequirementModel model) {
-        String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest().getHeader(AUTHORIZATION_LITERAL);
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, model);
+        HttpEntity entity = buildEntity(model);
         String url = "http://localhost:8089/requirements/deleteRequirement";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
@@ -215,10 +209,8 @@ public class GatewayController {
      */
     @PostMapping("/requirements/report")
     public ResponseEntity report(@RequestBody CreateReportModel model) {
-        String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest().getHeader(AUTHORIZATION_LITERAL);
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, model);
+        HttpEntity entity = buildEntity(model);
         String url = "http://localhost:8089/requirements/report";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
@@ -232,10 +224,8 @@ public class GatewayController {
      */
     @GetMapping("/requirements/getRequirements/{hoaId}")
     public ResponseEntity getRequirements(@PathVariable(HOA_ID_LITERAL) int hoaId) {
-        String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest().getHeader(AUTHORIZATION_LITERAL);
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, null);
+        HttpEntity entity = buildEntity(null);
         String url = "http://localhost:8089/requirements/getRequirements/" + hoaId;
 
         return restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
@@ -249,12 +239,25 @@ public class GatewayController {
      */
     @GetMapping("/requirements/getReports/{hoaId}")
     public ResponseEntity getReports(@PathVariable(HOA_ID_LITERAL) int hoaId) {
-        String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest().getHeader(AUTHORIZATION_LITERAL);
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, null);
+        HttpEntity entity = buildEntity(null);
         String url = "http://localhost:8089/requirements/getReports/" + hoaId;
 
-        return restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
+        return restTemplate.exchange(url, HttpMethod.GET, entity, ResponseEntity.class);
+    }
+
+    /**
+     * Routing method to create a new HOA.
+     *
+     * @param model the model containing the details about the HOA to create.
+     * @return the ResponseEntity passed back from the method in the HOA microservice.
+     */
+    @PostMapping("/hoa/createHoa")
+    public ResponseEntity createHoa(@RequestBody HoaRequestModel model){
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity entity = buildEntity(model);
+        String url = "http://localhost:8090/hoa/createHoa";
+
+        return restTemplate.exchange(url, HttpMethod.POST, entity, FullHoaResponseModel.class);
     }
 }

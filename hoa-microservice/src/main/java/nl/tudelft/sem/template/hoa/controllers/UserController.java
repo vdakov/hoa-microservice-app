@@ -101,7 +101,7 @@ public class UserController {
         return ResponseEntity.ok().body(connection.toFullModel());
     }
 
-    @GetMapping("isInHoa")
+    @PostMapping("isInHoa")
     public ResponseEntity<Boolean> isInHoa(@RequestBody IsInHoaRequestModel req) {
         if (req.anyNull())
             return ResponseEntity.badRequest().build();
