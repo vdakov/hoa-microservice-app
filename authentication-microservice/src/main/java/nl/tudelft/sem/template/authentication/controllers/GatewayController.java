@@ -70,9 +70,9 @@ public class GatewayController {
         String username = getClaimFromToken(token.split(" ")[1], Claims::getSubject);
 
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token.split(" ")[1], username);
-        String url = "http://localhost:8090/pnb/allActivitiesForUser";
-        return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
+        HttpEntity entity = buildEntity(token.split(" ")[1], null);
+        String url = "http://localhost:8090/pnb/allActivitiesForUser/" + username;
+        return restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
     }
 
     /**

@@ -101,8 +101,8 @@ public class PnbController {
      * @param username the username (NOTE: according to the database on THIS microservice).
      * @return a response entity with a list of activities.
      */
-    @PostMapping("/allActivitiesForUser")
-    public ResponseEntity<List<ActivityModel>> getActivitiesForUser(@RequestBody String username) {
+    @GetMapping("/allActivitiesForUser/{username}")
+    public ResponseEntity<List<ActivityModel>> getActivitiesForUser(@PathVariable String username) {
         return ResponseEntity.ok(
                 activitiesToModels(
                         activityService.getAllActivitiesForUsername(username)
