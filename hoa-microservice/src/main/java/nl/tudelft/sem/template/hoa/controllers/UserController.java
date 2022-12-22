@@ -1,8 +1,11 @@
 package nl.tudelft.sem.template.hoa.controllers;
 
+import nl.tudelft.sem.template.commons.entities.ElectionVote;
+import nl.tudelft.sem.template.commons.entities.RequirementVote;
 import nl.tudelft.sem.template.commons.models.hoa.FullAddressModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullUserHoaModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullUserResponseModel;
+import nl.tudelft.sem.template.commons.models.hoa.IsInHoaRequestModel;
 import nl.tudelft.sem.template.commons.models.hoa.JoinModel;
 import nl.tudelft.sem.template.hoa.entitites.User;
 import nl.tudelft.sem.template.hoa.entitites.UserHoa;
@@ -28,6 +31,8 @@ public class UserController {
 
     @Autowired
     private transient UserService userService;
+    @Autowired
+    private transient VoteService voteService;
 
     private static final String USER_ID_LITERAL = "userId";
 
@@ -77,26 +82,35 @@ public class UserController {
     * @throws UserDoesNotExistException if the specified user does not exist
     */
     @PostMapping("joinHoa")
-    public ResponseEntity<FullUserHoaModel> joinHoa(@RequestBody JoinModel joinRequest)
+    public ResponseEntity<FullUserHoaModel> joinHoa(@RequestBody JoinModel joinRequest) 
         throws HoaDoesNotExistException, UserDoesNotExistException {
-
-        if (joinRequest.getUserDisplayName() == null || joinRequest.getHoaName() == null
-            || joinRequest.getCountry() == null || joinRequest.getCity() == null || joinRequest.getStreet() == null
+        
+        if (joinRequest.getUserDisplayName() == null || joinRequest.getHoaName() == null 
+            || joinRequest.getCountry() == null || joinRequest.getCity() == null || joinRequest.getStreet() == null 
             || joinRequest.getHoaName() == null || joinRequest.getPostalCode() == null) {
             return ResponseEntity.badRequest().build();
         }
 
         FullAddressModel address = new FullAddressModel(
-            joinRequest.getCountry(), joinRequest.getCity(),
-            joinRequest.getStreet(), joinRequest.getHouseNumber(),
+            joinRequest.getCountry(), joinRequest.getCity(), 
+            joinRequest.getStreet(), joinRequest.getHouseNumber(), 
             joinRequest.getPostalCode()
         );
-
+        
         UserHoa connection = this.userService.joinAssociation(
             joinRequest.getHoaName(), joinRequest.getUserDisplayName(), address
         );
 
         return ResponseEntity.ok().body(connection.toFullModel());
+    }
+
+    @GetMapping("isInHoa")
+    public ResponseEntity<Boolean> isInHoa(@RequestBody IsInHoaRequestModel req) {
+        if (req.anyNull())
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(
+            this.userService.isInHoa(req.getDisplayName(), req.getName(), req.getCountry(), req.getCity())
+        );
     }
 
 }

@@ -3,21 +3,21 @@ package nl.tudelft.sem.template.hoa.controllers;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nl.tudelft.sem.template.commons.models.hoa.HoaRequestModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullHoaResponseModel;
-import nl.tudelft.sem.template.commons.models.hoa.HoaModel;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.services.HoaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
+@RequestMapping("/hoa")
 public class HoaController {
 
     private final transient HoaService hoaService;
@@ -25,14 +25,6 @@ public class HoaController {
     @Autowired
     public HoaController(HoaService hoaService) {
         this.hoaService = hoaService;
-    }
-
-
-    public HttpEntity buildEntity(String token, Object body) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
-        HttpEntity entity = new HttpEntity<>(body, headers);
-        return entity;
     }
 
     @GetMapping("/all")
@@ -44,10 +36,16 @@ public class HoaController {
     }
 
     @PostMapping("/createHoa")
-    public ResponseEntity<Hoa> createHoa(@RequestBody HoaModel hoaModel) throws Exception {
+    public ResponseEntity<FullHoaResponseModel> createHoa(@RequestBody HoaRequestModel hoaModel) throws Exception {
         Hoa hoa = hoaService.createHoa(hoaModel.getName(), hoaModel.getCountry(), hoaModel.getCity());
-        return ResponseEntity.ok(hoa);
+        return ResponseEntity.ok(hoa.toFullModel());
     }
 
+    @GetMapping("/find/{hoaId}")
+    public ResponseEntity<Boolean> findHoa(@PathVariable("hoaId") int hoaId) {
+        Hoa hoa = hoaService.getHoaById(hoaId);
+        if (hoa != null) return ResponseEntity.ok(true);
+        return ResponseEntity.ok(false);
+    }
 
 }
