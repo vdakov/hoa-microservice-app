@@ -42,6 +42,6 @@ public class ElectionVoteBuilder implements VoteBuilder {
         if (voterEligibilityChecker == null) {
             this.voterEligibilityChecker = new UrlVoterEligibilityChecker("http://localhost:8090/isInHoa");
         }
-        return new ElectionVote(hoaId, options, timeKeeper, voterEligibilityChecker, numberOfEligibleVoters);
+        return new Vote(hoaId, options, timeKeeper, voterEligibilityChecker, numberOfEligibleVoters);
     }
 }

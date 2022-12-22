@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-public abstract class Vote {
+public class Vote {
 
     protected final transient int hoaId;
     protected transient List<String> options;
