@@ -13,4 +13,8 @@ public abstract class AddressModel {
         this.country = country;
         this.city = city;
     }
+
+    public boolean anyNull() {
+        return country == null || city == null;
+    }
 }

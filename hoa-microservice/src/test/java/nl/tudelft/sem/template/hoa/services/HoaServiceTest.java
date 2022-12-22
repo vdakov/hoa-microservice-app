@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import nl.tudelft.sem.template.commons.models.hoa.CreateHoaModel;
+import nl.tudelft.sem.template.commons.models.hoa.HoaRequestModel;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.repositories.HoaRepository;
 
@@ -30,13 +30,15 @@ import nl.tudelft.sem.template.hoa.repositories.HoaRepository;
 public class HoaServiceTest {
     @Mock
     private HoaRepository hoaRepository;
+    @Mock
+    private VoteService voteService;
 
     @InjectMocks
     private HoaService hoaService;
 
     @BeforeEach
     public void setup() {
-        hoaService = new HoaService(hoaRepository);
+        hoaService = new HoaService(hoaRepository, voteService);
     }
 
     @Test
@@ -44,7 +46,7 @@ public class HoaServiceTest {
         Hoa expectedHoa = new Hoa("MyHoa", "USA", "New York");
         when(hoaRepository.save(expectedHoa)).thenReturn(expectedHoa);
 
-        CreateHoaModel hoaModel = new CreateHoaModel("MyHoa", "USA", "New York");
+        HoaRequestModel hoaModel = new HoaRequestModel("MyHoa", "USA", "New York");
         Hoa actualHoa = hoaService.createHoa(hoaModel.getName(), hoaModel.getCountry(), hoaModel.getCity());
 
         assertEquals(expectedHoa, actualHoa);

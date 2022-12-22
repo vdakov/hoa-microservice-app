@@ -19,6 +19,9 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.NaturalId;
 
+
+import org.hibernate.annotations.NaturalId;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.GenerationType;
@@ -89,7 +92,7 @@ public class Hoa extends HasAddress {
         return new FullHoaResponseModel(
             this.members.stream().map(member -> {
                 return member.toHoaLessModel();
-            }).collect(Collectors.toSet()), 
+            }).collect(Collectors.toSet()),
             this.name, this.getCountry(), this.getCity()
         );
     }

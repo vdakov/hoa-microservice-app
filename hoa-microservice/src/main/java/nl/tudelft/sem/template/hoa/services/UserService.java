@@ -8,6 +8,7 @@ import nl.tudelft.sem.template.hoa.exceptions.HoaDoesNotExistException;
 import nl.tudelft.sem.template.hoa.exceptions.UserDoesNotExistException;
 import nl.tudelft.sem.template.hoa.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -118,6 +119,10 @@ public class UserService {
      */
     public User getUser(int id) {
         return userRepository.findUserById(id);
+    }
+
+    public boolean isInHoa(String displayName, String hoaName, String country, String city) {
+        return this.userRepository.isInHoa(displayName, hoaName, country, city);
     }
 
 

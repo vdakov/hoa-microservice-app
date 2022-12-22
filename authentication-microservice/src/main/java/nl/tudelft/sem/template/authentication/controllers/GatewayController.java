@@ -1,11 +1,14 @@
 package nl.tudelft.sem.template.authentication.controllers;
 
-import nl.tudelft.sem.template.commons.entities.ElectionVote;
-import nl.tudelft.sem.template.commons.entities.RequirementVote;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import nl.tudelft.sem.template.commons.models.ActivityModel;
-import nl.tudelft.sem.template.commons.models.CreateReportModel;
 import nl.tudelft.sem.template.commons.models.CreateRequirementModel;
-import nl.tudelft.sem.template.commons.models.hoa.CreateHoaModel;
+import nl.tudelft.sem.template.commons.models.VotingModel;
+import nl.tudelft.sem.template.commons.models.hoa.HoaRequestModel;
+import nl.tudelft.sem.template.commons.models.UpdateRequirementModel;
+import nl.tudelft.sem.template.commons.models.DeleteRequirementModel;
+import nl.tudelft.sem.template.commons.models.CreateReportModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +25,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.function.Function;
+
 @RestController
 @RequestMapping("/gateway")
 public class GatewayController {
@@ -32,10 +37,19 @@ public class GatewayController {
     private static String token;
 
     /**
-     * Instantiates a new UsersController.
+     * Instantiates a new GatewayController.
      */
     @Autowired
     public GatewayController() {
+    }
+
+    private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = getClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parser().setSigningKey("exampleSecret").parseClaimsJws(token).getBody();
     }
 
     /**
@@ -54,15 +68,20 @@ public class GatewayController {
     }
 
     /**
-     * Routing method used to retrieve activities for a certain HOA, if authorized.
+     * Routing method used to retrieve activities for HOAs that the user is member of.
      *
      * @return The responseEntity passed back from the method in the HOA microservice.
      */
     @GetMapping("/pnb/allActivities")
     public ResponseEntity allActivities() {
+        //Get bearer token
+        String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getRequest().getHeader(AUTHORIZATION_LITERAL);
+        String username = getClaimFromToken(token.split(" ")[1], Claims::getSubject);
+
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = buildEntity(null);
-        String url = "http://localhost:8090/pnb/allActivities";
+        String url = "http://localhost:8090/pnb/allActivitiesForUser/" + username;
         return restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
     }
 
@@ -90,7 +109,7 @@ public class GatewayController {
     @PostMapping("/pnb/createActivity")
     public ResponseEntity<ActivityModel> createActivity(@RequestBody ActivityModel model) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(null);
+        HttpEntity entity = buildEntity(model);
         String url = "http://localhost:8090/pnb/createActivity";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, ActivityModel.class);
@@ -104,13 +123,13 @@ public class GatewayController {
      * @param hoaId  The ID of the HOA for which the election is running.
      * @return the responseEntity passed back from the method in the HOA microservice.
      */
-    @PostMapping("/users/castVoteElection/{userId}/{hoaId}")
-    public ResponseEntity submitVoteElection(@RequestBody ElectionVote vote,
+    @PostMapping("/users/castVote/{userId}/{hoaId}")
+    public ResponseEntity castVote(@RequestBody VotingModel vote,
                                              @PathVariable(USER_ID_LITERAL) int userId,
                                              @PathVariable(HOA_ID_LITERAL) int hoaId) {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = buildEntity(vote);
-        String url = "http://localhost:8090/api/users/submitVoteElection/" + userId + "/" + hoaId;
+        String url = "http://localhost:8082/vote/"+ hoaId + "/castVote";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
     }
@@ -123,50 +142,18 @@ public class GatewayController {
      * @param hoaId  the ID of the hoa to submit the vote to.
      * @return the ResponseEntity passed back from the method in the HOA microservice.
      */
-    @PutMapping("/users/changeVoteElection/{userId}/{hoaId}")
-    public ResponseEntity changeVoteElection(@RequestBody ElectionVote vote,
+    @PostMapping("/users/changeVote/{userId}/{hoaId}")
+    public ResponseEntity changeVoteElection(@RequestBody VotingModel vote,
                                              @PathVariable(USER_ID_LITERAL) int userId,
                                              @PathVariable(HOA_ID_LITERAL) int hoaId) {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = buildEntity(vote);
-        String url = "http://localhost:8090/api/users/changeVoteElection/" + userId + "/" + hoaId;
-
-        return restTemplate.exchange(url, HttpMethod.PUT, entity, Object.class);
-    }
-
-    /**
-     * Routing method used for casting a vote about a change in requirements..
-     *
-     * @param vote   The vote to cast.
-     * @param userId The ID of the user that casts the vote.
-     * @return the responseEntity passed back from the method in the HOA microservice.
-     */
-    @PostMapping("/users/submitRequirementsVote/{userId}/{hoaId}")
-    public ResponseEntity submitRequirementsVote(@RequestBody RequirementVote vote,
-                                                 @PathVariable(USER_ID_LITERAL) int userId) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(vote);
-        String url = "http://localhost:8090/api/users/submitVoteRequirement/" + userId;
+        //temporary
+        String url = "http://localhost:8082/vote/"+ hoaId + "/castVote";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
     }
 
-    /**
-     * Routing method used for changing your vote for a change in requirements
-     *
-     * @param vote   the new vote to submit.
-     * @param userId the ID of the user that is submitting the vote.
-     * @return the ResponseEntity passed back from the method in the HOA microservice.
-     */
-    @PutMapping("/users/changeVoteRequirement/{userId}")
-    public ResponseEntity changeVoteRequirement(@RequestBody RequirementVote vote,
-                                                @PathVariable(USER_ID_LITERAL) int userId) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(vote);
-        String url = "http://localhost:8090/api/users/changeVoteRequirement/" + userId;
-
-        return restTemplate.exchange(url, HttpMethod.PUT, entity, Object.class);
-    }
 
     /**
      * Routing method used for creating a new requirement.
@@ -179,6 +166,36 @@ public class GatewayController {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = buildEntity(model);
         String url = "http://localhost:8089/requirements/createRequirement";
+
+        return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
+    }
+
+    /**
+     * Routing method used for updating an existing requirement.
+     *
+     * @param model the request model containing the details of the requirement.
+     * @return the ResponseEntity passed back from the endpoint.
+     */
+    @PostMapping("/requirements/changeRequirement")
+    public ResponseEntity updateRequirement(@RequestBody UpdateRequirementModel model) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity entity = buildEntity(model);
+        String url = "http://localhost:8089/requirements/changeRequirement";
+
+        return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
+    }
+
+    /**
+     * Routing method used for deleting an existing requirement.
+     *
+     * @param model the request model containing the details of the requirement.
+     * @return the ResponseEntity passed back from the endpoint.
+     */
+    @PostMapping("/requirements/deleteRequirement")
+    public ResponseEntity deleteRequirement(@RequestBody DeleteRequirementModel model) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity entity = buildEntity(model);
+        String url = "http://localhost:8089/requirements/deleteRequirement";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
     }
@@ -235,10 +252,10 @@ public class GatewayController {
      * @return the ResponseEntity passed back from the method in the HOA microservice.
      */
     @PostMapping("/hoa/createHoa")
-    public ResponseEntity createHoa(@RequestBody CreateHoaModel model){
+    public ResponseEntity createHoa(@RequestBody HoaRequestModel model){
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = buildEntity(model);
-        String url = "http://localhost:8090/hoa/crateHoa";
+        String url = "http://localhost:8090/hoa/createHoa";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, ResponseEntity.class);
     }

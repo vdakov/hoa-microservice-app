@@ -3,13 +3,14 @@ package nl.tudelft.sem.template.hoa.controllers;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nl.tudelft.sem.template.commons.models.hoa.CreateHoaModel;
+import nl.tudelft.sem.template.commons.models.hoa.HoaRequestModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullHoaResponseModel;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.services.HoaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,9 +36,15 @@ public class HoaController {
     }
 
     @PostMapping("/createHoa")
-    public ResponseEntity<FullHoaResponseModel> createHoa(@RequestBody CreateHoaModel hoaModel) throws Exception {
+    public ResponseEntity<FullHoaResponseModel> createHoa(@RequestBody HoaRequestModel hoaModel) throws Exception {
         Hoa hoa = hoaService.createHoa(hoaModel.getName(), hoaModel.getCountry(), hoaModel.getCity());
         return ResponseEntity.ok(hoa.toFullModel());
     }
 
+    @GetMapping("/find/{hoaId}")
+    public ResponseEntity<Boolean> findHoa(@PathVariable("hoaId") int hoaId) {
+        Hoa hoa = hoaService.getHoaById(hoaId);
+        if (hoa != null) return ResponseEntity.ok(true);
+        return ResponseEntity.ok(false);
+    }
 }
