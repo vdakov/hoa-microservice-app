@@ -6,14 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Getter
 public abstract class Vote {
 
     protected final transient int hoaId;
-    @Getter
     protected transient List<String> options;
     protected transient Map<String, Integer> votes; // we have to store the votes, not persisted to the database yet
-    @Getter
     protected transient TimeKeeper timeKeeper;
+    protected transient VoterEligibilityChecker voterEligibilityChecker;
 
     /**
      * Initialize a voting procedure
@@ -21,15 +21,20 @@ public abstract class Vote {
      * @param options a list of strings denoting the options to vote for
      * @param timeKeeper a TimeKeeper object that keeps track of when the election is over
      */
-    protected Vote(int hoaId, List<String> options, TimeKeeper timeKeeper) {
+    protected Vote(int hoaId,
+                   List<String> options,
+                   TimeKeeper timeKeeper,
+                   VoterEligibilityChecker voterEligibilityChecker) {
         this.hoaId = hoaId;
         this.options = options;
         this.votes = new HashMap<>();
         this.timeKeeper = timeKeeper;
-
+        this.voterEligibilityChecker = voterEligibilityChecker;
     }
 
-    public abstract boolean isVoterEligible(String netId);
+    public boolean isVoterEligible(String netId) {
+        return voterEligibilityChecker.isVoterEligible(netId);
+    }
 
     /**
      * Cast a vote in the running voting procedure

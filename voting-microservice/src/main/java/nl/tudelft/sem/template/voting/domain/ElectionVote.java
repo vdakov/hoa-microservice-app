@@ -4,11 +4,11 @@ import java.util.List;
 
 public class ElectionVote extends Vote {
 
-    public ElectionVote(int hoaId, List<String> options, TimeKeeper timeKeeper) {
-        super(hoaId, options, timeKeeper);
+    public ElectionVote(int hoaId,
+                        List<String> options,
+                        TimeKeeper timeKeeper,
+                        VoterEligibilityChecker voterEligibilityChecker) {
+        super(hoaId, options, timeKeeper, voterEligibilityChecker);
     }
 
-    public boolean isVoterEligible(String netId) {
-        return true; // TODO: return truth value based on user's authorities
-    }
 }
