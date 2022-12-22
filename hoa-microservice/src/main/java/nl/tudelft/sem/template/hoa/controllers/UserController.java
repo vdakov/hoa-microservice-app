@@ -1,7 +1,5 @@
 package nl.tudelft.sem.template.hoa.controllers;
 
-import nl.tudelft.sem.template.commons.entities.ElectionVote;
-import nl.tudelft.sem.template.commons.entities.RequirementVote;
 import nl.tudelft.sem.template.commons.models.hoa.FullAddressModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullUserHoaModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullUserResponseModel;
@@ -31,8 +29,7 @@ public class UserController {
 
     @Autowired
     private transient UserService userService;
-    @Autowired
-    private transient VoteService voteService;
+
 
     private static final String USER_ID_LITERAL = "userId";
 
