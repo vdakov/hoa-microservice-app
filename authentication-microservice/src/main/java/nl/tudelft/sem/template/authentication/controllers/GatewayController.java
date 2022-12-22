@@ -5,6 +5,7 @@ import nl.tudelft.sem.template.commons.entities.RequirementVote;
 import nl.tudelft.sem.template.commons.models.ActivityModel;
 import nl.tudelft.sem.template.commons.models.CreateReportModel;
 import nl.tudelft.sem.template.commons.models.CreateRequirementModel;
+import nl.tudelft.sem.template.commons.models.hoa.CreateHoaModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -28,6 +29,7 @@ public class GatewayController {
     private static final String AUTHORIZATION_LITERAL = "Authorization";
     private static final String USER_ID_LITERAL = "userId";
     private static final String HOA_ID_LITERAL = "hoaId";
+
     /**
      * Instantiates a new UsersController.
      */
@@ -38,8 +40,7 @@ public class GatewayController {
     public HttpEntity buildEntity(String token, Object body) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
-        HttpEntity entity = new HttpEntity<>(body, headers);
-        return entity;
+        return new HttpEntity(body, headers);
     }
 
     /**
@@ -99,9 +100,9 @@ public class GatewayController {
     /**
      * Routing method used for casting a vote in an election.
      *
-     * @param vote The vote to cast.
+     * @param vote   The vote to cast.
      * @param userId The ID of the user that casts the vote.
-     * @param hoaId The ID of the HOA for which the election is running.
+     * @param hoaId  The ID of the HOA for which the election is running.
      * @return the responseEntity passed back from the method in the HOA microservice.
      */
     @PostMapping("/users/castVoteElection/{userId}/{hoaId}")
@@ -120,9 +121,10 @@ public class GatewayController {
 
     /**
      * Routing method used for changing your vote in an election
-     * @param vote the new vote to submit.
+     *
+     * @param vote   the new vote to submit.
      * @param userId the ID of the user that is submitting the vote.
-     * @param hoaId the ID of the hoa to submit the vote to.
+     * @param hoaId  the ID of the hoa to submit the vote to.
      * @return the ResponseEntity passed back from the method in the HOA microservice.
      */
     @PutMapping("/users/changeVoteElection/{userId}/{hoaId}")
@@ -141,7 +143,7 @@ public class GatewayController {
     /**
      * Routing method used for casting a vote about a change in requirements..
      *
-     * @param vote The vote to cast.
+     * @param vote   The vote to cast.
      * @param userId The ID of the user that casts the vote.
      * @return the responseEntity passed back from the method in the HOA microservice.
      */
@@ -160,7 +162,8 @@ public class GatewayController {
 
     /**
      * Routing method used for changing your vote for a change in requirements
-     * @param vote the new vote to submit.
+     *
+     * @param vote   the new vote to submit.
      * @param userId the ID of the user that is submitting the vote.
      * @return the ResponseEntity passed back from the method in the HOA microservice.
      */
@@ -241,6 +244,23 @@ public class GatewayController {
         HttpEntity entity = buildEntity(token, null);
         String url = "http://localhost:8089/requirements/getReports/" + hoaId;
 
-        return restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
+        return restTemplate.exchange(url, HttpMethod.GET, entity, ResponseEntity.class);
+    }
+
+    /**
+     * Routing method to create a new HOA.
+     *
+     * @param model the model containing the details about the HOA to create.
+     * @return the ResponseEntity passed back from the method in the HOA microservice.
+     */
+    @PostMapping("/hoa/createHoa")
+    public ResponseEntity createHoa(@RequestBody CreateHoaModel model){
+        String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getRequest().getHeader(AUTHORIZATION_LITERAL);
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity entity = buildEntity(token, model);
+        String url = "http://localhost:8090/hoa/crateHoa";
+
+        return restTemplate.exchange(url, HttpMethod.POST, entity, ResponseEntity.class);
     }
 }
