@@ -72,7 +72,7 @@ public class VoteController {
      * @param hoaId   the id of the associations this is for
      * @return status of the message
      */
-    @PostMapping("{hoaId}/receiveElectionResults")
+    @PostMapping("/receiveElectionResults/{hoaId}")
     public ResponseEntity<String> getElectionResults(@RequestBody ElectionResultsModel results,
                                                      @PathVariable("hoaId") int hoaId) {
         voteService.storeElectionResults(hoaId, results);
@@ -82,7 +82,7 @@ public class VoteController {
     /**
      * Analogous with above JavaDoc
      */
-    @PostMapping("{hoaId}/receiveRequirementResults")
+    @PostMapping("/receiveRequirementResults/{hoaId}")
     public ResponseEntity<String> getRequirementResults(@RequestBody RequirementResultsModel results,
                                                         @PathVariable("hoaId") int hoaId) {
         voteService.storeRequirementResults(hoaId, results);
@@ -92,7 +92,7 @@ public class VoteController {
     /**
      * Endpoint for getting a list of eligible members in the HOA (used for requirement votings)
      */
-    @GetMapping("{hoadId}/getListEligibleMembers")
+    @GetMapping("/getListEligibleMembers/{hoadId}")
     public ResponseEntity<List<User>> getListEligibleMembers() {
         return ResponseEntity.ok().build();
     }
