@@ -72,6 +72,7 @@ public class VoteController {
      * @param hoaId   the id of the associations this is for
      * @return status of the message
      */
+    @SuppressWarnings("PMD")
     @PostMapping("/receiveElectionResults/{hoaId}")
     public ResponseEntity<String> getElectionResults(@RequestBody ElectionResultsModel results,
                                                      @PathVariable("hoaId") int hoaId) {
