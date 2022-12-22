@@ -10,15 +10,18 @@ import nl.tudelft.sem.template.commons.models.hoa.HoaRequestModel;
 import nl.tudelft.sem.template.commons.models.UpdateRequirementModel;
 import nl.tudelft.sem.template.commons.models.DeleteRequirementModel;
 import nl.tudelft.sem.template.commons.models.CreateReportModel;
+import nl.tudelft.sem.template.commons.models.hoa.ConnectionRequestModel;
+import nl.tudelft.sem.template.commons.models.hoa.FullUserResponseModel;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -114,6 +117,33 @@ public class GatewayController {
         String url = "http://localhost:8090/pnb/createActivity";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, ActivityModel.class);
+    }
+
+
+    /**
+     * Routes a request to delete a connection between a user and a homeowners association (HOA).
+     * 
+     * @param request A request model containing the HOA ID and the user's display name.
+     * @return A response containing the updated user information, as returned by the HOA controller,
+     * or a bad request if any of the fields are null
+     */
+    @DeleteMapping("/users/leaveHoa")
+    public ResponseEntity<FullUserResponseModel> leaveHoa(@RequestBody ConnectionRequestModel request) {
+        String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getRequest().getHeader(AUTHORIZATION_LITERAL);
+
+        String userName = getClaimFromToken(token, Claims::getSubject);
+
+        request.setDisplayName(userName);
+
+        if (request.anyNull())
+            return ResponseEntity.badRequest().build();
+        
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity entity = buildEntity(request);
+        String url = "http://localhost:8090/api/users/leaveHoa";
+
+        return restTemplate.exchange(url, HttpMethod.DELETE, entity, FullUserResponseModel.class);
     }
 
     /**
