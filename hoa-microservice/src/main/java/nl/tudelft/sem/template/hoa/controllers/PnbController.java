@@ -4,7 +4,6 @@ import nl.tudelft.sem.template.hoa.entitites.Activity;
 import nl.tudelft.sem.template.hoa.services.ActivityService;
 import nl.tudelft.sem.template.commons.models.ActivityModel;
 
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -84,12 +83,29 @@ public class PnbController {
                 .collect(Collectors.toList());
     }
 
-
+    /**
+     * Method for retrieving all activities in the repo. Only for testing purposes.
+     * @return a response entity with a list of activities.
+     */
     @GetMapping("/allActivities")
     public ResponseEntity<List<ActivityModel>> getAllActivities() {
         return ResponseEntity.ok(
                 activitiesToModels(
                         activityService.getAllActivities()
+                )
+        );
+    }
+
+    /**
+     * Method for retrieving all activities a user has access to.
+     * @param username the username (NOTE: according to the database on THIS microservice).
+     * @return a response entity with a list of activities.
+     */
+    @PostMapping("/allActivitiesForUser")
+    public ResponseEntity<List<ActivityModel>> getActivitiesForUser(@RequestBody String username) {
+        return ResponseEntity.ok(
+                activitiesToModels(
+                        activityService.getAllActivitiesForUsername(username)
                 )
         );
     }
