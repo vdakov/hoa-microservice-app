@@ -7,8 +7,9 @@ public class ElectionVote extends Vote {
     public ElectionVote(int hoaId,
                         List<String> options,
                         TimeKeeper timeKeeper,
-                        VoterEligibilityChecker voterEligibilityChecker) {
-        super(hoaId, options, timeKeeper, voterEligibilityChecker);
+                        VoterEligibilityChecker voterEligibilityChecker,
+                        int numberOfEligibleVoters) {
+        super(hoaId, options, timeKeeper, voterEligibilityChecker, numberOfEligibleVoters);
     }
 
 }

@@ -1,5 +1,6 @@
 package nl.tudelft.sem.template.voting.controllers;
 
+import nl.tudelft.sem.template.commons.models.VotingModel;
 import nl.tudelft.sem.template.voting.application.VotingService;
 import nl.tudelft.sem.template.voting.authentication.AuthManager;
 import nl.tudelft.sem.template.voting.domain.VotingException;
@@ -34,33 +35,28 @@ public class VoteController {
 
     /**
      * An endpoint to initialize a voting procedure
-     * @param hoaId the ID of the HOA
-     * @param votingType the type of the voting procedure
-     * @param body a list of Strings that denotes the available options
+     * @param votingModel DTO containing information used to start a vote
      * @return an HTTP response
      */
     @PostMapping("/initializeVoting")
-    public ResponseEntity<String> initializeVoting(@RequestParam int hoaId,
-                                                   @RequestParam VotingType votingType,
-                                                   @RequestBody List<String> body) {
-
+    public ResponseEntity<String> initializeVoting(@RequestBody VotingModel votingModel) {
         // TODO: check whether the respective user has the permission to initialize a vote
-        boolean electionOngoing = votingService.existingHoaVoting(hoaId);
+        boolean electionOngoing = votingService.existingHoaVoting(votingModel.getHoaId());
         if (!electionOngoing) {
-            if (votingType.equals(VotingType.ELECTIONS_VOTE)) {
+            if (votingModel.getVotingType().equals(VotingType.REQUIREMENTS_VOTE)) {
                 return ResponseEntity
                         .status(HttpStatus.NOT_IMPLEMENTED)
                         .body("");
             }
-            votingService.registerVoteStartingNow(hoaId, votingType, body, Duration.ofMinutes(1L));
+            votingService.registerVoteStartingNow(votingModel, Duration.ofMinutes(1L));
             return ResponseEntity
-                    .created(URI.create(String.format("/vote/%d", hoaId)))
-                    .body(String.format("/vote/%d", hoaId));
+                    .created(URI.create(String.format("/vote/%d", votingModel.getHoaId())))
+                    .body(String.format("/vote/%d", votingModel.getHoaId()));
 
         }
         return ResponseEntity
                 .status(HttpStatus.SEE_OTHER)
-                .body(String.format("/vote/%d", hoaId));
+                .body(String.format("/vote/%d", votingModel.getHoaId()));
     }
 
     /**

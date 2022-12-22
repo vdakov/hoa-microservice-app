@@ -16,7 +16,8 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
-
+import java.util.Arrays;
+import java.util.List;
 
 
 @Service
@@ -60,8 +61,11 @@ public class VoteService {
         Hoa hoa = hoaRepository.findById(hoaId);
         int numEligibleVotes = hoa.getMembers().size();
         VotingType type = VotingType.ELECTIONS_VOTE;
-
-        return new VotingModel(hoaId, type, numEligibleVotes);
+        List<String> candidates = Arrays.asList("candidate0", "candidate1", "candidate2");
+        //TODO: get a list of candidates later!
+        VotingModel votingModel = new VotingModel(hoaId, type, numEligibleVotes, candidates);
+        System.out.println(votingModel);
+        return votingModel;
     }
 
     /**
@@ -71,8 +75,7 @@ public class VoteService {
         Hoa hoa = hoaRepository.findById(hoaId);
         int numEligibleVotes = hoa.getMembers().size();
         VotingType type = VotingType.REQUIREMENTS_VOTE;
-
-        return new VotingModel(hoaId, type, numEligibleVotes);
+        return new VotingModel(hoaId, type, numEligibleVotes, Collections.emptyList());
     }
 
 

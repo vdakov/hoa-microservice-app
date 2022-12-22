@@ -9,6 +9,7 @@ public interface VoteBuilder {
     public VoteBuilder withTimeKeeper(TimeKeeper timeKeeper);
     public VoteBuilder startInstantlyWithDuration(TemporalAmount temporalAmount);
     public VoteBuilder withVoterEligibilityChecker(VoterEligibilityChecker voterEligibilityChecker);
+    public VoteBuilder withEligibleVoters(int numberOfEligibleVoters);
     public Vote build();
 
 }

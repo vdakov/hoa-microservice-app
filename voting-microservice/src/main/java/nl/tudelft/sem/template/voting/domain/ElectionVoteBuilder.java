@@ -12,6 +12,8 @@ public class ElectionVoteBuilder implements VoteBuilder {
     private List<String> options;
     private TimeKeeper timeKeeper;
     private VoterEligibilityChecker voterEligibilityChecker;
+    private int numberOfEligibleVoters;
+
     public VoteBuilder forHoaWithId(int hoaId) {
         this.hoaId = hoaId;
         return this;
@@ -32,11 +34,14 @@ public class ElectionVoteBuilder implements VoteBuilder {
         this.voterEligibilityChecker = voterEligibilityChecker;
         return this;
     }
-
+    public VoteBuilder withEligibleVoters(int numberOfEligibleVoters) {
+        this.numberOfEligibleVoters = numberOfEligibleVoters;
+        return this;
+    }
     public Vote build() {
         if (voterEligibilityChecker == null) {
             this.voterEligibilityChecker = new UrlVoterEligibilityChecker("http://localhost:8090/isInHoa");
         }
-        return new ElectionVote(hoaId, options, timeKeeper, voterEligibilityChecker);
+        return new ElectionVote(hoaId, options, timeKeeper, voterEligibilityChecker, numberOfEligibleVoters);
     }
 }

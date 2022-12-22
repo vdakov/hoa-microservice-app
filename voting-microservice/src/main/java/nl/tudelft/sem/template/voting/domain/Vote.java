@@ -14,6 +14,7 @@ public abstract class Vote {
     protected transient Map<String, Integer> votes; // we have to store the votes, not persisted to the database yet
     protected transient TimeKeeper timeKeeper;
     protected transient VoterEligibilityChecker voterEligibilityChecker;
+    protected transient int numberOfEligibleVoters;
 
     /**
      * Initialize a voting procedure
@@ -24,12 +25,14 @@ public abstract class Vote {
     protected Vote(int hoaId,
                    List<String> options,
                    TimeKeeper timeKeeper,
-                   VoterEligibilityChecker voterEligibilityChecker) {
+                   VoterEligibilityChecker voterEligibilityChecker,
+                   int numberOfEligibleVoters) {
         this.hoaId = hoaId;
         this.options = options;
         this.votes = new HashMap<>();
         this.timeKeeper = timeKeeper;
         this.voterEligibilityChecker = voterEligibilityChecker;
+        this.numberOfEligibleVoters = numberOfEligibleVoters;
     }
 
     public boolean isVoterEligible(String netId) {

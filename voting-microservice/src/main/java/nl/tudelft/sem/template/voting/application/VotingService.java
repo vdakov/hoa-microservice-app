@@ -1,5 +1,6 @@
 package nl.tudelft.sem.template.voting.application;
 
+import nl.tudelft.sem.template.commons.models.VotingModel;
 import nl.tudelft.sem.template.voting.domain.Vote;
 import nl.tudelft.sem.template.voting.domain.ElectionVoteBuilder;
 import nl.tudelft.sem.template.voting.domain.VotingException;
@@ -31,27 +32,24 @@ public class VotingService {
 
     /**
      * Register a new voting procedure starting immediately
-     * @param hoaId the ID of the HOA where the voting is conducted
-     * @param votingType the type of vote
-     * @param options the available options to choose from in the voting
+     * @param votingModel the DTO containing the necessary info
      * @param temporalAmount the duration of the elections
      */
-    public void registerVoteStartingNow(int hoaId,
-                                        VotingType votingType,
-                                        List<String> options,
+    public void registerVoteStartingNow(VotingModel votingModel,
                                         TemporalAmount temporalAmount) {
         Vote vote;
-        if (votingType.equals(VotingType.ELECTIONS_VOTE)) {
+        if (votingModel.getVotingType().equals(VotingType.ELECTIONS_VOTE)) {
             vote = new ElectionVoteBuilder()
-                    .forHoaWithId(hoaId)
-                    .withOptions(options)
+                    .forHoaWithId(votingModel.getHoaId())
+                    .withOptions(votingModel.getOptions())
                     .startInstantlyWithDuration(temporalAmount)
+                    .withEligibleVoters(votingModel.getNumberOfEligibleVoters())
                     .build();
-            ongoingElections.put(hoaId, vote);
+            ongoingElections.put(votingModel.getHoaId(), vote);
             electionEndCalls.schedule(new VoteEndCallable(vote, this),
                     vote.getTimeKeeper().getDurationInSeconds(),
                     TimeUnit.SECONDS);
-        } else if (votingType.equals(VotingType.REQUIREMENTS_VOTE)) {
+        } else if (votingModel.getVotingType().equals(VotingType.REQUIREMENTS_VOTE)) {
             return; //TODO: build a requirements vote when that is implemented
         }
 
