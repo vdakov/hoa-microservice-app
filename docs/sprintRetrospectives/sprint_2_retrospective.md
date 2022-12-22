@@ -67,6 +67,26 @@ in an attempt to separate the structure as much as possible
 - TO-DO: Complete linking between microservices and finish up database
 logic for how voting distributions are stored
 
+### Task: Finishing the Requirements microservice - Erik Vidican
+
+- Created routing methods to communicate between HOA and gateway microservices
+- Refactored the directories of the microservice to properly separate logic and files / tests
+- Removed authentication from requirements, since this is handled by the gateway
+- Updated services, added the ability to modify and delete a requirement
+- Changed retrieving requirements and reports: from now on, only specific requirements/reports are
+retrieved, according to the HOA id
+- Added unit and integration tests for domain, controller and services
+- Moved lombok models to the commons folder
+
+
+#### Notes
+- I was late with merging this since I had to travel
+- Figuring out how to test the controller proved to be difficult when the microservice
+has to communicate with another microservice
+- Improvements could be made regarding the efficiency of the microservice
+- Regarding reports, there is still a TO-DO left checking if a provided user actually exists
+or not
+
 ### Task: Linking the Voting microservice (unfinished)
 #### Assignee: Simeon Atanasov 
 #### User Stories / Issues:
