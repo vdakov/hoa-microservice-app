@@ -90,7 +90,7 @@ public class RequirementsController {
     public List<String> getHoaMembers(int hoaId) {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = new HttpEntity(null, null);
-        String url = "http://localhost:8090/hoa/getHoaMembers/" + hoaId;
+        String url = "http://localhost:8090/hoa/getHoaModel/" + hoaId;
 
         FullHoaResponseModel hoa = restTemplate.exchange(url, HttpMethod.GET, entity, FullHoaResponseModel.class).getBody();
         if (hoa != null) {

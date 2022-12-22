@@ -145,8 +145,8 @@ public class NotificationController {
                         }
                     }
                     notification.setUsers(users);
-                    notificationService.updateNotification(notification);
-                    return ResponseEntity.ok("Notification with id " + id + " marked as read");
+                    notification = notificationService.updateNotification(notification);
+                    return ResponseEntity.ok("Notification with id " + id + " marked as read\n" + notification);
                 } else {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid notification");
                 }
@@ -171,37 +171,37 @@ public class NotificationController {
         switch(notificationType) {
             case CREATE_REQUIREMENT:
                 TypeReference<NotificationCreateReq> typeCreate = new TypeReference<>() {};
-                NotificationCreateReq create = JsonUtil.deserialize(body, typeCreate);
-                CreateRequirementEvent cr = new CreateRequirementEvent();
-                cr.setRequirementName(create.getRequirementName());
-                cr.setRequirementDescription(create.getRequirementDescription());
-                notificationService.createNotification(cr, create.getUsernames());
+                NotificationCreateReq createRequirement = JsonUtil.deserialize(body, typeCreate);
+                CreateRequirementEvent createEvent = new CreateRequirementEvent();
+                createEvent.setRequirementName(createRequirement.getRequirementName());
+                createEvent.setRequirementDescription(createRequirement.getRequirementDescription());
+                notificationService.createNotification(createEvent, createRequirement.getUsernames());
                 break;
             case CHANGE_REQUIREMENT:
                 TypeReference<NotificationChangeReq> typeChange = new TypeReference<>() {};
-                NotificationChangeReq change = JsonUtil.deserialize(body, typeChange);
-                ChangeRequirementEvent ch = new ChangeRequirementEvent();
-                ch.setNewName(change.getNewName());
-                ch.setNewDescription(change.getNewDescription());
-                ch.setOldName(change.getOldName());
-                ch.setOldDescription(change.getOldDescription());
-                notificationService.createNotification(ch, change.getUsernames());
+                NotificationChangeReq changeRequirement = JsonUtil.deserialize(body, typeChange);
+                ChangeRequirementEvent changeEvent = new ChangeRequirementEvent();
+                changeEvent.setNewName(changeRequirement.getNewName());
+                changeEvent.setNewDescription(changeRequirement.getNewDescription());
+                changeEvent.setOldName(changeRequirement.getOldName());
+                changeEvent.setOldDescription(changeRequirement.getOldDescription());
+                notificationService.createNotification(changeEvent, changeRequirement.getUsernames());
                 break;
             case DELETE_REQUIREMENT:
                 TypeReference<NotificationDeleteReq> typeDelete = new TypeReference<>() {};
-                NotificationDeleteReq delete = JsonUtil.deserialize(body, typeDelete);
-                DeleteRequirementEvent del = new DeleteRequirementEvent();
-                del.setRequirementName(delete.getRequirementName());
-                del.setRequirementDescription(delete.getRequirementDescription());
-                notificationService.createNotification(del, delete.getUsernames());
+                NotificationDeleteReq deleteRequirement = JsonUtil.deserialize(body, typeDelete);
+                DeleteRequirementEvent deleteEvent = new DeleteRequirementEvent();
+                deleteEvent.setRequirementName(deleteRequirement.getRequirementName());
+                deleteEvent.setRequirementDescription(deleteRequirement.getRequirementDescription());
+                notificationService.createNotification(deleteEvent, deleteRequirement.getUsernames());
                 break;
             case REPORT:
                 TypeReference<NotificationReport> typeReport = new TypeReference<>() {};
-                NotificationReport report = JsonUtil.deserialize(body, typeReport);
-                ReportEvent rep = new ReportEvent();
-                rep.setBrokenRequirementName(report.getBrokenRequirementName());
-                rep.setBrokenRequirementDescription(report.getBrokenRequirementDescription());
-                notificationService.createNotification(rep, report.getUsernames());
+                NotificationReport notificationReport = JsonUtil.deserialize(body, typeReport);
+                ReportEvent reportEvent = new ReportEvent();
+                reportEvent.setBrokenRequirementName(notificationReport.getBrokenRequirementName());
+                reportEvent.setBrokenRequirementDescription(notificationReport.getBrokenRequirementDescription());
+                notificationService.createNotification(reportEvent, notificationReport.getUsernames());
                 break;
             default:
                 break;
