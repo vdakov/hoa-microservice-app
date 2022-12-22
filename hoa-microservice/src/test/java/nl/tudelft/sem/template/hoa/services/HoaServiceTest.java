@@ -30,13 +30,15 @@ import nl.tudelft.sem.template.hoa.repositories.HoaRepository;
 public class HoaServiceTest {
     @Mock
     private HoaRepository hoaRepository;
+    @Mock
+    private VoteService voteService;
 
     @InjectMocks
     private HoaService hoaService;
 
     @BeforeEach
     public void setup() {
-        hoaService = new HoaService(hoaRepository);
+        hoaService = new HoaService(hoaRepository, voteService);
     }
 
     @Test
