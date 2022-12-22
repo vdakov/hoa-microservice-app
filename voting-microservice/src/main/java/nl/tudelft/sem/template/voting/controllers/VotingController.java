@@ -7,7 +7,6 @@ import nl.tudelft.sem.template.voting.domain.VotingType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -115,6 +114,7 @@ public class VotingController {
         return ResponseEntity.ok(votingService.getEndTime(hoaId));
     }
 
+
     /**
      * A request to get the results after the elections are over
      * @param hoaId the ID of the HOA where a voting is conducted
@@ -133,5 +133,12 @@ public class VotingController {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(results);
+    }
+
+
+    @GetMapping("/hello")
+    public ResponseEntity<String> hello() {
+        System.out.println("Hello");
+        return ResponseEntity.ok().build();
     }
 }
