@@ -38,7 +38,12 @@ public class GatewayController {
     public GatewayController() {
     }
 
-    public HttpEntity buildEntity(String token, Object body) {
+    /**
+     * Builds a standardized HTTP entity to pass along with HTTP requests
+     * @param body The body of the request, can be null.
+     * @return an HttpEntity with the provided body
+     */
+    public HttpEntity buildEntity(Object body) {
         token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                 .getRequest().getHeader(AUTHORIZATION_LITERAL);
         //Remove the "bearer" from the beginning of the token.
@@ -56,7 +61,7 @@ public class GatewayController {
     @GetMapping("/pnb/allActivities")
     public ResponseEntity allActivities() {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, null);
+        HttpEntity entity = buildEntity(null);
         String url = "http://localhost:8090/pnb/allActivities";
         return restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
     }
@@ -70,7 +75,7 @@ public class GatewayController {
     @GetMapping("/pnb/activitiesForHoa/{hoaId}")
     public ResponseEntity activitiesForHoa(@PathVariable(HOA_ID_LITERAL) int hoaId) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, null);
+        HttpEntity entity = buildEntity(null);
         String url = "http://localhost:8090/pnb/activitiesForHoa/" + hoaId;
 
         return restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
@@ -85,7 +90,7 @@ public class GatewayController {
     @PostMapping("/pnb/createActivity")
     public ResponseEntity<ActivityModel> createActivity(@RequestBody ActivityModel model) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, null);
+        HttpEntity entity = buildEntity(null);
         String url = "http://localhost:8090/pnb/createActivity";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, ActivityModel.class);
@@ -102,8 +107,9 @@ public class GatewayController {
     @PostMapping("/users/castVoteElection/{userId}/{hoaId}")
     public ResponseEntity submitVoteElection(@RequestBody ElectionVote vote,
                                              @PathVariable(USER_ID_LITERAL) int userId,
-                                             @PathVariable(HOA_ID_LITERAL) int hoaId) {        RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, vote);
+                                             @PathVariable(HOA_ID_LITERAL) int hoaId) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity entity = buildEntity(vote);
         String url = "http://localhost:8090/api/users/submitVoteElection/" + userId + "/" + hoaId;
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
@@ -122,7 +128,7 @@ public class GatewayController {
                                              @PathVariable(USER_ID_LITERAL) int userId,
                                              @PathVariable(HOA_ID_LITERAL) int hoaId) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, vote);
+        HttpEntity entity = buildEntity(vote);
         String url = "http://localhost:8090/api/users/changeVoteElection/" + userId + "/" + hoaId;
 
         return restTemplate.exchange(url, HttpMethod.PUT, entity, Object.class);
@@ -139,7 +145,7 @@ public class GatewayController {
     public ResponseEntity submitRequirementsVote(@RequestBody RequirementVote vote,
                                                  @PathVariable(USER_ID_LITERAL) int userId) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, vote);
+        HttpEntity entity = buildEntity(vote);
         String url = "http://localhost:8090/api/users/submitVoteRequirement/" + userId;
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
@@ -156,7 +162,7 @@ public class GatewayController {
     public ResponseEntity changeVoteRequirement(@RequestBody RequirementVote vote,
                                                 @PathVariable(USER_ID_LITERAL) int userId) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, vote);
+        HttpEntity entity = buildEntity(vote);
         String url = "http://localhost:8090/api/users/changeVoteRequirement/" + userId;
 
         return restTemplate.exchange(url, HttpMethod.PUT, entity, Object.class);
@@ -171,7 +177,7 @@ public class GatewayController {
     @PostMapping("/requirements/createRequirement")
     public ResponseEntity createRequirement(@RequestBody CreateRequirementModel model) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, model);
+        HttpEntity entity = buildEntity(model);
         String url = "http://localhost:8089/requirements/createRequirement";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
@@ -186,7 +192,7 @@ public class GatewayController {
     @PostMapping("/requirements/report")
     public ResponseEntity report(@RequestBody CreateReportModel model) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, model);
+        HttpEntity entity = buildEntity(model);
         String url = "http://localhost:8089/requirements/report";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
@@ -201,7 +207,7 @@ public class GatewayController {
     @GetMapping("/requirements/getRequirements/{hoaId}")
     public ResponseEntity getRequirements(@PathVariable(HOA_ID_LITERAL) int hoaId) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, null);
+        HttpEntity entity = buildEntity(null);
         String url = "http://localhost:8089/requirements/getRequirements/" + hoaId;
 
         return restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
@@ -216,7 +222,7 @@ public class GatewayController {
     @GetMapping("/requirements/getReports/{hoaId}")
     public ResponseEntity getReports(@PathVariable(HOA_ID_LITERAL) int hoaId) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, null);
+        HttpEntity entity = buildEntity(null);
         String url = "http://localhost:8089/requirements/getReports/" + hoaId;
 
         return restTemplate.exchange(url, HttpMethod.GET, entity, ResponseEntity.class);
@@ -231,7 +237,7 @@ public class GatewayController {
     @PostMapping("/hoa/createHoa")
     public ResponseEntity createHoa(@RequestBody CreateHoaModel model){
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, model);
+        HttpEntity entity = buildEntity(model);
         String url = "http://localhost:8090/hoa/crateHoa";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, ResponseEntity.class);
