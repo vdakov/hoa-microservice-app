@@ -3,7 +3,7 @@ package nl.tudelft.sem.template.voting.controllers;
 import nl.tudelft.sem.template.voting.application.VotingService;
 import nl.tudelft.sem.template.voting.authentication.AuthManager;
 import nl.tudelft.sem.template.voting.domain.VotingException;
-import nl.tudelft.sem.template.voting.domain.VotingType;
+import nl.tudelft.sem.template.commons.models.VotingType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +47,7 @@ public class VoteController {
         // TODO: check whether the respective user has the permission to initialize a vote
         boolean electionOngoing = votingService.existingHoaVoting(hoaId);
         if (!electionOngoing) {
-            if (votingType.equals(VotingType.REQUIREMENTS_VOTE)) {
+            if (votingType.equals(VotingType.ELECTIONS_VOTE)) {
                 return ResponseEntity
                         .status(HttpStatus.NOT_IMPLEMENTED)
                         .body("");

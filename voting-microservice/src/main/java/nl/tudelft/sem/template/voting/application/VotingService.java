@@ -3,7 +3,7 @@ package nl.tudelft.sem.template.voting.application;
 import nl.tudelft.sem.template.voting.domain.Vote;
 import nl.tudelft.sem.template.voting.domain.ElectionVoteBuilder;
 import nl.tudelft.sem.template.voting.domain.VotingException;
-import nl.tudelft.sem.template.voting.domain.VotingType;
+import nl.tudelft.sem.template.commons.models.VotingType;
 import nl.tudelft.sem.template.voting.domain.VoteEndCallable;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +41,7 @@ public class VotingService {
                                         List<String> options,
                                         TemporalAmount temporalAmount) {
         Vote vote;
-        if (votingType.equals(VotingType.BOARD_ELECTIONS)) {
+        if (votingType.equals(VotingType.ELECTIONS_VOTE)) {
             vote = new ElectionVoteBuilder()
                     .forHoaWithId(hoaId)
                     .withOptions(options)
