@@ -1,11 +1,9 @@
-package nl.tudelft.sem.template.hoa.argumentMatchers;
+package nl.tudelft.sem.template.hoa.matchers;
 
 import nl.tudelft.sem.template.hoa.entitites.ElectionResults;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.entitites.User;
 import org.mockito.ArgumentMatcher;
-
-import java.util.Map;
 
 public class ElectionResultsMatcher implements ArgumentMatcher<ElectionResults> {
 
