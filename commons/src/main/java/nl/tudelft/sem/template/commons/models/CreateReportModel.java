@@ -6,7 +6,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class CreateReportModel {
-    private String reportBy;
     private String reportedUser;
     private int brokenRequirementId;
+
+    public CreateReportModel(String reportedUser, int brokenRequirementId) {
+        this.reportedUser = reportedUser;
+        this.brokenRequirementId = brokenRequirementId;
+    }
 }

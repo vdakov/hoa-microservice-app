@@ -1,5 +1,6 @@
-package nl.tudelft.sem.template.requirements.domain;
+package nl.tudelft.sem.template.requirements.repositories;
 
+import nl.tudelft.sem.template.requirements.domain.Report;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,4 +11,5 @@ public interface ReportRepository extends JpaRepository<Report, Integer> {
     @Override
     List<Report> findAll();
 
+    Report findById(int id);
 }

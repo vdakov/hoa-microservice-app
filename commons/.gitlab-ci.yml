@@ -26,10 +26,3 @@ PMD-commons:
   script:
     gradle commons:pmdMain
   allow_failure: true
-
-test-commons:
-  stage: test
-  script:
-    - gradle commons:test commons:jacocoTestReport
-    - ( cat commons/build/reports/jacoco/test/html/index.html | grep -Po "Total.*?([0-9]{1,3})%" ) || echo "No report has been generated - 0%"
-  coverage: /([0-9]{1,3})%/

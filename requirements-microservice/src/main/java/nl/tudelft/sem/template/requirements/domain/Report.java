@@ -23,17 +23,13 @@ public class Report extends HasEvents {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @Column(name = "reportBy", nullable = false)
-    private String reportBy;
-
     @Column(name = "reportedUser", nullable = false)
     private String reportedUser;
 
     @OneToOne()
     private Requirements requirement;
 
-    public Report(String reportBy, String reportedUser, Requirements requirement) {
-        this.reportBy = reportBy;
+    public Report(String reportedUser, Requirements requirement) {
         this.reportedUser = reportedUser;
         this.requirement = requirement;
     }
@@ -43,12 +39,11 @@ public class Report extends HasEvents {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Report report = (Report) o;
-        return id == report.id && reportBy.equals(report.reportBy)
-                && reportedUser.equals(report.reportedUser) && requirement.equals(report.requirement);
+        return id == report.id && reportedUser.equals(report.reportedUser) && requirement.equals(report.requirement);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, reportBy, reportedUser, requirement);
+        return Objects.hash(id, reportedUser, requirement);
     }
 }

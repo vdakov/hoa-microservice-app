@@ -7,7 +7,8 @@ import nl.tudelft.sem.template.commons.entities.RequirementVote;
 import nl.tudelft.sem.template.commons.models.ActivityModel;
 import nl.tudelft.sem.template.commons.models.CreateReportModel;
 import nl.tudelft.sem.template.commons.models.CreateRequirementModel;
-import nl.tudelft.sem.template.commons.models.hoa.JoinModel;
+import nl.tudelft.sem.template.commons.models.DeleteRequirementModel;
+import nl.tudelft.sem.template.commons.models.UpdateRequirementModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -34,7 +35,7 @@ public class GatewayController {
     private static final String USER_ID_LITERAL = "userId";
     private static final String HOA_ID_LITERAL = "hoaId";
     /**
-     * Instantiates a new UsersController.
+     * Instantiates a new GatewayController.
      */
     @Autowired
     public GatewayController() {
@@ -66,7 +67,6 @@ public class GatewayController {
         //Get bearer token
         String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                 .getRequest().getHeader(AUTHORIZATION_LITERAL);
-        System.out.println(token);
         String username = getClaimFromToken(token.split(" ")[1], Claims::getSubject);
 
         RestTemplate restTemplate = new RestTemplate();
@@ -105,7 +105,7 @@ public class GatewayController {
         String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                 .getRequest().getHeader(AUTHORIZATION_LITERAL);
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(token, null);
+        HttpEntity entity = buildEntity(token, model);
         String url = "http://localhost:8090/pnb/createActivity";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, ActivityModel.class);
@@ -204,6 +204,40 @@ public class GatewayController {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = buildEntity(token, model);
         String url = "http://localhost:8089/requirements/createRequirement";
+
+        return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
+    }
+
+    /**
+     * Routing method used for updating an existing requirement.
+     *
+     * @param model the request model containing the details of the requirement.
+     * @return the ResponseEntity passed back from the endpoint.
+     */
+    @PostMapping("/requirements/changeRequirement")
+    public ResponseEntity updateRequirement(@RequestBody UpdateRequirementModel model) {
+        String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getRequest().getHeader(AUTHORIZATION_LITERAL);
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity entity = buildEntity(token, model);
+        String url = "http://localhost:8089/requirements/changeRequirement";
+
+        return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
+    }
+
+    /**
+     * Routing method used for deleting an existing requirement.
+     *
+     * @param model the request model containing the details of the requirement.
+     * @return the ResponseEntity passed back from the endpoint.
+     */
+    @PostMapping("/requirements/deleteRequirement")
+    public ResponseEntity deleteRequirement(@RequestBody DeleteRequirementModel model) {
+        String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getRequest().getHeader(AUTHORIZATION_LITERAL);
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity entity = buildEntity(token, model);
+        String url = "http://localhost:8089/requirements/deleteRequirement";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
     }
