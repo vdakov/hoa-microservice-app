@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import nl.tudelft.sem.template.commons.models.ActivityModel;
 import nl.tudelft.sem.template.commons.models.CreateRequirementModel;
 import nl.tudelft.sem.template.commons.models.VotingModel;
+import nl.tudelft.sem.template.commons.models.hoa.FullHoaResponseModel;
 import nl.tudelft.sem.template.commons.models.hoa.HoaRequestModel;
 import nl.tudelft.sem.template.commons.models.UpdateRequirementModel;
 import nl.tudelft.sem.template.commons.models.DeleteRequirementModel;
@@ -257,6 +258,6 @@ public class GatewayController {
         HttpEntity entity = buildEntity(model);
         String url = "http://localhost:8090/hoa/createHoa";
 
-        return restTemplate.exchange(url, HttpMethod.POST, entity, ResponseEntity.class);
+        return restTemplate.exchange(url, HttpMethod.POST, entity, FullHoaResponseModel.class);
     }
 }
