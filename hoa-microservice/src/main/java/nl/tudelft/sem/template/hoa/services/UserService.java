@@ -24,6 +24,12 @@ public class UserService {
     @Autowired
     private transient ConnectionService connectionService;
 
+    public UserService(UserRepository userRepository, HoaService hoaService, ConnectionService connectionService) {
+        this.connectionService = connectionService;
+        this.hoaService = hoaService; 
+        this.userRepository = userRepository;
+    }
+
     /**
      * Query for getting all users currently in the table
      *
@@ -92,17 +98,17 @@ public class UserService {
      * @throws UserDoesNotExistException
      */
     public UserHoa joinAssociation(String hoaName, String displayName, FullAddressModel address)
-            throws HoaDoesNotExistException, UserDoesNotExistException {
-
-        User user = userRepository.findByDisplayName(displayName);
-        
-        if (user == null)
-            user = userRepository.save(new User(displayName));
+            throws HoaDoesNotExistException {
         
         Hoa hoa = hoaService.getByNaturalId(hoaName, address.getCountry(), address.getCity());
 
         if (hoa == null) 
             throw new HoaDoesNotExistException("Hoa with given attributes doesn't exits!");
+
+        User user = userRepository.findByDisplayName(displayName);
+        
+        if (user == null)
+            user = userRepository.save(new User(displayName));
 
         UserHoa connection = new UserHoa(user, hoa, address);
 
