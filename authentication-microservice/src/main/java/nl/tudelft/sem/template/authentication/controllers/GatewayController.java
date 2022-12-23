@@ -126,7 +126,7 @@ public class GatewayController {
     /**
      * Routes a request to delete a connection between a user and a homeowners association (HOA).
      * 
-     * @param request A request model containing the HOA ID and the user's display name.
+     * @param request A request model containing the HOA's natural id and the user's display name.
      * @return A response containing the updated user information, as returned by the HOA controller,
      * or a bad request if any of the fields are null
      */
@@ -149,6 +149,14 @@ public class GatewayController {
         return restTemplate.exchange(url, HttpMethod.DELETE, entity, FullUserResponseModel.class);
     }
 
+
+    /**
+     * Routes a request to make a connection between a user and a homeowners association (HOA).
+     * 
+     * @param request A request model containing the HOA's name, the user's display name, and full address.
+     * @return A response containing the connection made, as returned by the HOA controller,
+     * or a bad request if any of the fields are null
+     */
     @PostMapping("/users/joinHoa")
     public ResponseEntity<FullUserHoaModel> joinHoa(@RequestBody JoinRequestModel request) {
         String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
