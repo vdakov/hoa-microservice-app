@@ -4,7 +4,7 @@ Our application consists of a network of microservices, which are each tested in
 
 To do this, we are using Postman. In this file, you find a guide for testing all relevant functionality on the system level. This will include all API endpoints in the Gateway (working title authentication) microservice, since these are the ones that the user will have access to.
 
-Between each test instance, we recommend restarting every microservice, to make sure IDs are assigned correctly.
+***Between each test instance, we recommend restarting every microservice, to make sure IDs are assigned correctly.***
 
 When running the system locally, the URL of the gateway microservice will be "http://localhost:8081", and all the endpoints not related to authorization are located within the "/gateway" subdomain. Because of this, this testing guide will default to this prefix for all requests.
 
@@ -20,21 +20,58 @@ An HOA has the following inherent attributes:
 
 Accordingly, the user will have to provide these within the model object in the request. So the request body will look like the following:
 
-**{  
+```
+{  
 "name":"hoa1",  
 "country":"USA",  
 "city":"Cincinnati"  
-}**
+}
+```
 
 The response entity should look like the following:
 
-**{  
+```
+{  
 "country": "USA",  
 "city": "Cincinnati",  
 "name": "h2",  
 "members": []  
-}**
+}
+```
 
 (Since for now, the every HOA is initialized without any members.)
 
 ![image](../instructions/createHoa.png)
+
+## Creating an activity
+To have this work, we first have to create an HOA to contain the activity. Please refer to the relevant section above.
+
+Then, we will make a POST request to the following URL:
+
+**"http://localhost:8081/gateway/pnb/createActivity"**
+
+An activity has the following inherent attributes:
+- HOA (referred to by its ID)
+- Name
+- Time (with year, month and day)
+- Description
+
+Accordingly, the user will have to provide these within the model object in the request. So the request body will look like the following:
+
+```
+{  
+"hoaId":1,  
+"name":"activity1",  
+"time":{  
+    "year":2002,  
+    "month":10,  
+    "day":24  
+},  
+"description":"A pretty cool person is born."  
+}
+```
+
+The response entity should be identical to the request body.
+
+![image](../instructions/createActivity.png)
+
