@@ -1,3 +1,7 @@
+# Sprint 3 Retrospective
+
+## Tasks
+
 ### Task: Notify the users about events - Erik Vidican
 
 - Issue regarding notifying users about a creation/change of requirements has been added
@@ -56,11 +60,30 @@ activities for the current user.
 
 - The actual functionality was implemented by Steve.
 
-### Task: Creating manual testing manual for system-level testing with Postman
+### Task: Creating manual testing manual for system-level testing with Postman - Patrik and Erik
 - Created base document.
-- Added instructions for using every endpoint on gateway related to the HOA microservice.
+- Added instructions for using every endpoint on gateway related to the HOA and Requirements microservices.
 - Did the actual testing as described, successfully!
 
 #### Notes
 
-- The manual for other endpoints will be completed by other group members. 
+- The manual for other endpoints will be completed by other group members.
+
+### Task:  Creating a gateway to route requests to the proper microservice - Gijs 
+
+- Created skeletons in gateway microservice as foundation for linking
+- Cleaned up parts of the gateway code
+
+#### Notes:
+- The small cleanup ended up causing some merge conflicts, but we could resolve them with a reasonable amount of effort
+- The routing functionality of the gateway is only tested manually with Postman, see the relevant document in `docs`.
+
+## Main problems encountered
+
+### Approaching deadline
+On Thursday's meeting, we were faced with the painful fact that we still had an awful lot to do before we could call
+the prototype done. Fortunately, in the comeback of the century, everyone joined forces, and we ended up getting an 
+incredible amount of work done, with just 30 hours on the clock (which in the end got extended to 36, oh well). 
+Multiple group members skipped some sleep on Thursday night, and it seems like we will actually manage to finish 
+everything we have to finish. I (Patrik) am very proud of how this project turned out in the end, even if I still 
+have frustrations about the format and even if there were some difficulties in Sprint 2.
