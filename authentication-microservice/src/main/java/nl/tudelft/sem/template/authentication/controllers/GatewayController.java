@@ -187,7 +187,7 @@ public class GatewayController {
     }
 
     /**
-     * Routing method used for casting a vote in an election.
+     * Routing method used for casting (or replacing an already cast) vote in an election.
      *
      * @param option     The vote to cast.
      * @param userName The ID of the user that casts the vote.
@@ -200,30 +200,12 @@ public class GatewayController {
                                    @PathVariable(HOA_ID_LITERAL) int hoaId) {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = buildEntity(option);
-        String url = "http://localhost:8082/" + hoaId + "/castVote/" + userName;
+        String url = "http://localhost:8082/vote/" + hoaId + "/castVote/" + userName;
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
     }
 
-    /**
-     * Routing method used for changing your vote in an election
-     *
-     * @param vote   the new vote to submit.
-     * @param userId the ID of the user that is submitting the vote.
-     * @param hoaId  the ID of the hoa to submit the vote to.
-     * @return the ResponseEntity passed back from the method in the HOA microservice.
-     */
-    @PostMapping("/users/changeVote/{userId}/{hoaId}")
-    public ResponseEntity changeVoteElection(@RequestBody VotingModel vote,
-                                             @PathVariable(USER_ID_LITERAL) int userId,
-                                             @PathVariable(HOA_ID_LITERAL) int hoaId) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(vote);
-        //temporary
-        String url = "http://localhost:8082/vote/" + hoaId + "/castVote";
 
-        return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
-    }
 
     /**
      * Routing method used for creating a new requirement.
@@ -311,12 +293,12 @@ public class GatewayController {
      * @return Success Message if the message reached HOA
      */
     @GetMapping("/startElectionVote/{hoaId}")
-    public ResponseEntity startElectionVote(@PathVariable(HOA_ID_LITERAL) int hoaId) {
+    public ResponseEntity<String> startElectionVote(@PathVariable(HOA_ID_LITERAL) int hoaId) {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = buildEntity(null);
         String url = "http://localhost:8090/initializeElectionVoting/" + hoaId;
 
-        return restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
+        return restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
     }
 
     /**

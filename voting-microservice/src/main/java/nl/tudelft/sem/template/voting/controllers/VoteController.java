@@ -1,9 +1,10 @@
 package nl.tudelft.sem.template.voting.controllers;
 
+import nl.tudelft.sem.template.commons.models.ElectionResultsModel;
+import nl.tudelft.sem.template.commons.models.VotingModel;
 import nl.tudelft.sem.template.voting.application.VotingService;
-import nl.tudelft.sem.template.voting.authentication.AuthManager;
 import nl.tudelft.sem.template.voting.domain.VotingException;
-import nl.tudelft.sem.template.voting.domain.VotingType;
+import nl.tudelft.sem.template.commons.models.VotingType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,49 +19,43 @@ import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
+
 
 @RestController
-public class VotingController {
+public class VoteController {
 
     private final transient VotingService votingService;
-    private final transient AuthManager authManager;
 
     @Autowired
-    public VotingController(VotingService votingService, AuthManager authManager) {
+    public VoteController(VotingService votingService) {
         this.votingService = votingService;
-        this.authManager = authManager;
     }
 
     /**
      * An endpoint to initialize a voting procedure
-     * @param hoaId the ID of the HOA
-     * @param votingType the type of the voting procedure
-     * @param body a list of Strings that denotes the available options
+     * @param votingModel DTO containing information used to start a vote
      * @return an HTTP response
      */
     @PostMapping("/initializeVoting")
-    public ResponseEntity<String> initializeVoting(@RequestParam int hoaId,
-                                                   @RequestParam VotingType votingType,
-                                                   @RequestBody List<String> body) {
-
+    public ResponseEntity<String> initializeVoting(@RequestBody VotingModel votingModel) {
         // TODO: check whether the respective user has the permission to initialize a vote
-        boolean electionOngoing = votingService.existingHoaVoting(hoaId);
+        boolean electionOngoing = votingService.existingHoaVoting(votingModel.getHoaId());
         if (!electionOngoing) {
-            if (votingType.equals(VotingType.REQUIREMENTS_VOTE)) {
+            if (!votingModel.getVotingType().equals(VotingType.REQUIREMENTS_VOTE)
+                    && !votingModel.getVotingType().equals(VotingType.ELECTIONS_VOTE)) {
                 return ResponseEntity
                         .status(HttpStatus.NOT_IMPLEMENTED)
                         .body("");
             }
-            votingService.registerVotingStartingNow(hoaId, votingType, body, Duration.ofMinutes(1L));
+            votingService.registerVoteStartingNow(votingModel, Duration.ofMinutes(1L));
             return ResponseEntity
-                    .created(URI.create(String.format("/vote/%d", hoaId)))
-                    .body(String.format("/vote/%d", hoaId));
+                    .created(URI.create(String.format("/vote/%d", votingModel.getHoaId())))
+                    .body(String.format("/vote/%d", votingModel.getHoaId()));
 
         }
         return ResponseEntity
                 .status(HttpStatus.SEE_OTHER)
-                .body(String.format("/vote/%d", hoaId));
+                .body(String.format("/vote/%d", votingModel.getHoaId()));
     }
 
     /**
@@ -83,15 +78,16 @@ public class VotingController {
      * @param optionIndex the index of the chosen option
      * @return -
      */
-    @PostMapping("/vote/{hoaId}/castVote")
+    @PostMapping("/vote/{hoaId}/castVote/{userName}")
     public ResponseEntity<Void> castVote(@PathVariable int hoaId,
-                                            @RequestParam int optionIndex) {
+                                            @RequestBody int optionIndex,
+                                         @PathVariable String userName) {
 
         if (!votingService.existingHoaVoting(hoaId)) {
             return ResponseEntity.notFound().build();
         }
         try {
-            String netId = authManager.getNetId();
+            String netId = userName;
             votingService.castVote(hoaId, netId, optionIndex);
             return ResponseEntity.ok().build();
         } catch (VotingException e) {
@@ -114,31 +110,4 @@ public class VotingController {
         return ResponseEntity.ok(votingService.getEndTime(hoaId));
     }
 
-
-    /**
-     * A request to get the results after the elections are over
-     * @param hoaId the ID of the HOA where a voting is conducted
-     * @return -
-     */
-    @GetMapping("/vote/{hoaId}/getResults")
-    @SuppressWarnings("PMD") // I could not avoid PMD throwing warnings
-    public ResponseEntity<Map<String, Integer>> getResults(@PathVariable int hoaId) {
-        Map<String, Integer> results;
-        if (!votingService.existingHoaVoting(hoaId)) {
-            return ResponseEntity.notFound().build();
-        }
-        try {
-            results = votingService.getResults(hoaId);
-        } catch (VotingException e) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(results);
-    }
-
-
-    @GetMapping("/hello")
-    public ResponseEntity<String> hello() {
-        System.out.println("Hello");
-        return ResponseEntity.ok().build();
-    }
 }

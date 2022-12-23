@@ -1,6 +1,7 @@
 package nl.tudelft.sem.template.voting.domain;
 
 import java.time.Instant;
+import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAmount;
 
 public class ConcreteTimeKeeper implements TimeKeeper{
@@ -37,5 +38,10 @@ public class ConcreteTimeKeeper implements TimeKeeper{
      */
     public boolean isVoteOngoing() {
         return Instant.now().compareTo(endTime) < 0;
+    }
+
+    public long getDurationInSeconds() {
+        return (this.endTime.getLong(ChronoField.INSTANT_SECONDS)
+            - this.startTime.getLong(ChronoField.INSTANT_SECONDS));
     }
 }

@@ -1,19 +1,23 @@
 package nl.tudelft.sem.template.voting.domain;
 
 import lombok.Getter;
+import nl.tudelft.sem.template.commons.models.ElectionResultsModel;
+import nl.tudelft.sem.template.commons.models.ResultsModel;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class Voting {
+@Getter
+public class Vote {
 
     protected final transient int hoaId;
-    @Getter
     protected transient List<String> options;
     protected transient Map<String, Integer> votes; // we have to store the votes, not persisted to the database yet
-    @Getter
     protected transient TimeKeeper timeKeeper;
+    protected transient VoterEligibilityChecker voterEligibilityChecker;
+    protected transient int numberOfEligibleVoters;
+    protected transient ResultsCollator resultsCollator;
 
     /**
      * Initialize a voting procedure
@@ -21,14 +25,24 @@ public abstract class Voting {
      * @param options a list of strings denoting the options to vote for
      * @param timeKeeper a TimeKeeper object that keeps track of when the election is over
      */
-    protected Voting(int hoaId, List<String> options, TimeKeeper timeKeeper) {
+    protected Vote(int hoaId,
+                   List<String> options,
+                   TimeKeeper timeKeeper,
+                   VoterEligibilityChecker voterEligibilityChecker,
+                   int numberOfEligibleVoters,
+                   ResultsCollator resultsCollator) {
         this.hoaId = hoaId;
         this.options = options;
         this.votes = new HashMap<>();
         this.timeKeeper = timeKeeper;
+        this.voterEligibilityChecker = voterEligibilityChecker;
+        this.numberOfEligibleVoters = numberOfEligibleVoters;
+        this.resultsCollator = resultsCollator;
     }
 
-    public abstract boolean isVoterEligible(String netId);
+    public boolean isVoterEligible(String netId) {
+        return voterEligibilityChecker.isVoterEligible(netId);
+    }
 
     /**
      * Cast a vote in the running voting procedure
@@ -51,20 +65,7 @@ public abstract class Voting {
      * @return -
      */
     @SuppressWarnings("PMD")
-    public Map<String, Integer> getResults() {
-
-        // PMD was throwing warnings because values in the map are first zero-initialized, and then
-        // incremented; rule DataflowAnomalyAnalysis
-        Map<String, Integer> aggregatedResults = new HashMap<>();
-        for (String option : options) { // initialize the map containing aggregated results
-            aggregatedResults.put(option, 0);
-        }
-
-        for (Integer vote : votes.values()) {
-            int currentNumber = aggregatedResults.get(options.get(vote));
-            currentNumber++;
-            aggregatedResults.replace(options.get(vote), currentNumber);
-        }
-        return aggregatedResults;
+    public ResultsModel getResults() {
+        return this.resultsCollator.collateResults(votes, options, numberOfEligibleVoters);
     }
 }

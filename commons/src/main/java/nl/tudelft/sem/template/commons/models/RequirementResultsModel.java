@@ -2,8 +2,10 @@ package nl.tudelft.sem.template.commons.models;
 
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class RequirementResultsModel extends ResultsModel {
 
     private int votedFor;
