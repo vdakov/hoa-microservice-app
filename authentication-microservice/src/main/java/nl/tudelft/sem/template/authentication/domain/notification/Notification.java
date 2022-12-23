@@ -87,4 +87,17 @@ public class Notification {
     public void setEvent(Event event) {
         this.event = event;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Notification that = (Notification) o;
+        return id == that.id && users.equals(that.users) && event.equals(that.event);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, users, event);
+    }
 }
