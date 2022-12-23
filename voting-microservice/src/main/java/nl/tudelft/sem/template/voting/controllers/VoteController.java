@@ -111,31 +111,4 @@ public class VoteController {
         return ResponseEntity.ok(votingService.getEndTime(hoaId));
     }
 
-
-    /**
-     * A request to get the results after the elections are over
-     * @param hoaId the ID of the HOA where a voting is conducted
-     * @return -
-     */
-    @GetMapping("/vote/{hoaId}/getResults")
-    @SuppressWarnings("PMD") // I could not avoid PMD throwing warnings
-    public ResponseEntity<ElectionResultsModel> getResults(@PathVariable int hoaId) {
-        ElectionResultsModel results;
-        if (!votingService.existingHoaVoting(hoaId)) {
-            return ResponseEntity.notFound().build();
-        }
-        try {
-            results = votingService.getResults(hoaId);
-        } catch (VotingException e) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(results);
-    }
-
-
-    @GetMapping("/hello")
-    public ResponseEntity<String> hello() {
-        System.out.println("Hello");
-        return ResponseEntity.ok().build();
-    }
 }
