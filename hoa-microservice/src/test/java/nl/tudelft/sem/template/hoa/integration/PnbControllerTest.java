@@ -3,7 +3,7 @@ package nl.tudelft.sem.template.hoa.integration;
 import com.fasterxml.jackson.core.type.TypeReference;
 import nl.tudelft.sem.template.commons.models.ActivityModel;
 import nl.tudelft.sem.template.commons.models.DateModel;
-import nl.tudelft.sem.template.commons.models.hoa.JoinModel;
+import nl.tudelft.sem.template.commons.models.hoa.JoinRequestModel;
 import nl.tudelft.sem.template.hoa.entitites.Activity;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 
@@ -201,10 +201,10 @@ public class PnbControllerTest {
                         .content("user2"))
                 .andExpect(status().isOk());
 
-        JoinModel join1 = new JoinModel("USA", "Cincinnati", "Main street", "12a",
-                "5555", "h1", "user1");
-        JoinModel join2 = new JoinModel("Italy", "Siena", "Piazza del Campo", "1",
-                "53100", "h2", "user2");
+        JoinRequestModel join1 = new JoinRequestModel("h1", "user1", "USA", "Cincinnati", "Main street", "12a",
+                "5555");
+        JoinRequestModel join2 = new JoinRequestModel("h2", "user2", "Italy", "Siena", "Piazza del Campo", "1",
+                "53100");
 
         mockMvc.perform(post("/api/users/joinHoa")
                         .contentType(MediaType.APPLICATION_JSON)
