@@ -51,6 +51,12 @@ public class HoaController {
         return ResponseEntity.ok(false);
     }
 
-
-
+    @GetMapping("/getHoaModel/{hoaId}")
+    public ResponseEntity<FullHoaResponseModel> getHoaModel(@PathVariable("hoaId") int hoaId) {
+        Hoa hoa = hoaService.getHoaById(hoaId);
+        if (hoa != null) {
+            return ResponseEntity.ok(hoa.toFullModel());
+        }
+        return ResponseEntity.badRequest().build();
+    }
 }

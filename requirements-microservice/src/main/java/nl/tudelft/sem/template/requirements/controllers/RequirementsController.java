@@ -1,7 +1,15 @@
 package nl.tudelft.sem.template.requirements.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import nl.tudelft.sem.template.commons.models.DeleteRequirementModel;
 import nl.tudelft.sem.template.commons.models.UpdateRequirementModel;
+import nl.tudelft.sem.template.commons.models.hoa.FullHoaResponseModel;
+import nl.tudelft.sem.template.commons.models.hoa.HoaLessUserHoaModel;
+import nl.tudelft.sem.template.commons.models.hoa.SimpleUserResponseModel;
+import nl.tudelft.sem.template.commons.models.notification.NotificationChangeReq;
+import nl.tudelft.sem.template.commons.models.notification.NotificationCreateReq;
+import nl.tudelft.sem.template.commons.models.notification.NotificationDeleteReq;
+import nl.tudelft.sem.template.commons.models.notification.NotificationReport;
 import nl.tudelft.sem.template.requirements.domain.Report;
 import nl.tudelft.sem.template.requirements.services.ReportService;
 import nl.tudelft.sem.template.requirements.services.RequirementsService;
@@ -24,8 +32,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -34,6 +42,8 @@ public class RequirementsController {
 
     private final transient RequirementsService requirementsService;
     private final transient ReportService reportService;
+
+    private final transient String processUrl = "http://localhost:8081/notification/processNotification/";
 
     /**
      * Instantiates a new controller.
@@ -73,6 +83,108 @@ public class RequirementsController {
     }
 
     /**
+     * Get a list of hoa members (will be used for remembering which users will receive the notification)
+     * @param hoaId id of the hoa
+     * @return a list of usernames
+     */
+    public List<String> getHoaMembers(int hoaId) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity entity = new HttpEntity(null, null);
+        String url = "http://localhost:8090/hoa/getHoaModel/" + hoaId;
+
+        FullHoaResponseModel hoa = restTemplate.exchange(url, HttpMethod.GET, entity, FullHoaResponseModel.class).getBody();
+        if (hoa != null) {
+            if (hoa.getMembers().size() == 0) return null;
+            List<String> usernames = new ArrayList<>();
+            for (HoaLessUserHoaModel usr: hoa.getMembers()) {
+                usernames.add(usr.getUser().getDisplayName());
+            }
+            return usernames;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Method used to send a new requirement created notification to the gateway
+     * @param req the new requirement
+     * @param hoaId the id of the HOA
+     */
+    public void createRequirementNotification(Requirements req, int hoaId) throws JsonProcessingException {
+        List<String> usernames = getHoaMembers(hoaId);
+
+        if (usernames != null) {
+            NotificationCreateReq body = new NotificationCreateReq(usernames,
+                    req.getRequirementName(),
+                    req.getRequirementDescription());
+
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity entity = new HttpEntity(JsonUtil.serialize(body), null);
+            restTemplate.exchange(processUrl, HttpMethod.POST, entity, String.class);
+        }
+    }
+    /**
+     * Method used to send a new changed requirement notification to the gateway
+     * @param req the new and old details of the requirement
+     * @param hoaId the id of the HOA
+     */
+    public void changeRequirementNotification(Requirements req, int hoaId, String newName, String newDescription)
+            throws JsonProcessingException {
+        List<String> usernames = getHoaMembers(hoaId);
+
+        if (usernames != null) {
+            NotificationChangeReq body = new NotificationChangeReq(usernames,
+                    req.getRequirementName(),
+                    req.getRequirementDescription(),
+                    newName,
+                    newDescription);
+
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity entity = new HttpEntity(JsonUtil.serialize(body), null);
+            restTemplate.exchange(processUrl, HttpMethod.POST, entity, String.class);
+        }
+    }
+
+    /**
+     * Method used to send a 'delete requirement' notification to the gateway
+     * @param req the details of the requirement
+     * @param hoaId the id of the HOA
+     */
+    public void deleteRequirementNotification(Requirements req, int hoaId)
+            throws JsonProcessingException {
+        List<String> usernames = getHoaMembers(hoaId);
+
+        if (usernames != null) {
+            NotificationDeleteReq body = new NotificationDeleteReq(usernames,
+                    req.getRequirementName(),
+                    req.getRequirementDescription());
+
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity entity = new HttpEntity(JsonUtil.serialize(body), null);
+            restTemplate.exchange(processUrl, HttpMethod.POST, entity, String.class);
+        }
+    }
+
+    /**
+     * Method used to send a report notification to the gateway
+     * @param req broken requirement
+     * @param user username
+     */
+    public void reportNotification(Requirements req, String user) throws JsonProcessingException {
+        List<String> username = new ArrayList<>();
+        username.add(user);
+        NotificationReport report = new NotificationReport(username,
+                req.getRequirementName(),
+                req.getRequirementDescription());
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity entity = new HttpEntity(JsonUtil.serialize(report), null);
+        restTemplate.exchange(processUrl, HttpMethod.POST, entity, String.class);
+    }
+
+
+
+    /**
      * Creates a new requirement for the HOA members
      * @param request Name and description of the requirement
      * @return
@@ -89,7 +201,8 @@ public class RequirementsController {
                 if (hoaExists(hoaId)) {
                     String name = request.getName();
                     String description = request.getDescription();
-                    requirementsService.createRequirement(hoaId, name, description);
+                    Requirements req = requirementsService.createRequirement(hoaId, name, description);
+                    createRequirementNotification(req, hoaId);
                 } else {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
                 }
@@ -115,6 +228,8 @@ public class RequirementsController {
         try {
             Requirements requirement = requirementsService.findById(request.getRequirementId());
             if (requirement != null) {
+                changeRequirementNotification(requirement, requirement.getHoaId(), request.getNewName(),
+                        request.getNewDescription());
                 requirementsService.updateRequirement(requirement, request.getNewName(), request.getNewDescription());
             } else {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Requirement not found.");
@@ -137,6 +252,7 @@ public class RequirementsController {
         try {
             Requirements requirement = requirementsService.findById(request.getRequirementId());
             if (requirement != null) {
+                deleteRequirementNotification(requirement, requirement.getHoaId());
                 requirementsService.deleteRequirement(requirement);
             } else {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Requirement not found.");
@@ -158,12 +274,18 @@ public class RequirementsController {
     public ResponseEntity report(@RequestBody CreateReportModel request) throws Exception {
         try {
             int brokenRequirementId = request.getBrokenRequirementId();
-            Requirements requirement = requirementsService.findById(brokenRequirementId);
-            if (requirement != null) {
-                String reportedUser = request.getReportedUser(); //TODO: check if user exists in HOA (tomorrow)
-                reportService.createReport(reportedUser, requirement);
+            // TODO: figure out integration testing without skipping microservices
+            if (brokenRequirementId != -1) {
+                Requirements requirement = requirementsService.findById(brokenRequirementId);
+                if (requirement != null) {
+                    String reportedUser = request.getReportedUser(); //TODO: check if user exists in HOA (tomorrow)
+                    reportService.createReport(reportedUser, requirement);
+                    reportNotification(requirement, reportedUser);
+                } else {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Requirement does not exist");
+                }
             } else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Requirement does not exist");
+                reportService.createReport(request.getReportedUser(), requirementsService.findById(-brokenRequirementId));
             }
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
