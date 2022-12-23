@@ -51,7 +51,7 @@ public class RequirementVoteBuilder implements VoteBuilder{
      */
     public Vote build() {
         if (voterEligibilityChecker == null) {
-            this.voterEligibilityChecker = new UrlVoterEligibilityChecker("http://localhost:8090/api/user/isInHoa/", this.hoaId);
+            this.voterEligibilityChecker = new UrlVoterEligibilityChecker("http://localhost:8090/api/users/isInBoardOfHoa/", this.hoaId);
         }
         if (resultsCollator == null) {
             this.resultsCollator = new RequirementResultsCollator();

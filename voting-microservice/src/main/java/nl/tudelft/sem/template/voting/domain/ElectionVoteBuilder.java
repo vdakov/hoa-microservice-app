@@ -49,7 +49,7 @@ public class ElectionVoteBuilder implements VoteBuilder {
      */
     public Vote build() {
         if (voterEligibilityChecker == null) {
-            this.voterEligibilityChecker = new UrlVoterEligibilityChecker("http://localhost:8090/api/user/isInHoa/", this.hoaId);
+            this.voterEligibilityChecker = new UrlVoterEligibilityChecker("http://localhost:8090/api/users/isInHoa/", this.hoaId);
         }
         if (resultsCollator == null) {
             this.resultsCollator = new ElectionResultsCollator();

@@ -98,7 +98,7 @@ public class VoteController {
         HttpEntity entity = buildEntity(token, votingModel);
         String url = "http://localhost:8082/initializeVoting";
         try {
-            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
             System.out.println(response);
         }catch(Exception e){
             System.out.println("That didn't work :(");
@@ -129,6 +129,5 @@ public class VoteController {
 
         return ResponseEntity.ok().build();
     }
-
 
 }

@@ -200,7 +200,7 @@ public class GatewayController {
                                    @PathVariable(HOA_ID_LITERAL) int hoaId) {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = buildEntity(option);
-        String url = "http://localhost:8082/" + hoaId + "/castVote/" + userName;
+        String url = "http://localhost:8082/vote/" + hoaId + "/castVote/" + userName;
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
     }
@@ -293,12 +293,12 @@ public class GatewayController {
      * @return Success Message if the message reached HOA
      */
     @GetMapping("/startElectionVote/{hoaId}")
-    public ResponseEntity startElectionVote(@PathVariable(HOA_ID_LITERAL) int hoaId) {
+    public ResponseEntity<String> startElectionVote(@PathVariable(HOA_ID_LITERAL) int hoaId) {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = buildEntity(null);
         String url = "http://localhost:8090/initializeElectionVoting/" + hoaId;
 
-        return restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
+        return restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
     }
 
     /**

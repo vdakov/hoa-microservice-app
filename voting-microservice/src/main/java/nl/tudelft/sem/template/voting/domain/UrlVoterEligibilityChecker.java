@@ -30,7 +30,7 @@ public class UrlVoterEligibilityChecker implements VoterEligibilityChecker {
         IsInHoaByIdRequestModel req = new IsInHoaByIdRequestModel(netId);
         HttpHeaders headers = new HttpHeaders();
         HttpEntity entity = new HttpEntity<>(req, headers);
-        ResponseEntity<Boolean> response =  restTemplate.exchange(url + Integer.toString(hoaId),
+        ResponseEntity<Boolean> response =  restTemplate.exchange(url + Integer.toString(hoaId) + "/" + netId,
                 HttpMethod.POST, entity, Boolean.class);
         return response.getBody();
     }

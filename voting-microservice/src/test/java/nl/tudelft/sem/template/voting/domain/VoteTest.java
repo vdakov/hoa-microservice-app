@@ -167,15 +167,14 @@ public class VoteTest {
             assertEquals(0, election.getVotes().get(user1));
             assertEquals(1, election.getVotes().get(user2));
 
-            Map<Integer, Integer> expectedVoteDistributions = new HashMap<>();
-            expectedVoteDistributions.put(0, 1);
-            expectedVoteDistributions.put(1, 2);
-            expectedVoteDistributions.put(2, 0);
+            Map<String, Integer> expectedVoteDistributions = new HashMap<>();
+            expectedVoteDistributions.put(options.get(0), 1);
+            expectedVoteDistributions.put(options.get(1), 2);
+            expectedVoteDistributions.put(options.get(2), 0);
 
             ElectionResultsModel expected = new ElectionResultsModel(3,
                     3,
-                    expectedVoteDistributions,
-                    1);
+                    expectedVoteDistributions);
             assertEquals(expected, election.getResults());
         } catch(VotingException e) {
             fail();
@@ -192,15 +191,14 @@ public class VoteTest {
             assertEquals(1, election.getVotes().get(user1));
             assertEquals(1, election.getVotes().get(user2));
 
-            Map<Integer, Integer> expectedVoteDistributions = new HashMap<>();
-            expectedVoteDistributions.put(0, 0);
-            expectedVoteDistributions.put(1, 3);
-            expectedVoteDistributions.put(2, 0);
+            Map<String, Integer> expectedVoteDistributions = new HashMap<>();
+            expectedVoteDistributions.put(options.get(0), 0);
+            expectedVoteDistributions.put(options.get(1), 3);
+            expectedVoteDistributions.put(options.get(2), 0);
 
             ElectionResultsModel expected = new ElectionResultsModel(3,
                     3,
-                    expectedVoteDistributions,
-                    1);
+                    expectedVoteDistributions);
             assertEquals(expected, election.getResults());
         } catch(VotingException e) {
             fail();
@@ -215,15 +213,14 @@ public class VoteTest {
             assertEquals(1, election.getVotes().get(user0));
             assertEquals(0, election.getVotes().get(user1));
 
-            HashMap<Integer, Integer> expectedVoteDistributions = new HashMap<>();
-            expectedVoteDistributions.put(0, 1);
-            expectedVoteDistributions.put(1, 1);
-            expectedVoteDistributions.put(2, 0);
+            Map<String, Integer> expectedVoteDistributions = new HashMap<>();
+            expectedVoteDistributions.put(options.get(0), 1);
+            expectedVoteDistributions.put(options.get(1), 1);
+            expectedVoteDistributions.put(options.get(2), 0);
 
             ElectionResultsModel expected = new ElectionResultsModel(3,
                     2,
-                    expectedVoteDistributions,
-                    -1);
+                    expectedVoteDistributions);
             assertEquals(expected, election.getResults());
         } catch(VotingException e) {
             fail();
