@@ -39,8 +39,9 @@ public class VoteService {
      */
     public void storeElectionResults(int hoaId, ElectionResultsModel results) {
         Hoa hoa = hoaRepository.findById(hoaId);
-        User winner = userRepository.findUserById(Collections.max(results.getVoteDistributions().entrySet(),
+        User winner = userRepository.findByDisplayName(Collections.max(results.getVoteDistributions().entrySet(),
                 Comparator.comparingInt(Map.Entry::getValue)).getKey());
+
         resultsRepository.save(new ElectionResults(hoa, results.getNumberOfVotes(), results.getVoteDistributions(), winner));
     }
 

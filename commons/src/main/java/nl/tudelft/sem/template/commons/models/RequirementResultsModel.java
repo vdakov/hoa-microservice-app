@@ -6,7 +6,6 @@ import lombok.Data;
 @Data
 public class RequirementResultsModel extends ResultsModel {
 
-    private RequirementModel requirement;
     private int votedFor;
     private boolean passed;
 
