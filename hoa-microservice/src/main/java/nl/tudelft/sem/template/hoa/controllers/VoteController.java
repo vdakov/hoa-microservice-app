@@ -114,7 +114,7 @@ public class VoteController {
 
         HttpEntity entity = buildEntity(token, votingModel);
         String url = "http://localhost:8082/initializeVoting";
-        ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
+        ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
         System.out.println(response);
 
         return ResponseEntity.ok().build();
@@ -136,7 +136,7 @@ public class VoteController {
 
         HttpEntity entity = buildEntity(token, votingModel);
         String url = "http://localhost:8082/initializeVoting";
-        ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
+        ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
         System.out.println(response);
 
         return ResponseEntity.ok().build();

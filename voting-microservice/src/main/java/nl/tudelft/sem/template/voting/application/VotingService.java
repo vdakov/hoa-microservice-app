@@ -1,6 +1,7 @@
 package nl.tudelft.sem.template.voting.application;
 
 import nl.tudelft.sem.template.commons.models.ElectionResultsModel;
+import nl.tudelft.sem.template.commons.models.ResultsModel;
 import nl.tudelft.sem.template.commons.models.VotingModel;
 import nl.tudelft.sem.template.voting.domain.Vote;
 import nl.tudelft.sem.template.voting.domain.ElectionVoteBuilder;
@@ -78,7 +79,7 @@ public class VotingService {
      * @return a Map that stores the collated results
      * @throws VotingException if the mehtod is called before the end of the vote
      */
-    public ElectionResultsModel getResults(int hoaId) throws VotingException {
+    public ResultsModel getResults(int hoaId) throws VotingException {
         Vote currentVote = ongoingElections.get(hoaId);
         if (currentVote.getTimeKeeper().isVoteOngoing()) {
             throw new VotingException("Vote is still ongoing");

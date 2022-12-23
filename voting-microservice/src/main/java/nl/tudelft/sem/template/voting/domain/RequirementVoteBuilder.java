@@ -4,10 +4,11 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.time.temporal.TemporalAmount;
+import java.util.Arrays;
 import java.util.List;
 
 @NoArgsConstructor
-public class ElectionVoteBuilder implements VoteBuilder {
+public class RequirementVoteBuilder implements VoteBuilder{
     private int hoaId;
     private List<String> options;
     private TimeKeeper timeKeeper;
@@ -43,6 +44,7 @@ public class ElectionVoteBuilder implements VoteBuilder {
         this.resultsCollator = resultsCollator;
         return this;
     }
+
     /**
      * Builds the final object
      * @return the built object
@@ -52,7 +54,10 @@ public class ElectionVoteBuilder implements VoteBuilder {
             this.voterEligibilityChecker = new UrlVoterEligibilityChecker("http://localhost:8090/api/user/isInHoa/", this.hoaId);
         }
         if (resultsCollator == null) {
-            this.resultsCollator = new ElectionResultsCollator();
+            this.resultsCollator = new RequirementResultsCollator();
+        }
+        if (options == null) {
+            options = Arrays.asList("against", "for", "abstain");
         }
         return new Vote(hoaId, options, timeKeeper, voterEligibilityChecker, numberOfEligibleVoters, resultsCollator);
     }

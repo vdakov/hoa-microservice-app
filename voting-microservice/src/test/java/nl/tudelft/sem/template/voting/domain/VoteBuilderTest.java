@@ -60,7 +60,7 @@ public class VoteBuilderTest {
                 .withTimeKeeper(mockTimeKeeper)
                 .build();
 
-        assertEquals(new ElectionsVoterEligibilityChecker(0),
+        assertEquals(new UrlVoterEligibilityChecker("http://localhost:8090/api/user/isInHoa/", 0),
                 election.getVoterEligibilityChecker());
     }
 
