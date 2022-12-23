@@ -26,3 +26,27 @@ to make it abstract, so I will have to figure out how to solve this during the r
 - Falling ill severely dropped productivity
 - managed to plug it in to gateway relatively easily
 - some tests came out little mindless to achieve high coverage (aka basically just testing that mocking works)
+
+### Task: Linking PNB functionality with the gateway - Patrik Varga
+
+- One endpoint for creating activities, one for getting them by HOA ID, and one for getting all relevant 
+activities for the current user.
+- Filtering by user was new functionality on the HOA microservice side too, implemented and tested that
+(with Steve's help for custom queries).
+
+### Task: Linking creating an HOA to the gateway - Patrik Varga
+
+- Made endpoint on gateway that forwards the HTTP request to HOA.
+
+#### Notes
+
+- The actual functionality was implemented by Steve.
+
+### Task: Creating manual testing manual for system-level testing with Postman
+- Created base document.
+- Added instructions for using every endpoint on gateway related to the HOA microservice.
+- Did the actual testing as described, successfully!
+
+#### Notes
+
+- The manual for other endpoints will be completed by other group members. 
