@@ -1,5 +1,6 @@
 package nl.tudelft.sem.template.voting.application;
 
+import nl.tudelft.sem.template.commons.models.ElectionResultsModel;
 import nl.tudelft.sem.template.commons.models.VotingModel;
 import nl.tudelft.sem.template.voting.domain.Vote;
 import nl.tudelft.sem.template.voting.domain.ElectionVoteBuilder;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.temporal.TemporalAmount;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -78,7 +78,7 @@ public class VotingService {
      * @return a Map that stores the collated results
      * @throws VotingException if the mehtod is called before the end of the vote
      */
-    public Map<Integer, Integer> getResults(int hoaId) throws VotingException {
+    public ElectionResultsModel getResults(int hoaId) throws VotingException {
         Vote currentVote = ongoingElections.get(hoaId);
         if (currentVote.getTimeKeeper().isVoteOngoing()) {
             throw new VotingException("Vote is still ongoing");

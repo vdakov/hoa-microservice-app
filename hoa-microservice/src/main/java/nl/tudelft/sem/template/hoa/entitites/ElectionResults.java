@@ -9,8 +9,8 @@ import javax.persistence.Table;
 import javax.persistence.ElementCollection;
 import javax.persistence.OneToOne;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @PrimaryKeyJoinColumn(name = "id")
 @Entity
@@ -35,7 +35,7 @@ public class ElectionResults extends Results {
     /**
      * Constructor
      */
-    public ElectionResults(Hoa hoa, int numberOfVotes, HashMap<Integer, Integer> votes, User winner) {
+    public ElectionResults(Hoa hoa, int numberOfVotes, Map<Integer, Integer> votes, User winner) {
         super(hoa, numberOfVotes);
         this.idsOfCandidates = new ArrayList<>();
         this.votesPerUser = new ArrayList<>();

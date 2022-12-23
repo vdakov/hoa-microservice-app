@@ -1,6 +1,7 @@
 package nl.tudelft.sem.template.voting.domain;
 
 import lombok.Getter;
+import nl.tudelft.sem.template.commons.models.ElectionResultsModel;
 
 import java.util.HashMap;
 import java.util.List;
@@ -60,7 +61,7 @@ public class Vote {
      * @return -
      */
     @SuppressWarnings("PMD")
-    public Map<Integer, Integer> getResults() {
+    public ElectionResultsModel getResults() {
 
         // PMD was throwing warnings because values in the map are first zero-initialized, and then
         // incremented; rule DataflowAnomalyAnalysis
@@ -68,12 +69,25 @@ public class Vote {
         for (int option = 0; option < this.options.size(); option++) { // initialize the map containing aggregated results
             aggregatedResults.put(option, 0);
         }
-
+        int winnerIndex = 0;
         for (Integer vote : votes.values()) {
             int currentNumber = aggregatedResults.get(vote);
             currentNumber++;
             aggregatedResults.replace(vote, currentNumber);
+            if (currentNumber > aggregatedResults.get(winnerIndex)) winnerIndex = vote;
         }
-        return aggregatedResults;
+        for (Integer optionIndex : aggregatedResults.keySet()) {
+            if (aggregatedResults.get(optionIndex) == aggregatedResults.get(winnerIndex)
+                    && optionIndex != winnerIndex) { //i.e., if there is a tie with some other option
+                winnerIndex = -1;
+                break;
+            }
+        }
+
+        ElectionResultsModel ret = new ElectionResultsModel(this.numberOfEligibleVoters,
+                votes.size(),
+                aggregatedResults,
+                winnerIndex);
+        return ret;
     }
 }

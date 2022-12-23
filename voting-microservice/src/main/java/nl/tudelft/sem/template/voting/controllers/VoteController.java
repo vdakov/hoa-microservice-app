@@ -1,5 +1,6 @@
 package nl.tudelft.sem.template.voting.controllers;
 
+import nl.tudelft.sem.template.commons.models.ElectionResultsModel;
 import nl.tudelft.sem.template.commons.models.VotingModel;
 import nl.tudelft.sem.template.voting.application.VotingService;
 import nl.tudelft.sem.template.voting.authentication.AuthManager;
@@ -19,7 +20,7 @@ import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
+
 
 @RestController
 public class VoteController {
@@ -118,8 +119,8 @@ public class VoteController {
      */
     @GetMapping("/vote/{hoaId}/getResults")
     @SuppressWarnings("PMD") // I could not avoid PMD throwing warnings
-    public ResponseEntity<Map<Integer, Integer>> getResults(@PathVariable int hoaId) {
-        Map<Integer, Integer> results;
+    public ResponseEntity<ElectionResultsModel> getResults(@PathVariable int hoaId) {
+        ElectionResultsModel results;
         if (!votingService.existingHoaVoting(hoaId)) {
             return ResponseEntity.notFound().build();
         }

@@ -1,5 +1,6 @@
 package nl.tudelft.sem.template.voting.domain;
 
+import nl.tudelft.sem.template.commons.models.ElectionResultsModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
@@ -166,10 +167,63 @@ public class VoteTest {
             assertEquals(0, election.getVotes().get(user1));
             assertEquals(1, election.getVotes().get(user2));
 
-            Map<Integer, Integer> expected = new HashMap<>();
-            expected.put(0, 1);
-            expected.put(1, 2);
-            expected.put(2, 0);
+            Map<Integer, Integer> expectedVoteDistributions = new HashMap<>();
+            expectedVoteDistributions.put(0, 1);
+            expectedVoteDistributions.put(1, 2);
+            expectedVoteDistributions.put(2, 0);
+
+            ElectionResultsModel expected = new ElectionResultsModel(3,
+                    3,
+                    expectedVoteDistributions,
+                    1);
+            assertEquals(expected, election.getResults());
+        } catch(VotingException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void aggregateResultsUnanimousVoteTest() {
+        try {
+            election.castVote(user1, 1);
+            election.castVote(user0, 1);
+            election.castVote(user2, 1);
+            assertEquals(1, election.getVotes().get(user0));
+            assertEquals(1, election.getVotes().get(user1));
+            assertEquals(1, election.getVotes().get(user2));
+
+            Map<Integer, Integer> expectedVoteDistributions = new HashMap<>();
+            expectedVoteDistributions.put(0, 0);
+            expectedVoteDistributions.put(1, 3);
+            expectedVoteDistributions.put(2, 0);
+
+            ElectionResultsModel expected = new ElectionResultsModel(3,
+                    3,
+                    expectedVoteDistributions,
+                    1);
+            assertEquals(expected, election.getResults());
+        } catch(VotingException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void aggregateResultsTieTest() {
+        try {
+            election.castVote(user1, 0);
+            election.castVote(user0, 1);
+            assertEquals(1, election.getVotes().get(user0));
+            assertEquals(0, election.getVotes().get(user1));
+
+            HashMap<Integer, Integer> expectedVoteDistributions = new HashMap<>();
+            expectedVoteDistributions.put(0, 1);
+            expectedVoteDistributions.put(1, 1);
+            expectedVoteDistributions.put(2, 0);
+
+            ElectionResultsModel expected = new ElectionResultsModel(3,
+                    2,
+                    expectedVoteDistributions,
+                    -1);
             assertEquals(expected, election.getResults());
         } catch(VotingException e) {
             fail();
