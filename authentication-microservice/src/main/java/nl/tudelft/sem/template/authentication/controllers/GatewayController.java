@@ -5,16 +5,11 @@ import io.jsonwebtoken.Jwts;
 import nl.tudelft.sem.template.commons.models.ActivityModel;
 import nl.tudelft.sem.template.commons.models.CreateRequirementModel;
 import nl.tudelft.sem.template.commons.models.VotingModel;
-import nl.tudelft.sem.template.commons.models.hoa.FullHoaResponseModel;
-import nl.tudelft.sem.template.commons.models.hoa.FullUserHoaModel;
-import nl.tudelft.sem.template.commons.models.hoa.HoaRequestModel;
+import nl.tudelft.sem.template.commons.models.hoa.*;
 import nl.tudelft.sem.template.commons.models.UpdateRequirementModel;
 import nl.tudelft.sem.template.commons.models.DeleteRequirementModel;
 import nl.tudelft.sem.template.commons.models.CreateReportModel;
-import nl.tudelft.sem.template.commons.models.hoa.ConnectionRequestModel;
-import nl.tudelft.sem.template.commons.models.hoa.FullUserResponseModel;
 
-import nl.tudelft.sem.template.commons.models.hoa.JoinRequestModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -27,7 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -61,6 +55,7 @@ public class GatewayController {
 
     /**
      * Builds a standardized HTTP entity to pass along with HTTP requests
+     *
      * @param body The body of the request, can be null.
      * @return an HttpEntity with the provided body
      */
@@ -125,7 +120,7 @@ public class GatewayController {
 
     /**
      * Routes a request to delete a connection between a user and a homeowners association (HOA).
-     * 
+     *
      * @param request A request model containing the HOA's natural id and the user's display name.
      * @return A response containing the updated user information, as returned by the HOA controller,
      * or a bad request if any of the fields are null
@@ -141,7 +136,7 @@ public class GatewayController {
 
         if (request.anyNull())
             return ResponseEntity.badRequest().build();
-        
+
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = buildEntity(request);
         String url = "http://localhost:8090/api/users/leaveHoa";
@@ -152,7 +147,7 @@ public class GatewayController {
 
     /**
      * Routes a request to make a connection between a user and a homeowners association (HOA).
-     * 
+     *
      * @param request A request model containing the HOA's name, the user's display name, and full address.
      * @return A response containing the connection made, as returned by the HOA controller,
      * or a bad request if any of the fields are null
@@ -164,7 +159,7 @@ public class GatewayController {
 
         String userName = getClaimFromToken(token.split(" ")[1], Claims::getSubject);
 
-        try{
+        try {
             RestTemplate restTemplateRegister = new RestTemplate();
             HttpEntity entityRegister = buildEntity(userName);
             String url = "http://localhost:8090/api/users/createNewUser";
@@ -196,11 +191,11 @@ public class GatewayController {
      */
     @PostMapping("/users/castVote/{userId}/{hoaId}")
     public ResponseEntity castVote(@RequestBody VotingModel vote,
-                                             @PathVariable(USER_ID_LITERAL) int userId,
-                                             @PathVariable(HOA_ID_LITERAL) int hoaId) {
+                                   @PathVariable(USER_ID_LITERAL) int userId,
+                                   @PathVariable(HOA_ID_LITERAL) int hoaId) {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = buildEntity(vote);
-        String url = "http://localhost:8082/vote/"+ hoaId + "/castVote";
+        String url = "http://localhost:8082/vote/" + hoaId + "/castVote";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
     }
@@ -220,11 +215,10 @@ public class GatewayController {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = buildEntity(vote);
         //temporary
-        String url = "http://localhost:8082/vote/"+ hoaId + "/castVote";
+        String url = "http://localhost:8082/vote/" + hoaId + "/castVote";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
     }
-
 
     /**
      * Routing method used for creating a new requirement.
@@ -239,6 +233,16 @@ public class GatewayController {
         String url = "http://localhost:8089/requirements/createRequirement";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
+    }
+
+    @GetMapping("/isABoardMember")
+    public ResponseEntity isBoardMember(@RequestBody ConnectionRequestModel model) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity entity = buildEntity(model);
+        String url = "http://localhost:8090/api/users/isInABoard";
+
+        return restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
+
     }
 
     /**
@@ -287,6 +291,46 @@ public class GatewayController {
     }
 
     /**
+     * Routing method for starting an election vote - goes through the HOA microservice and then
+     * starts a vote in the Voting Microservice
+     * <p>
+     * Due to the app being a prototype, it is assumed users will behave and only eligible members will be able to start
+     * the vote
+     *
+     * @param hoaId the id of the HOA the election is starting
+     * @return Success Message if the message reached HOA
+     */
+    @GetMapping("/startElectionVote/{hoaId}")
+    public ResponseEntity startElectionVote(@PathVariable(HOA_ID_LITERAL) int hoaId) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity entity = buildEntity(null);
+        String url = "http://localhost:8090/initializeElectionVoting/" + hoaId;
+
+        return restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
+    }
+
+    /**
+     * Routing method for starting an requirement vote - goes through the HOA microservice and then
+     * starts a vote in the Voting Microservice
+     * <p>
+     * Due to the app being a prototype, it is assumed users will behave and only eligible members will be able to start
+     * the vote. Additionally, the vote is independent of the requirement and it is assumed the users will behave and they will
+     * create the requirement through a different endpoint iff the vote has passed. All board members will be aware of what they are
+     * voting for.
+     *
+     * @param hoaId the id of the HOA the voting is starting
+     * @return Success Message if the message reached HOA
+     */
+    @GetMapping("/startRequirementVote/{hoaId}")
+    public ResponseEntity startRequirementVote(@PathVariable(HOA_ID_LITERAL) int hoaId) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity entity = buildEntity(null);
+        String url = "http://localhost:8090/initializeRequirementVoting/" + hoaId;
+
+        return restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
+    }
+
+    /**
      * Routing method used for retrieving the requirements for a specific HOA.
      *
      * @param hoaId the ID of the HOA to retrieve requirements from.
@@ -323,7 +367,7 @@ public class GatewayController {
      * @return the ResponseEntity passed back from the method in the HOA microservice.
      */
     @PostMapping("/hoa/createHoa")
-    public ResponseEntity createHoa(@RequestBody HoaRequestModel model){
+    public ResponseEntity createHoa(@RequestBody HoaRequestModel model) {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = buildEntity(model);
         String url = "http://localhost:8090/hoa/createHoa";

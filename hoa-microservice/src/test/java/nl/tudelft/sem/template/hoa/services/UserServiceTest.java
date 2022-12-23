@@ -14,6 +14,7 @@ import nl.tudelft.sem.template.hoa.entitites.User;
 import nl.tudelft.sem.template.hoa.entitites.UserHoa;
 import nl.tudelft.sem.template.hoa.exceptions.HoaDoesNotExistException;
 import nl.tudelft.sem.template.hoa.exceptions.UserDoesNotExistException;
+import nl.tudelft.sem.template.hoa.repositories.BoardMemberRepository;
 import nl.tudelft.sem.template.hoa.repositories.UserRepository;
 import nl.tudelft.sem.template.hoa.services.HoaService;
 import nl.tudelft.sem.template.hoa.services.UserService;
@@ -44,11 +45,14 @@ class UserServiceTest {
     @Mock
     private ConnectionService connectionService;
 
+    @Mock
+    private BoardMemberRepository boardMemberRepository;
+
     private UserService userService;
 
     @BeforeEach
     public void setUp() {
-        userService = new UserService(userRepository, hoaService, connectionService);
+        userService = new UserService(userRepository, hoaService, connectionService, boardMemberRepository);
     }
 
     @Test
