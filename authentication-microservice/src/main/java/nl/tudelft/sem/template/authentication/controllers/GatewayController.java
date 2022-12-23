@@ -6,6 +6,7 @@ import nl.tudelft.sem.template.commons.models.ActivityModel;
 import nl.tudelft.sem.template.commons.models.CreateRequirementModel;
 import nl.tudelft.sem.template.commons.models.VotingModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullHoaResponseModel;
+import nl.tudelft.sem.template.commons.models.hoa.FullUserHoaModel;
 import nl.tudelft.sem.template.commons.models.hoa.HoaRequestModel;
 import nl.tudelft.sem.template.commons.models.UpdateRequirementModel;
 import nl.tudelft.sem.template.commons.models.DeleteRequirementModel;
@@ -13,6 +14,7 @@ import nl.tudelft.sem.template.commons.models.CreateReportModel;
 import nl.tudelft.sem.template.commons.models.hoa.ConnectionRequestModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullUserResponseModel;
 
+import nl.tudelft.sem.template.commons.models.hoa.JoinRequestModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -132,7 +135,7 @@ public class GatewayController {
         String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                 .getRequest().getHeader(AUTHORIZATION_LITERAL);
 
-        String userName = getClaimFromToken(token, Claims::getSubject);
+        String userName = getClaimFromToken(token.split(" ")[1], Claims::getSubject);
 
         request.setDisplayName(userName);
 
@@ -144,6 +147,35 @@ public class GatewayController {
         String url = "http://localhost:8090/api/users/leaveHoa";
 
         return restTemplate.exchange(url, HttpMethod.DELETE, entity, FullUserResponseModel.class);
+    }
+
+    @PostMapping("/users/joinHoa")
+    public ResponseEntity<FullUserHoaModel> joinHoa(@RequestBody JoinRequestModel request) {
+        String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getRequest().getHeader(AUTHORIZATION_LITERAL);
+
+        String userName = getClaimFromToken(token.split(" ")[1], Claims::getSubject);
+
+        try{
+            RestTemplate restTemplateRegister = new RestTemplate();
+            HttpEntity entityRegister = buildEntity(userName);
+            String url = "http://localhost:8090/api/users/createNewUser";
+
+            restTemplateRegister.exchange(url, HttpMethod.POST, entityRegister, Object.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        request.setDisplayName(userName);
+
+        if (request.anyNull())
+            return ResponseEntity.badRequest().build();
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity entity = buildEntity(request);
+        String url = "http://localhost:8090/api/users/joinHoa";
+
+        return restTemplate.exchange(url, HttpMethod.POST, entity, FullUserHoaModel.class);
     }
 
     /**
