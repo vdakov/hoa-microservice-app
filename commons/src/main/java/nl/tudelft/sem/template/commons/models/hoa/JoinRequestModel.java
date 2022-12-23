@@ -17,5 +17,9 @@ public class JoinRequestModel extends FullAddressModel {
         this.hoaName = hoaName;
         this.userDisplayName = userDisplayName;
     }
+
+    public void setDisplayName(String newName) {
+        this.userDisplayName = newName;
+    }
 }
 
