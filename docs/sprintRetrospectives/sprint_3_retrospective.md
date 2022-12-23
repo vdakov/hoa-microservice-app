@@ -14,3 +14,17 @@ notifications)
 approaching, I will try to do my best
 - Storing a notification only works if the superclass is _not_ abstract. I would still like
 to make it abstract, so I will have to figure out how to solve this during the refactoring process
+
+
+### Task: Finish Linking HOA and Voting Microservices as well as gateway (Simeon and Vasko)
+
+- Issues regarding starting the vote from the gateway and casting votes from it
+- Refactored many of the DTOs and the logic between the Voting, HOA and Gateway Microservices
+- Extended voting with builder and strategy design patterns (Simeon)
+- Separated Board Members more 
+
+#### Notes
+- Test coverage for voting microservice dropped a bit due to refactoring
+- Some caveats had to be made for the prototype to be made on time (e.g it is assumed only
+board members will be the one to vote)
+- Much more scalable implementation overall adhering to the SEM design principles 
