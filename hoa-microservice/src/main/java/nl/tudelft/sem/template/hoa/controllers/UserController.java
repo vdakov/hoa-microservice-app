@@ -112,9 +112,9 @@ public class UserController {
         );
     }
 
-    @PostMapping("isInHoa/{hoaId}")
-    public ResponseEntity<Boolean> isInHoaById(@PathVariable int hoaId, @RequestBody IsInHoaByIdRequestModel req) {
-        return ResponseEntity.ok(this.userService.isInHoa(req.getDisplayName(), hoaId));
+    @PostMapping("isInHoa/{hoaId}/{userId}")
+    public ResponseEntity<Boolean> isInHoaById(@PathVariable int hoaId, @PathVariable String userId) {
+        return ResponseEntity.ok(this.userService.isInHoa(userId, hoaId));
     }
 
 }
