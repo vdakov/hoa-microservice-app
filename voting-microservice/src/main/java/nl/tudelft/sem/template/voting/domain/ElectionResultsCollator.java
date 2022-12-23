@@ -21,29 +21,19 @@ public class ElectionResultsCollator implements ResultsCollator {
     public ResultsModel collateResults(Map<String, Integer> votes, List<String> options, int numberOfEligibleVoters) {
         // PMD was throwing warnings because values in the map are first zero-initialized, and then
         // incremented; rule DataflowAnomalyAnalysis
-        Map<Integer, Integer> aggregatedResults = new HashMap<>();
-        for (int option = 0; option < options.size(); option++) { // initialize the map containing aggregated results
+        Map<String, Integer> aggregatedResults = new HashMap<>();
+        for (String option: options) { // initialize the map containing aggregated results
             aggregatedResults.put(option, 0);
         }
-        int winnerIndex = 0;
         for (Integer vote : votes.values()) {
-            int currentNumber = aggregatedResults.get(vote);
+            int currentNumber = aggregatedResults.get(options.get(vote));
             currentNumber++;
-            aggregatedResults.replace(vote, currentNumber);
-            if (currentNumber > aggregatedResults.get(winnerIndex)) winnerIndex = vote;
-        }
-        for (Integer optionIndex : aggregatedResults.keySet()) {
-            if (aggregatedResults.get(optionIndex) == aggregatedResults.get(winnerIndex)
-                    && optionIndex != winnerIndex) { //i.e., if there is a tie with some other option
-                winnerIndex = -1;
-                break;
-            }
+            aggregatedResults.replace(options.get(vote), currentNumber);
         }
 
         ElectionResultsModel ret = new ElectionResultsModel(numberOfEligibleVoters,
                 votes.size(),
-                aggregatedResults,
-                winnerIndex);
+                aggregatedResults);
         return ret;
     }
 }
