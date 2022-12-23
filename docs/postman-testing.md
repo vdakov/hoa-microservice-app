@@ -290,3 +290,27 @@ After deletion, the notification will not be shown to the user anymore
 **http://localhost:8081/notification/markRead/{notificationId}**
 
 ![image](../instructions/markread.png)
+
+## Starting a vote from the Gateway
+
+To start a vote for a given HOA, a user needs to:
+
+* register/authenticate through the gateway
+* create a new HOA in the aforementioned format
+* start a vote (either a requirement or election vote) for the given HOA id (usually 1) with 
+the endpoint below
+
+**GET http://localhost:8081/gateway/startElectionVote/{hoaId}**
+
+## Casting a vote from the Gateway
+
+To cast a vote for a given HOA, a user needs to:
+
+* register/authenticate through the gateway
+* there needs to be an existing HOA (if created with the above method, it will have an id of 1)
+* cast a vote for that user through the beneath endpoint in gateway
+* inside of the body there needs to an index from 0 to 2 for the candidate options of the elections
+  (or in the case of requirement, for, against and neutral)
+
+**POST http://localhost:8081/gateway/users/castVote/{userName}/{hoaId}**
+
