@@ -36,20 +36,20 @@ public class VotingServiceTest {
         when(hoaRepository.findById(1)).thenReturn(new Hoa());
 
         UserRepository userRepository = mock(UserRepository.class);
-        when(userRepository.findUserById(1)).thenReturn(new User());
+        when(userRepository.findByDisplayName("1")).thenReturn(new User("1"));
 
         ResultsRepository resultsRepository = mock(ResultsRepository.class);
         when(resultsRepository.save(any(ElectionResults.class))).thenReturn(new ElectionResults());
 
         VoteService voteService = new VoteService(resultsRepository, hoaRepository, userRepository, null);
-        HashMap<Integer, Integer> voteDistributions = new HashMap<>();
-        voteDistributions.put(1, 10);
-        voteDistributions.put(2, 5);
-        int winnerId = 1;
-        ElectionResultsModel results = new ElectionResultsModel(15, 15, voteDistributions, winnerId);
+        HashMap<String, Integer> voteDistributions = new HashMap<>();
+        voteDistributions.put("1", 10);
+        voteDistributions.put("2", 5);
+
+        ElectionResultsModel results = new ElectionResultsModel(15, 15, voteDistributions);
         voteService.storeElectionResults(1, results);
 
-        verify(resultsRepository).save(argThat(new ElectionResultsMatcher(new Hoa(), 15, new User())));
+        verify(resultsRepository).save(argThat(new ElectionResultsMatcher(new Hoa(), 15, new User("1"))));
     }
 
 
