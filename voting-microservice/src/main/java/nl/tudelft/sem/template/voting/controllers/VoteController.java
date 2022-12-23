@@ -41,7 +41,8 @@ public class VoteController {
         // TODO: check whether the respective user has the permission to initialize a vote
         boolean electionOngoing = votingService.existingHoaVoting(votingModel.getHoaId());
         if (!electionOngoing) {
-            if (votingModel.getVotingType().equals(VotingType.REQUIREMENTS_VOTE)) {
+            if (!votingModel.getVotingType().equals(VotingType.REQUIREMENTS_VOTE)
+                    && !votingModel.getVotingType().equals(VotingType.ELECTIONS_VOTE)) {
                 return ResponseEntity
                         .status(HttpStatus.NOT_IMPLEMENTED)
                         .body("");

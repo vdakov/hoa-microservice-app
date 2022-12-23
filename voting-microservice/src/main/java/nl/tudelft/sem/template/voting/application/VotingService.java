@@ -6,8 +6,9 @@ import nl.tudelft.sem.template.commons.models.VotingModel;
 import nl.tudelft.sem.template.voting.domain.Vote;
 import nl.tudelft.sem.template.voting.domain.ElectionVoteBuilder;
 import nl.tudelft.sem.template.voting.domain.VotingException;
-import nl.tudelft.sem.template.commons.models.VotingType;
+import nl.tudelft.sem.template.voting.domain.RequirementVoteBuilder;
 import nl.tudelft.sem.template.voting.domain.VoteEndCallable;
+import nl.tudelft.sem.template.commons.models.VotingType;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -51,7 +52,15 @@ public class VotingService {
                     vote.getTimeKeeper().getDurationInSeconds(),
                     TimeUnit.SECONDS);
         } else if (votingModel.getVotingType().equals(VotingType.REQUIREMENTS_VOTE)) {
-            return; //TODO: build a requirements vote when that is implemented
+            vote = new RequirementVoteBuilder()
+                    .forHoaWithId(votingModel.getHoaId())
+                    .startInstantlyWithDuration(temporalAmount)
+                    .withEligibleVoters(votingModel.getNumberOfEligibleVoters())
+                    .build();
+            ongoingElections.put(votingModel.getHoaId(), vote);
+            electionEndCalls.schedule(new VoteEndCallable(vote, this),
+                    vote.getTimeKeeper().getDurationInSeconds(),
+                    TimeUnit.SECONDS);
         }
 
     }

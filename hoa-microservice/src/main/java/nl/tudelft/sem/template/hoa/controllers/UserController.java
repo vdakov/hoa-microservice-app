@@ -162,7 +162,7 @@ public class UserController {
      * @param userName name of user in HOA
      * @return true or false depending on query result
      */
-    @GetMapping("/isInBoardOfHoa/{hoaId}/{userName}")
+    @PostMapping("/isInBoardOfHoa/{hoaId}/{userName}")
     public ResponseEntity<Boolean> isBoardMemberOfHoaByName(@PathVariable("hoaId") int hoaId,
                                                             @PathVariable("userName") String userName) {
         return ResponseEntity.ok(

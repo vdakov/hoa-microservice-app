@@ -120,11 +120,11 @@ public class VoteController {
                 .getRequest().getHeader("Authorization");
 
         RestTemplate restTemplate = new RestTemplate();
-        VotingModel votingModel = voteService.startElectionVote(hoaId);
+        VotingModel votingModel = voteService.startRequirementVote(hoaId);
 
         HttpEntity entity = buildEntity(token, votingModel);
         String url = "http://localhost:8082/initializeVoting";
-        ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
         System.out.println(response);
 
         return ResponseEntity.ok().build();
