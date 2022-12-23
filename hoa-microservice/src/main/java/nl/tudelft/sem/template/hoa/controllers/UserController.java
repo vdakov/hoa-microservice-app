@@ -153,15 +153,15 @@ public class UserController {
     /**
      * Queary for whether user is part of a specic HOA by DB id
      *
-     * @param hoaId  id oh HOA in DB
-     * @param userId id of user in HOA
+     * @param hoaId    id oh HOA in DB
+     * @param userName name of user in HOA
      * @return true or false depending on query result
      */
-    @GetMapping("/isInBoardOfHoa/{hoaId}/{userId}")
-    public ResponseEntity<Boolean> isBoardMemberOfHoaById(@PathVariable("hoaId") int hoaId,
-                                                          @PathVariable("userId") int userId) {
+    @GetMapping("/isInBoardOfHoa/{hoaId}/{userName}")
+    public ResponseEntity<Boolean> isBoardMemberOfHoaByName(@PathVariable("hoaId") int hoaId,
+                                                            @PathVariable("userName") String userName) {
         return ResponseEntity.ok(
-                this.userService.isInSpecificBoardById(hoaId, userId)
+                this.userService.isInSpecificBoardByUserName(hoaId, userName)
         );
     }
 

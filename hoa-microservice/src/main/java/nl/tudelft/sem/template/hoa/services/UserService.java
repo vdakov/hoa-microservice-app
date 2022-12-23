@@ -162,9 +162,9 @@ public class UserService {
         return this.boardMemberRepository.existsBoardMemberByDisplayNameAndBoard(displayName, hoa);
     }
 
-    public boolean isInSpecificBoardById(int hoaId, int userId) {
+    public boolean isInSpecificBoardByUserName(int hoaId, String userName) {
         Hoa hoa = hoaService.getHoaById(hoaId);
-        return this.boardMemberRepository.existsBoardMemberByIdAndBoard(userId, hoa);
+        return this.boardMemberRepository.existsBoardMemberByDisplayNameAndBoard(userName, hoa);
     }
 
 

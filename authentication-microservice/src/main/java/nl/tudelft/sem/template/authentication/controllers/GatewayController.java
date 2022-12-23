@@ -189,18 +189,18 @@ public class GatewayController {
     /**
      * Routing method used for casting a vote in an election.
      *
-     * @param vote   The vote to cast.
-     * @param userId The ID of the user that casts the vote.
-     * @param hoaId  The ID of the HOA for which the election is running.
+     * @param option     The vote to cast.
+     * @param userName The ID of the user that casts the vote.
+     * @param hoaId    The ID of the HOA for which the election is running.
      * @return the responseEntity passed back from the method in the HOA microservice.
      */
-    @PostMapping("/users/castVote/{userId}/{hoaId}")
-    public ResponseEntity castVote(@RequestBody VotingModel vote,
-                                   @PathVariable(USER_ID_LITERAL) int userId,
+    @PostMapping("/users/castVote/{userName}/{hoaId}")
+    public ResponseEntity castVote(@RequestBody int option,
+                                   @PathVariable("userName") String userName,
                                    @PathVariable(HOA_ID_LITERAL) int hoaId) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(vote);
-        String url = "http://localhost:8082/vote/" + hoaId + "/castVote";
+        HttpEntity entity = buildEntity(option);
+        String url = "http://localhost:8082/" + hoaId + "/castVote/" + userName;
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
     }
@@ -239,7 +239,8 @@ public class GatewayController {
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
     }
 
-    /** Routing method to check whether a user is a board member
+    /**
+     * Routing method to check whether a user is a board member
      *
      * @param model the model containing the user natural id
      * @return status of message
