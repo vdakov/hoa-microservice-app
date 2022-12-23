@@ -2,6 +2,8 @@ package nl.tudelft.sem.template.authentication.domain.user;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * A DDD service for registering a new user.
  */
@@ -63,5 +65,10 @@ public class RegistrationService {
         userRepository.delete(userRepository.findByUsername(username).orElseThrow());
         userRepository.saveAndFlush(user);
         return user;
+    }
+
+    public AppUser find(Username username) {
+        Optional<AppUser> user = userRepository.findByUsername(username);
+        return user.orElse(null);
     }
 }

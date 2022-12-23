@@ -24,4 +24,10 @@ public interface TimeKeeper {
      * @return  Returns true if the vote is still ongoing
      */
     public boolean isVoteOngoing();
+
+    /**
+     * Returns the duration of the vote in seconds
+     * @return -
+     */
+    public long getDurationInSeconds();
 }

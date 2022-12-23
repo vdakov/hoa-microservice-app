@@ -1,13 +1,16 @@
 package nl.tudelft.sem.template.hoa.services;
 
 import nl.tudelft.sem.template.commons.models.hoa.FullAddressModel;
+import nl.tudelft.sem.template.hoa.entitites.BoardMember;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.entitites.User;
 import nl.tudelft.sem.template.hoa.entitites.UserHoa;
 import nl.tudelft.sem.template.hoa.exceptions.HoaDoesNotExistException;
 import nl.tudelft.sem.template.hoa.exceptions.UserDoesNotExistException;
+import nl.tudelft.sem.template.hoa.repositories.BoardMemberRepository;
 import nl.tudelft.sem.template.hoa.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,6 +25,16 @@ public class UserService {
     private transient HoaService hoaService;
     @Autowired
     private transient ConnectionService connectionService;
+    @Autowired
+    private transient BoardMemberRepository boardMemberRepository;
+
+    public UserService(UserRepository userRepository, HoaService hoaService,
+                       ConnectionService connectionService, BoardMemberRepository boardMemberRepository) {
+        this.userRepository = userRepository;
+        this.hoaService = hoaService;
+        this.connectionService = connectionService;
+        this.boardMemberRepository = boardMemberRepository;
+    }
 
     /**
      * Query for getting all users currently in the table
@@ -53,15 +66,28 @@ public class UserService {
      * Does not need any additional checks since a user should be able to leave
      * at any time
      *
-     * @param hoaId the id of the association to be left
-     * @param id    the id of the user to be left
-     * @return status on whetehr the leaving was succesful
+     * @return the user that left or an exception
+     * @throws HoaDoesNotExistException
+     * @throws UserDoesNotExistException
      */
-    public boolean leaveAssociation(int hoaId, int id) throws UserDoesNotExistException {
+    public User leaveAssociation(
+            String displayName, String hoaName, String country, String city
+    ) throws UserDoesNotExistException, HoaDoesNotExistException {
 
-        // TODO in later MR (this one is already way too big)
+        User user = this.userRepository.findByDisplayName(displayName);
 
-        return false;
+        if (user == null)
+            throw new UserDoesNotExistException("User for given username was not found");
+
+        Hoa hoa = this.hoaService.getByNaturalId(hoaName, country, city);
+
+        if (hoa == null)
+            throw new HoaDoesNotExistException("Hoa for given name/country/city was not found");
+
+        this.connectionService.removeConnection(user, hoa);
+
+        return this.getUser(user.getId());
+
     }
 
     /**
@@ -69,25 +95,25 @@ public class UserService {
      * <p>
      * Note: Likely not the final implementation since the user currently can just join an association no questions asked
      *
-     * @param hoaName the name of the association to be joined
-     * @param displayName    the display name of the user that wants to join
-     * @param address the address that the membership is based on
+     * @param hoaName     the name of the association to be joined
+     * @param displayName the display name of the user that wants to join
+     * @param address     the address that the membership is based on
      * @return status on whether the joining was successful
      * @throws HoaDoesNotExistException
      * @throws UserDoesNotExistException
      */
     public UserHoa joinAssociation(String hoaName, String displayName, FullAddressModel address)
-            throws HoaDoesNotExistException, UserDoesNotExistException {
-        
-        if (!userRepository.existsByDisplayName(displayName))
-            throw new UserDoesNotExistException("User not in system!");
-        
+            throws HoaDoesNotExistException {
+
         Hoa hoa = hoaService.getByNaturalId(hoaName, address.getCountry(), address.getCity());
 
-        if (hoa == null) 
+        if (hoa == null)
             throw new HoaDoesNotExistException("Hoa with given attributes doesn't exits!");
 
         User user = userRepository.findByDisplayName(displayName);
+
+        if (user == null)
+            user = userRepository.save(new User(displayName));
 
         UserHoa connection = new UserHoa(user, hoa, address);
 
@@ -118,6 +144,32 @@ public class UserService {
      */
     public User getUser(int id) {
         return userRepository.findUserById(id);
+    }
+
+    public boolean isInHoa(String displayName, String hoaName, String country, String city) {
+        return this.userRepository.isInHoa(displayName, hoaName, country, city);
+    }
+
+    public boolean isInHoa(String displayName, int hoaId) {
+        Hoa foundHoa = hoaService.getHoaById(hoaId);
+        return isInHoa(displayName, foundHoa.getName(), foundHoa.getCountry(), foundHoa.getCity());
+    }
+
+    public boolean isInBoard(String displayName) {
+        return this.boardMemberRepository.existsBoardMemberByDisplayName(displayName);
+    }
+
+    public boolean isInSpecificBoard(String displayName, String hoaName, String country, String city) {
+        if (!isInHoa(displayName, hoaName, country, city)) return false;
+        if (!isInBoard(displayName)) return false;
+        Hoa hoa = hoaService.getByNaturalId(hoaName, country, city);
+
+        return this.boardMemberRepository.existsBoardMemberByDisplayNameAndBoard(displayName, hoa);
+    }
+
+    public boolean isInSpecificBoardByUserName(int hoaId, String userName) {
+        Hoa hoa = hoaService.getHoaById(hoaId);
+        return this.boardMemberRepository.existsBoardMemberByDisplayNameAndBoard(userName, hoa);
     }
 
 

@@ -3,6 +3,7 @@ package nl.tudelft.sem.template.hoa.integration;
 import com.fasterxml.jackson.core.type.TypeReference;
 import nl.tudelft.sem.template.commons.models.ActivityModel;
 import nl.tudelft.sem.template.commons.models.DateModel;
+import nl.tudelft.sem.template.commons.models.hoa.JoinRequestModel;
 import nl.tudelft.sem.template.hoa.entitites.Activity;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 
@@ -80,8 +81,8 @@ public class PnbControllerTest {
         ActivityModel model = new ActivityModel(1, "a1", time, "president time");
 
         mockMvc.perform(post("/pnb/createActivity")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.serialize(model)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.serialize(model)))
                 .andExpect(status().isOk());
 
         Activity activity = activityRepository.findByName("a1");
@@ -97,13 +98,13 @@ public class PnbControllerTest {
         mockMvc.perform(post("/pnb/createActivity")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.serialize(activity1.toModel())))
-                        .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
 
         mockMvc.perform(post("/pnb/createActivity")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.serialize(activity2.toModel())))
-                        .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
 
         mockMvc.perform(post("/pnb/createActivity")
@@ -121,8 +122,8 @@ public class PnbControllerTest {
                 typeReference);
 
         assertThat(activityModels).containsExactlyInAnyOrder(activity1.toModel(),
-                                                            activity2.toModel(),
-                                                            activity3.toModel());
+                activity2.toModel(),
+                activity3.toModel());
     }
 
     @Test
@@ -160,6 +161,76 @@ public class PnbControllerTest {
 
 
         MvcResult result2 = mockMvc.perform(get("/pnb/activitiesForHoa/2"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andReturn();
+
+        List<ActivityModel> activityModels2 = JsonUtil.deserialize(result2.getResponse().getContentAsString(),
+                typeReference);
+
+        assertThat(activityModels2).containsExactlyInAnyOrder(activity3.toModel());
+    }
+
+    @Test
+    public void testGetForUsername() throws Exception{
+
+        mockMvc.perform(post("/pnb/createActivity")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.serialize(activity1.toModel())))
+                .andExpect(status().isOk());
+
+
+        mockMvc.perform(post("/pnb/createActivity")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.serialize(activity2.toModel())))
+                .andExpect(status().isOk());
+
+
+        mockMvc.perform(post("/pnb/createActivity")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.serialize(activity3.toModel())))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/users/createNewUser")
+                        .contentType(MediaType.TEXT_PLAIN)
+                        .content("user1"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/users/createNewUser")
+                        .contentType(MediaType.TEXT_PLAIN)
+                        .content("user2"))
+                .andExpect(status().isOk());
+
+        JoinRequestModel join1 = new JoinRequestModel("h1", "user1", "USA", "Cincinnati", "Main street", "12a",
+                "5555");
+        JoinRequestModel join2 = new JoinRequestModel("h2", "user2", "Italy", "Siena", "Piazza del Campo", "1",
+                "53100");
+
+        mockMvc.perform(post("/api/users/joinHoa")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.serialize(join1)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/users/joinHoa")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.serialize(join2)))
+                .andExpect(status().isOk());
+
+        TypeReference<List<ActivityModel>> typeReference = new TypeReference<>() {};
+
+        MvcResult result1 = mockMvc.perform(get("/pnb/allActivitiesForUser/user1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andReturn();
+
+        List<ActivityModel> activityModels1 = JsonUtil.deserialize(result1.getResponse().getContentAsString(),
+                typeReference);
+
+        assertThat(activityModels1).containsExactlyInAnyOrder(activity1.toModel(),
+                activity2.toModel());
+
+
+        MvcResult result2 = mockMvc.perform(get("/pnb/allActivitiesForUser/user2"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andReturn();

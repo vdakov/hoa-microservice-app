@@ -31,5 +31,5 @@ test-voting-microservice:
   stage: test
   script:
     - gradle voting-microservice:test voting-microservice:jacocoTestReport
-    - (cat voting-microservice/build/reports/jacoco/test/html/index.html) || echo "No tests found - Total 0%" | grep -Po "Total.*?([0-9]{1,3})%"
+    - (cat voting-microservice/build/reports/jacoco/test/html/index.html | grep -Po "Total.*?([0-9]{1,3})%") || echo "No report has been generated - 0%"
   coverage: /([0-9]{1,3})%/
