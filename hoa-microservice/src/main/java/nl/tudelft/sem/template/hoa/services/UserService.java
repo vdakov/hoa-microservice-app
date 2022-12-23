@@ -24,6 +24,12 @@ public class UserService {
     @Autowired
     private transient ConnectionService connectionService;
 
+    public UserService(UserRepository userRepository, HoaService hoaService, ConnectionService connectionService) {
+        this.connectionService = connectionService;
+        this.hoaService = hoaService; 
+        this.userRepository = userRepository;
+    }
+
     /**
      * Query for getting all users currently in the table
      *
@@ -57,12 +63,26 @@ public class UserService {
      * @param hoaId the id of the association to be left
      * @param id    the id of the user to be left
      * @return status on whetehr the leaving was succesful
+     * @throws HoaDoesNotExistException
      */
-    public boolean leaveAssociation(int hoaId, int id) throws UserDoesNotExistException {
+    public User leaveAssociation(
+        String displayName, String hoaName, String country, String city
+    ) throws UserDoesNotExistException, HoaDoesNotExistException {
 
-        // TODO in later MR (this one is already way too big)
+        User user = this.userRepository.findByDisplayName(displayName);
 
-        return false;
+        if (user == null) 
+            throw new UserDoesNotExistException("User for given username was not found");
+
+        Hoa hoa = this.hoaService.getByNaturalId(hoaName, country, city);
+
+        if (hoa == null)
+            throw new HoaDoesNotExistException("Hoa for given name/country/city was not found");
+
+        this.connectionService.removeConnection(user, hoa);
+
+        return this.getUser(user.getId());
+
     }
 
     /**
@@ -78,10 +98,7 @@ public class UserService {
      * @throws UserDoesNotExistException
      */
     public UserHoa joinAssociation(String hoaName, String displayName, FullAddressModel address)
-            throws HoaDoesNotExistException, UserDoesNotExistException {
-        
-        if (!userRepository.existsByDisplayName(displayName))
-            throw new UserDoesNotExistException("User not in system!");
+            throws HoaDoesNotExistException {
         
         Hoa hoa = hoaService.getByNaturalId(hoaName, address.getCountry(), address.getCity());
 
@@ -89,6 +106,9 @@ public class UserService {
             throw new HoaDoesNotExistException("Hoa with given attributes doesn't exits!");
 
         User user = userRepository.findByDisplayName(displayName);
+        
+        if (user == null)
+            user = userRepository.save(new User(displayName));
 
         UserHoa connection = new UserHoa(user, hoa, address);
 

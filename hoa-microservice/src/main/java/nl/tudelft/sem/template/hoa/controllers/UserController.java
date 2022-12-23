@@ -1,10 +1,10 @@
 package nl.tudelft.sem.template.hoa.controllers;
 
+import nl.tudelft.sem.template.commons.models.hoa.ConnectionRequestModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullAddressModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullUserHoaModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullUserResponseModel;
-import nl.tudelft.sem.template.commons.models.hoa.IsInHoaRequestModel;
-import nl.tudelft.sem.template.commons.models.hoa.JoinModel;
+import nl.tudelft.sem.template.commons.models.hoa.JoinRequestModel;
 import nl.tudelft.sem.template.hoa.entitites.User;
 import nl.tudelft.sem.template.hoa.entitites.UserHoa;
 import nl.tudelft.sem.template.hoa.exceptions.HoaDoesNotExistException;
@@ -13,6 +13,7 @@ import nl.tudelft.sem.template.hoa.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -79,7 +80,7 @@ public class UserController {
     * @throws UserDoesNotExistException if the specified user does not exist
     */
     @PostMapping("joinHoa")
-    public ResponseEntity<FullUserHoaModel> joinHoa(@RequestBody JoinModel joinRequest) 
+    public ResponseEntity<FullUserHoaModel> joinHoa(@RequestBody JoinRequestModel joinRequest) 
         throws HoaDoesNotExistException, UserDoesNotExistException {
         
         if (joinRequest.getUserDisplayName() == null || joinRequest.getHoaName() == null 
@@ -102,12 +103,24 @@ public class UserController {
     }
 
     @PostMapping("isInHoa")
-    public ResponseEntity<Boolean> isInHoa(@RequestBody IsInHoaRequestModel req) {
+    public ResponseEntity<Boolean> isInHoa(@RequestBody ConnectionRequestModel req) {
         if (req.anyNull())
             return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(
             this.userService.isInHoa(req.getDisplayName(), req.getName(), req.getCountry(), req.getCity())
         );
+    }
+
+
+    @DeleteMapping("leaveHoa")
+    public ResponseEntity<FullUserResponseModel> leaveHoa(
+        @RequestBody ConnectionRequestModel request
+    ) throws UserDoesNotExistException, HoaDoesNotExistException {
+        if (request.anyNull()) return ResponseEntity.badRequest().build();
+
+        return ResponseEntity.ok(this.userService.leaveAssociation(
+            request.getDisplayName(), request.getName(), request.getCountry(), request.getCity()
+        ).toFullModel());
     }
 
 }
