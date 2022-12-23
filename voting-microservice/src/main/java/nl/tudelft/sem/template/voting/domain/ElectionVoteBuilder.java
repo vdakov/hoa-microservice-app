@@ -40,7 +40,7 @@ public class ElectionVoteBuilder implements VoteBuilder {
     }
     public Vote build() {
         if (voterEligibilityChecker == null) {
-            this.voterEligibilityChecker = new UrlVoterEligibilityChecker("http://localhost:8090/isInHoa");
+            this.voterEligibilityChecker = new ElectionsVoterEligibilityChecker(this.hoaId);
         }
         return new Vote(hoaId, options, timeKeeper, voterEligibilityChecker, numberOfEligibleVoters);
     }

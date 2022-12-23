@@ -4,6 +4,7 @@ import nl.tudelft.sem.template.commons.models.hoa.FullAddressModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullUserHoaModel;
 import nl.tudelft.sem.template.commons.models.hoa.FullUserResponseModel;
 import nl.tudelft.sem.template.commons.models.hoa.IsInHoaRequestModel;
+import nl.tudelft.sem.template.commons.models.hoa.IsInHoaByIdRequestModel;
 import nl.tudelft.sem.template.commons.models.hoa.JoinModel;
 import nl.tudelft.sem.template.hoa.entitites.User;
 import nl.tudelft.sem.template.hoa.entitites.UserHoa;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 
 
 import java.util.List;
@@ -108,6 +110,11 @@ public class UserController {
         return ResponseEntity.ok(
             this.userService.isInHoa(req.getDisplayName(), req.getName(), req.getCountry(), req.getCity())
         );
+    }
+
+    @PostMapping("isInHoa/{hoaId}")
+    public ResponseEntity<Boolean> isInHoaById(@PathVariable int hoaId, @RequestBody IsInHoaByIdRequestModel req) {
+        return ResponseEntity.ok(this.userService.isInHoa(req.getDisplayName(), hoaId));
     }
 
 }

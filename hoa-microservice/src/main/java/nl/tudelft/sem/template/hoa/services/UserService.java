@@ -125,5 +125,8 @@ public class UserService {
         return this.userRepository.isInHoa(displayName, hoaName, country, city);
     }
 
-
+    public boolean isInHoa(String displayName, int hoaId) {
+        Hoa foundHoa = hoaService.getHoaById(hoaId);
+        return isInHoa(displayName, foundHoa.getName(), foundHoa.getCountry(), foundHoa.getCity());
+    }
 }
