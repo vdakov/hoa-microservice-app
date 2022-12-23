@@ -1,6 +1,10 @@
 package nl.tudelft.sem.template.hoa.controllers;
 
-import nl.tudelft.sem.template.commons.models.hoa.*;
+import nl.tudelft.sem.template.commons.models.hoa.ConnectionRequestModel;
+import nl.tudelft.sem.template.commons.models.hoa.JoinRequestModel;
+import nl.tudelft.sem.template.commons.models.hoa.FullUserResponseModel;
+import nl.tudelft.sem.template.commons.models.hoa.FullAddressModel;
+import nl.tudelft.sem.template.commons.models.hoa.FullUserHoaModel;
 import nl.tudelft.sem.template.hoa.entitites.User;
 import nl.tudelft.sem.template.hoa.entitites.UserHoa;
 import nl.tudelft.sem.template.hoa.exceptions.HoaDoesNotExistException;
@@ -9,7 +13,13 @@ import nl.tudelft.sem.template.hoa.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 
 import java.util.List;
@@ -93,6 +103,12 @@ public class UserController {
         return ResponseEntity.ok().body(connection.toFullModel());
     }
 
+    /**
+     * Quearies repo for whether a user is part of any hoa
+     *
+     * @param req DTO for natural id
+     * @return boolean of status
+     */
     @PostMapping("/isInHoa")
     public ResponseEntity<Boolean> isInHoa(@RequestBody ConnectionRequestModel req) {
         if (req.anyNull())
@@ -102,8 +118,14 @@ public class UserController {
         );
     }
 
-    @GetMapping("/isInABoard")
-    public ResponseEntity<Boolean> isInABoard(@RequestBody ConnectionRequestModel req) {
+    /**
+     * Queries repo for whether a user is in any board
+     *
+     * @param req the DTO containing the natural id
+     * @return true or false for result of query
+     */
+    @GetMapping("/isInBoard")
+    public ResponseEntity<Boolean> isInBoard(@RequestBody ConnectionRequestModel req) {
         if (req.anyNull())
             return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(
@@ -112,6 +134,12 @@ public class UserController {
 
     }
 
+    /**
+     * Query for whether a user is part of a specific Hoa
+     *
+     * @param req the DTO containin the natural id of the user
+     * @return true or false for result of query
+     */
     @GetMapping("/isInBoardOfHoa")
     public ResponseEntity<Boolean> isBoardMemberOfHoa(@RequestBody ConnectionRequestModel req) {
         if (req.anyNull())
@@ -120,6 +148,13 @@ public class UserController {
                 this.userService.isInSpecificBoard(req.getDisplayName(), req.getName(), req.getCountry(), req.getCity()));
     }
 
+    /**
+     *  Queary for whether user is part of a specic HOA by DB id
+     *
+     * @param hoaId id oh HOA in DB
+     * @param userId id of user in HOA
+     * @return true or false depending on query result
+     */
     @GetMapping("/isInBoardOfHoa/{hoaId}/{userId}")
     public ResponseEntity<Boolean> isBoardMemberOfHoaById(@PathVariable("hoaId") int hoaId,
                                                           @PathVariable("userId") int userId) {
@@ -128,6 +163,15 @@ public class UserController {
         );
     }
 
+    /**
+     *
+     * Endpoint for leaving an HOA
+     *
+     * @param request the request to leave the hOA
+     * @return the model for the user leaving it
+     * @throws UserDoesNotExistException
+     * @throws HoaDoesNotExistException
+     */
     @DeleteMapping("/leaveHoa")
     public ResponseEntity<FullUserResponseModel> leaveHoa(
             @RequestBody ConnectionRequestModel request

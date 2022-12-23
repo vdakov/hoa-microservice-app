@@ -28,7 +28,8 @@ public class UserService {
     @Autowired
     private transient BoardMemberRepository boardMemberRepository;
 
-    public UserService(UserRepository userRepository, HoaService hoaService, ConnectionService connectionService, BoardMemberRepository boardMemberRepository) {
+    public UserService(UserRepository userRepository, HoaService hoaService,
+                       ConnectionService connectionService, BoardMemberRepository boardMemberRepository) {
         this.userRepository = userRepository;
         this.hoaService = hoaService;
         this.connectionService = connectionService;

@@ -4,7 +4,11 @@ import nl.tudelft.sem.template.commons.models.ElectionResultsModel;
 import nl.tudelft.sem.template.commons.models.RequirementResultsModel;
 import nl.tudelft.sem.template.commons.models.VotingModel;
 import nl.tudelft.sem.template.commons.models.VotingType;
-import nl.tudelft.sem.template.hoa.entitites.*;
+import nl.tudelft.sem.template.hoa.entitites.User;
+import nl.tudelft.sem.template.hoa.entitites.Hoa;
+import nl.tudelft.sem.template.hoa.entitites.ElectionResults;
+import nl.tudelft.sem.template.hoa.entitites.BoardMember;
+import nl.tudelft.sem.template.hoa.entitites.RequirementResults;
 import nl.tudelft.sem.template.hoa.repositories.BoardMemberRepository;
 import nl.tudelft.sem.template.hoa.repositories.HoaRepository;
 import nl.tudelft.sem.template.hoa.repositories.ResultsRepository;
@@ -26,7 +30,8 @@ public class VoteService {
     private transient UserRepository userRepository;
     private transient BoardMemberRepository boardMemberRepository;
 
-    public VoteService(ResultsRepository resultsRepository, HoaRepository hoaRepository, UserRepository userRepository, BoardMemberRepository boardMemberRepository) {
+    public VoteService(ResultsRepository resultsRepository, HoaRepository hoaRepository,
+                       UserRepository userRepository, BoardMemberRepository boardMemberRepository) {
         this.resultsRepository = resultsRepository;
         this.hoaRepository = hoaRepository;
         this.userRepository = userRepository;

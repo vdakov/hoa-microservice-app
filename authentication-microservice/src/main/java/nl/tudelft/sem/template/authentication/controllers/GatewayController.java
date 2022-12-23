@@ -5,7 +5,12 @@ import io.jsonwebtoken.Jwts;
 import nl.tudelft.sem.template.commons.models.ActivityModel;
 import nl.tudelft.sem.template.commons.models.CreateRequirementModel;
 import nl.tudelft.sem.template.commons.models.VotingModel;
-import nl.tudelft.sem.template.commons.models.hoa.*;
+import nl.tudelft.sem.template.commons.models.hoa.ConnectionRequestModel;
+import nl.tudelft.sem.template.commons.models.hoa.FullUserHoaModel;
+import nl.tudelft.sem.template.commons.models.hoa.FullHoaResponseModel;
+import nl.tudelft.sem.template.commons.models.hoa.HoaRequestModel;
+import nl.tudelft.sem.template.commons.models.hoa.FullUserResponseModel;
+import nl.tudelft.sem.template.commons.models.hoa.JoinRequestModel;
 import nl.tudelft.sem.template.commons.models.UpdateRequirementModel;
 import nl.tudelft.sem.template.commons.models.DeleteRequirementModel;
 import nl.tudelft.sem.template.commons.models.CreateReportModel;
@@ -231,10 +236,14 @@ public class GatewayController {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = buildEntity(model);
         String url = "http://localhost:8089/requirements/createRequirement";
-
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
     }
 
+    /** Routing method to check whether a user is a board member
+     *
+     * @param model the model containing the user natural id
+     * @return status of message
+     */
     @GetMapping("/isABoardMember")
     public ResponseEntity isBoardMember(@RequestBody ConnectionRequestModel model) {
         RestTemplate restTemplate = new RestTemplate();
@@ -313,9 +322,12 @@ public class GatewayController {
      * Routing method for starting an requirement vote - goes through the HOA microservice and then
      * starts a vote in the Voting Microservice
      * <p>
-     * Due to the app being a prototype, it is assumed users will behave and only eligible members will be able to start
-     * the vote. Additionally, the vote is independent of the requirement and it is assumed the users will behave and they will
-     * create the requirement through a different endpoint iff the vote has passed. All board members will be aware of what they are
+     * Due to the app being a prototype, it is assumed users will
+     * behave and only eligible members will be able to start
+     * the vote. Additionally, the vote is independent of the requirement
+     * and it is assumed the users will behave and they will
+     * create the requirement through a different endpoint iff the vote has passed.
+     * All board members will be aware of what they are
      * voting for.
      *
      * @param hoaId the id of the HOA the voting is starting
