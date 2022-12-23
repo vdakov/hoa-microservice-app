@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * Board member repository to model the current inheritance model of the User and BoardMember classes
- *
+ * <p>
  * Allows for some useful queries in the endpoints, which is the reason for its existence
  */
 @Repository
@@ -22,4 +22,10 @@ public interface BoardMemberRepository extends JpaRepository<BoardMember, Intege
     BoardMember findBoardMemberById(int id);
 
     boolean removeBoardMemberById(int id);
+
+    boolean existsBoardMemberByDisplayName(String displayName);
+
+    boolean existsBoardMemberByDisplayNameAndBoard(String displayName, Hoa hoa);
+
+    boolean existsBoardMemberByIdAndBoard(int id, Hoa hoa);
 }
