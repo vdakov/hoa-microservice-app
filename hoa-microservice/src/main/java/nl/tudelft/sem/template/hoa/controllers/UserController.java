@@ -84,6 +84,8 @@ public class UserController {
     public ResponseEntity<FullUserHoaModel> joinHoa(@RequestBody JoinRequestModel joinRequest)
             throws HoaDoesNotExistException, UserDoesNotExistException {
 
+        if (joinRequest.anyNull()) throw new UserDoesNotExistException("User does not exist");
+
         if (joinRequest.getUserDisplayName() == null || joinRequest.getHoaName() == null
                 || joinRequest.getCountry() == null || joinRequest.getCity() == null || joinRequest.getStreet() == null
                 || joinRequest.getHoaName() == null || joinRequest.getPostalCode() == null) {
@@ -124,12 +126,12 @@ public class UserController {
      * @param req the DTO containing the natural id
      * @return true or false for result of query
      */
-    @GetMapping("/isInBoard")
+    @PostMapping("/isInBoard")
     public ResponseEntity<Boolean> isInBoard(@RequestBody ConnectionRequestModel req) {
         if (req.anyNull())
             return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(
-                this.userService.isInBoard(req.getDisplayName(), req.getName(), req.getCountry(), req.getCity())
+                this.userService.isInBoard(req.getDisplayName())
         );
 
     }
@@ -140,7 +142,7 @@ public class UserController {
      * @param req the DTO containin the natural id of the user
      * @return true or false for result of query
      */
-    @GetMapping("/isInBoardOfHoa")
+    @PostMapping("/isInBoardOfHoa")
     public ResponseEntity<Boolean> isBoardMemberOfHoa(@RequestBody ConnectionRequestModel req) {
         if (req.anyNull())
             return ResponseEntity.badRequest().build();
@@ -149,9 +151,9 @@ public class UserController {
     }
 
     /**
-     *  Queary for whether user is part of a specic HOA by DB id
+     * Queary for whether user is part of a specic HOA by DB id
      *
-     * @param hoaId id oh HOA in DB
+     * @param hoaId  id oh HOA in DB
      * @param userId id of user in HOA
      * @return true or false depending on query result
      */
@@ -164,7 +166,6 @@ public class UserController {
     }
 
     /**
-     *
      * Endpoint for leaving an HOA
      *
      * @param request the request to leave the hOA

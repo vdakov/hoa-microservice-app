@@ -52,12 +52,5 @@ public class HoaController {
     }
 
 
-    @GetMapping("/findHoa/{hoaId}")
-    public ResponseEntity<Hoa> findHoaObject(@PathVariable("hoaId") int hoaId) {
-        Hoa hoa = hoaService.getHoaById(hoaId);
-        if (hoa == null) return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(hoa);
-    }
-
 
 }

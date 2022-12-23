@@ -68,7 +68,7 @@ public class UserService {
      *
      * @return the user that left or an exception
      * @throws HoaDoesNotExistException
-     *  @throws UserDoesNotExistException
+     * @throws UserDoesNotExistException
      */
     public User leaveAssociation(
             String displayName, String hoaName, String country, String city
@@ -150,13 +150,13 @@ public class UserService {
         return this.userRepository.isInHoa(displayName, hoaName, country, city);
     }
 
-    public boolean isInBoard(String displayName, String hoaName, String country, String city) {
+    public boolean isInBoard(String displayName) {
         return this.boardMemberRepository.existsBoardMemberByDisplayName(displayName);
     }
 
     public boolean isInSpecificBoard(String displayName, String hoaName, String country, String city) {
         if (!isInHoa(displayName, hoaName, country, city)) return false;
-        if (!isInBoard(displayName, hoaName, country, city)) return false;
+        if (!isInBoard(displayName)) return false;
         Hoa hoa = hoaService.getByNaturalId(hoaName, country, city);
 
         return this.boardMemberRepository.existsBoardMemberByDisplayNameAndBoard(displayName, hoa);
