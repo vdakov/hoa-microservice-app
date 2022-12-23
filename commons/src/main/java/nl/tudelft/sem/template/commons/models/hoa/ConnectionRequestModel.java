@@ -5,10 +5,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class IsInHoaRequestModel extends HoaRequestModel {
+public class ConnectionRequestModel extends HoaRequestModel {
     private String displayName;
 
-    public IsInHoaRequestModel(String displayName, String hoaName, String country, String city) {
+    public ConnectionRequestModel(String displayName, String hoaName, String country, String city) {
         super(hoaName, country, city);
         this.displayName = displayName;
     }

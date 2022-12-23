@@ -4,10 +4,12 @@ import nl.tudelft.sem.template.commons.models.ElectionResultsModel;
 import nl.tudelft.sem.template.commons.models.RequirementResultsModel;
 import nl.tudelft.sem.template.commons.models.VotingModel;
 import nl.tudelft.sem.template.commons.models.VotingType;
-import nl.tudelft.sem.template.hoa.entitites.ElectionResults;
-import nl.tudelft.sem.template.hoa.entitites.Hoa;
-import nl.tudelft.sem.template.hoa.entitites.RequirementResults;
 import nl.tudelft.sem.template.hoa.entitites.User;
+import nl.tudelft.sem.template.hoa.entitites.Hoa;
+import nl.tudelft.sem.template.hoa.entitites.ElectionResults;
+import nl.tudelft.sem.template.hoa.entitites.BoardMember;
+import nl.tudelft.sem.template.hoa.entitites.RequirementResults;
+import nl.tudelft.sem.template.hoa.repositories.BoardMemberRepository;
 import nl.tudelft.sem.template.hoa.repositories.HoaRepository;
 import nl.tudelft.sem.template.hoa.repositories.ResultsRepository;
 import nl.tudelft.sem.template.hoa.repositories.UserRepository;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
 import java.util.List;
@@ -26,11 +29,14 @@ public class VoteService {
     private transient ResultsRepository resultsRepository;
     private transient HoaRepository hoaRepository;
     private transient UserRepository userRepository;
+    private transient BoardMemberRepository boardMemberRepository;
 
-    public VoteService(ResultsRepository resultsRepository, HoaRepository hoaRepository, UserRepository userRepository) {
+    public VoteService(ResultsRepository resultsRepository, HoaRepository hoaRepository,
+                       UserRepository userRepository, BoardMemberRepository boardMemberRepository) {
         this.resultsRepository = resultsRepository;
         this.hoaRepository = hoaRepository;
         this.userRepository = userRepository;
+        this.boardMemberRepository = boardMemberRepository;
     }
 
     /**
@@ -39,8 +45,9 @@ public class VoteService {
      */
     public void storeElectionResults(int hoaId, ElectionResultsModel results) {
         Hoa hoa = hoaRepository.findById(hoaId);
-        User winner = userRepository.findUserById(Collections.max(results.getVoteDistributions().entrySet(),
+        User winner = userRepository.findByDisplayName(Collections.max(results.getVoteDistributions().entrySet(),
                 Comparator.comparingInt(Map.Entry::getValue)).getKey());
+
         resultsRepository.save(new ElectionResults(hoa, results.getNumberOfVotes(), results.getVoteDistributions(), winner));
     }
 
@@ -76,6 +83,11 @@ public class VoteService {
         int numEligibleVotes = hoa.getMembers().size();
         VotingType type = VotingType.REQUIREMENTS_VOTE;
         return new VotingModel(hoaId, type, numEligibleVotes, Collections.emptyList());
+    }
+
+    public List<BoardMember> getListEligibleMembers(int hoaId){
+        Hoa hoa = hoaRepository.findById(hoaId);
+        return this.boardMemberRepository.findBoardMemberByBoard(hoa);
     }
 
 

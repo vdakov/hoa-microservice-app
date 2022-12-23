@@ -98,11 +98,14 @@ public class RequirementsControllerTest {
     @Test
     public void testCreateReport() throws Exception {
         requirementsRepository.save(requirement1);
+
+        requirement1.setId(-1);
+
         mockMvc.perform(post("/requirements/report")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.serialize(model(report1))))
                 .andExpect(status().isOk());
-
+        requirement1.setId(1);
         Report report = reportRepository.findAll().get(0);
         assertThat(report.getReportedUser()).isEqualTo("sem2");
         assertThat(report.getRequirement()).isEqualTo(requirement1);
@@ -147,10 +150,12 @@ public class RequirementsControllerTest {
     public void getReportsTest() throws Exception {
         requirement1.setHoaId(-1);
         requirementsRepository.save(requirement1);
+        requirement1.setId(-1);
         mockMvc.perform(post("/requirements/report")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.serialize(model(report1))))
                 .andExpect(status().isOk());
+        requirement1.setId(1);
         MvcResult result = mockMvc.perform(get("/requirements/getReports/-1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))

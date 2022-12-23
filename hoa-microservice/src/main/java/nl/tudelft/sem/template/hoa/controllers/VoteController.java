@@ -32,7 +32,9 @@ public class VoteController {
         this.voteService = voteService;
     }
 
-
+    /**
+     * Method to build an HTTP entity
+     */
     public HttpEntity buildEntity(String token, Object body) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
@@ -40,30 +42,6 @@ public class VoteController {
         return entity;
     }
 
-    /**
-     * Test for sample routing to voting microservice : WILL DELETE AFTER TOKEN PASSING IS ADDED
-     */
-    @GetMapping("/testRemote")
-    public void testRemote() {
-        String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest().getHeader("Authorization");
-        System.out.println(token);
-
-        RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = buildEntity(null, token);
-        String url = "http://localhost:8082/hello";
-        ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
-        System.out.println(response);
-    }
-
-
-    /**
-     * Test for internal routing: WILL DELETE AFTER TOKEN PASSING IS ADDED
-     */
-    @GetMapping("/hello")
-    public void hello() {
-        System.out.println("hello");
-    }
 
     /**
      * Receives the DTO from Voting to be later stored in the DB
@@ -81,7 +59,11 @@ public class VoteController {
     }
 
     /**
-     * Analogous with above JavaDoc
+     * Receives the DTO from Voting to be later stored in the DB
+     *
+     * @param results the DTO from the request body
+     * @param hoaId   the id of the associations this is for
+     * @return status of the message
      */
     @PostMapping("/receiveRequirementResults/{hoaId}")
     public ResponseEntity<String> getRequirementResults(@RequestBody RequirementResultsModel results,
@@ -92,6 +74,7 @@ public class VoteController {
 
     /**
      * Endpoint for getting a list of eligible members in the HOA (used for requirement votings)
+     * @return the list of all eligible members (board members) in the HOA
      */
     @GetMapping("/getListEligibleMembers/{hoadId}")
     public ResponseEntity<List<User>> getListEligibleMembers() {
@@ -114,8 +97,13 @@ public class VoteController {
 
         HttpEntity entity = buildEntity(token, votingModel);
         String url = "http://localhost:8082/initializeVoting";
-        ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
-        System.out.println(response);
+        try {
+            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
+            System.out.println(response);
+        }catch(Exception e){
+            System.out.println("That didn't work :(");
+        }
+
 
         return ResponseEntity.ok().build();
     }

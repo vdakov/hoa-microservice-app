@@ -27,7 +27,7 @@ public class ElectionResults extends Results {
     private List<Integer> votesPerUser;
 
     @ElementCollection
-    private List<Integer> idsOfCandidates;
+    private List<String> idsOfCandidates;
 
     @OneToOne
     private User winner;
@@ -35,12 +35,12 @@ public class ElectionResults extends Results {
     /**
      * Constructor
      */
-    public ElectionResults(Hoa hoa, int numberOfVotes, Map<Integer, Integer> votes, User winner) {
+    public ElectionResults(Hoa hoa, int numberOfVotes, Map<String, Integer> votes, User winner) {
         super(hoa, numberOfVotes);
         this.idsOfCandidates = new ArrayList<>();
         this.votesPerUser = new ArrayList<>();
         this.idsOfCandidates.addAll(votes.keySet());
-        for (int id : votes.keySet()) {
+        for (String id : votes.keySet()) {
             votesPerUser.add(votes.get(id));
         }
         this.winner = winner;

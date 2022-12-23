@@ -37,6 +37,9 @@ public class HoaController {
 
     @PostMapping("/createHoa")
     public ResponseEntity<FullHoaResponseModel> createHoa(@RequestBody HoaRequestModel hoaModel) throws Exception {
+        if (hoaModel.anyNull())
+            return ResponseEntity.badRequest().build();
+
         Hoa hoa = hoaService.createHoa(hoaModel.getName(), hoaModel.getCountry(), hoaModel.getCity());
         return ResponseEntity.ok(hoa.toFullModel());
     }
@@ -48,4 +51,12 @@ public class HoaController {
         return ResponseEntity.ok(false);
     }
 
+    @GetMapping("/getHoaModel/{hoaId}")
+    public ResponseEntity<FullHoaResponseModel> getHoaModel(@PathVariable("hoaId") int hoaId) {
+        Hoa hoa = hoaService.getHoaById(hoaId);
+        if (hoa != null) {
+            return ResponseEntity.ok(hoa.toFullModel());
+        }
+        return ResponseEntity.badRequest().build();
+    }
 }

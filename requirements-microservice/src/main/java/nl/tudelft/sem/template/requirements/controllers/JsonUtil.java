@@ -1,6 +1,7 @@
-package nl.tudelft.sem.template.authentication.integration.utils;
+package nl.tudelft.sem.template.requirements.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -27,7 +28,7 @@ public class JsonUtil {
      * @return The deserialized object.
      * @throws JsonProcessingException if an error occurs during deserialization.
      */
-    public static <T> T deserialize(String json, Class<T> type) throws JsonProcessingException {
+    public static <T> T deserialize(String json, TypeReference<T> type) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(json, type);
     }
