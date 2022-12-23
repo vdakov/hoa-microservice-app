@@ -67,6 +67,41 @@ in an attempt to separate the structure as much as possible
 - TO-DO: Complete linking between microservices and finish up database
 logic for how voting distributions are stored
 
+### Task: Finishing the Requirements microservice - Erik Vidican
+
+- Created routing methods to communicate between HOA and gateway microservices
+- Refactored the directories of the microservice to properly separate logic and files / tests
+- Removed authentication from requirements, since this is handled by the gateway
+- Updated services, added the ability to modify and delete a requirement
+- Changed retrieving requirements and reports: from now on, only specific requirements/reports are
+retrieved, according to the HOA id
+- Added unit and integration tests for domain, controller and services
+- Moved lombok models to the commons folder
+
+
+#### Notes
+- I was late with merging this since I had to travel
+- Figuring out how to test the controller proved to be difficult when the microservice
+has to communicate with another microservice
+- Improvements could be made regarding the efficiency of the microservice
+- Regarding reports, there is still a TO-DO left checking if a provided user actually exists
+or not
+
+### Task: Linking the Voting microservice (unfinished)
+#### Assignee: Simeon Atanasov 
+#### User Stories / Issues:
+* (related to) As a user, I want the result of a vote to take effect after the time has passed (#48)
+* (related to) As a memeber, I am able to vote in the HOA's yearly elections (#35)
+* (related to) As a board member, I want to start a vote on creating and changing requirements (#8)
+* (related to) As a board member, I want to vote on creating and changing requirements (#9)
+
+
+#### Notes:
+* I did not manage to write enough code for any MRs during this sprint , and I have no merges.
+* I was able to read documentation for both RestTemplate and 
+* While reviewing MRs, I also saw how DTOs are exchanged. Therefore, linking the Voting microservice to HOA and Gateway/Security will be done more quickly during this sprint.
+* After the end of a vote, the Voting microservice will send a POST request to Voting so as to transmit the collated results, and drop the votes currently stored within the database. This functionality is to be implemented in this sprint.
+
 
 ## Main problems encountered
 
