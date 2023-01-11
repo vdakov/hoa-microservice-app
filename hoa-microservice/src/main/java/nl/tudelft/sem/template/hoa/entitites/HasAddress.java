@@ -15,11 +15,9 @@ import nl.tudelft.sem.template.commons.entities.HasEvents;
 public abstract class HasAddress extends HasEvents {
     
     @Column(name = "country", nullable = false)
-    @NaturalId
     private String country;
 
     @Column(name = "city", nullable = false)
-    @NaturalId
     private String city;
 
     public HasAddress(String country, String city) {
