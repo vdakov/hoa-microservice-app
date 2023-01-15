@@ -1,11 +1,10 @@
 package nl.tudelft.sem.template.hoa.entities;
 
+import nl.tudelft.sem.template.commons.models.DateModel;
 import nl.tudelft.sem.template.hoa.entitites.Activity;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.GregorianCalendar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -14,7 +13,7 @@ public class ActivityTest {
     private Activity activity;
     private static final Hoa hoa = new Hoa("h1", "USA", "Cincinnati");
     private static final String name = "Activity Name";
-    private static final GregorianCalendar time = new GregorianCalendar(2022, 12, 17);
+    private static final DateModel time = new DateModel(2022, 12, 17);
     private static final String description = "Activity Description";
 
     @BeforeEach
@@ -24,7 +23,7 @@ public class ActivityTest {
 
     @Test
     public void testChangeTime() {
-        GregorianCalendar newTime = new GregorianCalendar(2002, 10, 24);
+        DateModel newTime = new DateModel(2002, 10, 24);
         activity.changeTime(newTime);
         assertEquals(newTime, activity.getTime());
     }
@@ -72,7 +71,7 @@ public class ActivityTest {
 
     @Test
     public void testEqualsDifferentTime() {
-        Activity activity2 = new Activity(hoa, name, new GregorianCalendar(2022, 10, 24), description);
+        Activity activity2 = new Activity(hoa, name, new DateModel(2022, 10, 24), description);
         assertNotEquals(activity, activity2);
         assertNotEquals(activity.hashCode(), activity2.hashCode());
     }
