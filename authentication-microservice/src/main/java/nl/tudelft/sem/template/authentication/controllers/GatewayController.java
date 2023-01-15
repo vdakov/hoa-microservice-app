@@ -273,11 +273,11 @@ public class GatewayController {
      * @param model the model containing information about the report.
      * @return the ResponseEntity passed back from the endpoint.
      */
-    @PostMapping("/requirements/report")
+    @PostMapping("/report/submit")
     public ResponseEntity report(@RequestBody CreateReportModel model) {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = buildEntity(model);
-        String url = "http://localhost:8089/requirements/report";
+        String url = "http://localhost:8089/report/submit";
 
         return restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
     }
@@ -346,13 +346,13 @@ public class GatewayController {
      * @param hoaId the ID of the HOA to retrieve the reports from.
      * @return a ResponseEntity containing the list of reports.
      */
-    @GetMapping("/requirements/getReports/{hoaId}")
+    @GetMapping("/report/getReports/{hoaId}")
     public ResponseEntity getReports(@PathVariable(HOA_ID_LITERAL) int hoaId) {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity entity = buildEntity(null);
-        String url = "http://localhost:8089/requirements/getReports/" + hoaId;
+        String url = "http://localhost:8089/report/getReports/" + hoaId;
 
-        return restTemplate.exchange(url, HttpMethod.GET, entity, ResponseEntity.class);
+        return restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
     }
 
     /**
