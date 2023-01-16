@@ -29,20 +29,14 @@ public class ActivityService {
     /**
      * Saves an activity with the given parameters into the repository.
      *
-     * @param name the name of the activity
-     * @param time the date of the activity
-     * @param description the description of the activity
+     * @param p the parameters for this activity
      * @return the activity that has been created
      * @throws Exception if an activity with the given name already exists
      */
-    public Activity createActivity(int hoaId, String name, DateModel time, String description) throws Exception {
-
-        if (existsByNameAndTime(name, time)) throw new ActivityNameAlreadyInUseException(name);
-
-        Hoa hoa = hoaService.getHoaById(hoaId);
-
-
-        Activity activity = new Activity(hoa, name, time, description);
+    public Activity createActivity(CreateActivityParameters p) throws Exception {
+        if (existsByNameAndTime(p.getName(), p.getTime())) throw new ActivityNameAlreadyInUseException(p.getName());
+        Hoa hoa = hoaService.getHoaById(p.getHoaId());
+        Activity activity = new Activity(hoa, p.getName(), p.getTime(), p.getDescription());
         activityRepository.save(activity);
         return activity;
     }
@@ -55,7 +49,6 @@ public class ActivityService {
     public List<Activity> getAllActivities() {
         return activityRepository.findAll();
     }
-
 
     /**
      * Returns all activities that a certain username is associated with.
