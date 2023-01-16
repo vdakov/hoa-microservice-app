@@ -1,6 +1,5 @@
 package nl.tudelft.sem.template.voting.application;
 
-import nl.tudelft.sem.template.commons.models.ElectionResultsModel;
 import nl.tudelft.sem.template.commons.models.ResultsModel;
 import nl.tudelft.sem.template.commons.models.VotingModel;
 import nl.tudelft.sem.template.voting.domain.Vote;
@@ -8,6 +7,7 @@ import nl.tudelft.sem.template.voting.domain.ElectionVoteBuilder;
 import nl.tudelft.sem.template.voting.domain.VotingException;
 import nl.tudelft.sem.template.voting.domain.RequirementVoteBuilder;
 import nl.tudelft.sem.template.voting.domain.VoteEndCallable;
+import nl.tudelft.sem.template.voting.domain.VoteBuilder;
 import nl.tudelft.sem.template.commons.models.VotingType;
 import org.springframework.stereotype.Service;
 
@@ -39,30 +39,24 @@ public class VotingService {
      */
     public void registerVoteStartingNow(VotingModel votingModel,
                                         TemporalAmount temporalAmount) {
-        Vote vote;
+        VoteBuilder voteBuilder;
         if (votingModel.getVotingType().equals(VotingType.ELECTIONS_VOTE)) {
-            vote = new ElectionVoteBuilder()
-                    .forHoaWithId(votingModel.getHoaId())
-                    .withOptions(votingModel.getOptions())
-                    .startInstantlyWithDuration(temporalAmount)
-                    .withEligibleVoters(votingModel.getNumberOfEligibleVoters())
-                    .build();
-            ongoingElections.put(votingModel.getHoaId(), vote);
-            electionEndCalls.schedule(new VoteEndCallable(vote, this),
-                    vote.getTimeKeeper().getDurationInSeconds(),
-                    TimeUnit.SECONDS);
+            voteBuilder = new ElectionVoteBuilder()
+                    .withOptions(votingModel.getOptions());
         } else if (votingModel.getVotingType().equals(VotingType.REQUIREMENTS_VOTE)) {
-            vote = new RequirementVoteBuilder()
-                    .forHoaWithId(votingModel.getHoaId())
-                    .startInstantlyWithDuration(temporalAmount)
-                    .withEligibleVoters(votingModel.getNumberOfEligibleVoters())
-                    .build();
-            ongoingElections.put(votingModel.getHoaId(), vote);
-            electionEndCalls.schedule(new VoteEndCallable(vote, this),
-                    vote.getTimeKeeper().getDurationInSeconds(),
-                    TimeUnit.SECONDS);
+            voteBuilder = new RequirementVoteBuilder();
+        } else {
+            throw new UnsupportedOperationException();
         }
-
+        Vote vote = voteBuilder
+                .forHoaWithId(votingModel.getHoaId())
+                .startInstantlyWithDuration(temporalAmount)
+                .withEligibleVoters(votingModel.getNumberOfEligibleVoters())
+                .build();
+        ongoingElections.put(votingModel.getHoaId(), vote);
+        electionEndCalls.schedule(new VoteEndCallable(vote, this),
+                vote.getTimeKeeper().getDurationInSeconds(),
+                TimeUnit.SECONDS);
     }
 
     public boolean existingHoaVoting(int hoaId) {
