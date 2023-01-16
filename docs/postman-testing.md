@@ -254,7 +254,7 @@ To report a user, the reporter should provide the following attributes:
 - The name of the reported user
 - The id of the requirement that the user broke
 
-**http://localhost:8081/gateway/requirements/report**
+**http://localhost:8081/gateway/report/submit**
 
 ```json
 {
@@ -269,7 +269,7 @@ To report a user, the reporter should provide the following attributes:
 
 To get the list of reports that have been made in an HOA, the user should provide the HOA id in the URL
 
-**http://localhost:8081/gateway/requirements/getReports/{hoaId}**
+**http://localhost:8081/gateway/report/getReports/{hoaId}**
 
 ![image](../instructions/getReports.png)
 
