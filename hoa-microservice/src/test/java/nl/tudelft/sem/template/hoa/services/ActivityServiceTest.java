@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -49,8 +48,8 @@ public class ActivityServiceTest {
 
     @Test
     public void testExistsByNameAndTime() {
-        GregorianCalendar time1 = new GregorianCalendar(2002, 10, 24);
-        GregorianCalendar time2 = new GregorianCalendar(2002, 10, 21);
+        DateModel time1 = new DateModel(2002, 10, 24);
+        DateModel time2 = new DateModel(2002, 10, 21);
 
         when(activityRepository.existsByNameAndTime("Test", time1)).thenReturn(true);
         assertTrue(service.existsByNameAndTime("Test", time1));

@@ -23,7 +23,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,13 +52,13 @@ public class PnbControllerTest {
     private static final Hoa hoa2 = new Hoa("h2", "Italy", "Siena");
 
     private static final Activity activity1 = new Activity(
-            hoa1, "a1", new GregorianCalendar(2002, 10, 24), "desc1"
+            hoa1, "a1", new DateModel(2002, 10, 24), "desc1"
     );
     private static final Activity activity2 = new Activity(
-            hoa1, "a2", new GregorianCalendar(1999, 6, 1), "desc2"
+            hoa1, "a2", new DateModel(1999, 6, 1), "desc2"
     );
     private static final Activity activity3 = new Activity(
-            hoa2, "a3", new GregorianCalendar(2020, 3, 21), "desc3"
+            hoa2, "a3", new DateModel(2020, 3, 21), "desc3"
     );
 
     @BeforeEach
@@ -88,7 +87,7 @@ public class PnbControllerTest {
         Activity activity = activityRepository.findByName("a1");
         assertThat(activity.getName()).isEqualTo("a1");
         assertThat(activity.getHoa().getId()).isEqualTo(hoa1.getId());
-        assertThat(activity.getTime()).isEqualTo(new GregorianCalendar(2020, 3, 13));
+        assertThat(activity.getTime()).isEqualTo(new DateModel(2020, 3, 13));
         assertThat(activity.getDescription()).isEqualTo("president time");
     }
 

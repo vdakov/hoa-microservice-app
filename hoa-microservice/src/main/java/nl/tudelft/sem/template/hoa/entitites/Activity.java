@@ -18,8 +18,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Objects;
 
 @Entity
@@ -41,7 +39,7 @@ public class Activity extends HasEvents {
 
     @Convert(converter = TimeAttributeConverter.class)
     @Column(name = "time", nullable = false)
-    private GregorianCalendar time;
+    private DateModel time;
 
     @Column(name = "description", nullable = false)
     private String description;
@@ -49,7 +47,7 @@ public class Activity extends HasEvents {
     /**
      * Creates new Activity.
      */
-    public Activity(Hoa hoa, String name, GregorianCalendar time, String description) {
+    public Activity(Hoa hoa, String name, DateModel time, String description) {
         this.hoa = hoa;
         this.name = name;
         this.time = time;
@@ -58,7 +56,7 @@ public class Activity extends HasEvents {
         this.recordThat(new ActivityWasCreatedEvent(name));
     }
 
-    public void changeTime(GregorianCalendar time) {
+    public void changeTime(DateModel time) {
         this.time = time;
         this.recordThat(new ActivityTimeWasChangedEvent(this));
     }
@@ -76,7 +74,7 @@ public class Activity extends HasEvents {
         return name;
     }
 
-    public GregorianCalendar getTime() {
+    public DateModel getTime() {
         return time;
     }
 
@@ -102,9 +100,6 @@ public class Activity extends HasEvents {
     }
 
     public ActivityModel toModel(){
-        DateModel dateModel = new DateModel(
-                time.get(Calendar.YEAR), time.get(Calendar.MONTH), time.get(Calendar.DAY_OF_MONTH)
-        );
-        return new ActivityModel(hoa.getId(), name, dateModel, description);
+        return new ActivityModel(hoa.getId(), name, time, description);
     }
 }

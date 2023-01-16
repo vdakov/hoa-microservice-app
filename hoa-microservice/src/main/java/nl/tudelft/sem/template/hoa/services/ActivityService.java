@@ -8,7 +8,6 @@ import nl.tudelft.sem.template.hoa.repositories.ActivityRepository;
 
 import org.springframework.stereotype.Service;
 
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -31,17 +30,12 @@ public class ActivityService {
      * Saves an activity with the given parameters into the repository.
      *
      * @param name the name of the activity
-     * @param dateModel the date of the activity
+     * @param time the date of the activity
      * @param description the description of the activity
      * @return the activity that has been created
      * @throws Exception if an activity with the given name already exists
      */
-    public Activity createActivity(int hoaId, String name, DateModel dateModel, String description) throws Exception {
-
-        int year = dateModel.getYear();
-        int month = dateModel.getMonth();
-        int day = dateModel.getDay();
-        GregorianCalendar time = new GregorianCalendar(year, month, day);
+    public Activity createActivity(int hoaId, String name, DateModel time, String description) throws Exception {
 
         if (existsByNameAndTime(name, time)) throw new ActivityNameAlreadyInUseException(name);
 
@@ -79,7 +73,7 @@ public class ActivityService {
      * @param time the time in question
      * @return whether it is unique
      */
-    public boolean existsByNameAndTime(String name, GregorianCalendar time) {
+    public boolean existsByNameAndTime(String name, DateModel time) {
         return activityRepository.existsByNameAndTime(name, time);
     }
 
