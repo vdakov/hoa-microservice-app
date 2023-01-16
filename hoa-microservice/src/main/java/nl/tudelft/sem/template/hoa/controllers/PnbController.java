@@ -55,11 +55,9 @@ public class PnbController {
      *
      * @param request the request with the parameters of the activity
      * @return an empty "OK" response entity
-     * @throws Exception if an activity with the given name already exists
      */
     @PostMapping("/createActivity")
-    public ResponseEntity<ActivityModel> createActivity(@RequestBody ActivityModel request) throws Exception {
-
+    public ResponseEntity<ActivityModel> createActivity(@RequestBody ActivityModel request) {
         try {
             ActivityModel activityModel =
                     activityService.createActivity(
@@ -68,9 +66,7 @@ public class PnbController {
                             request.getTime(),
                             request.getDescription()
                     ).toModel();
-
             return ResponseEntity.ok(activityModel);
-
         } catch (Exception e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -89,11 +85,7 @@ public class PnbController {
      */
     @GetMapping("/allActivities")
     public ResponseEntity<List<ActivityModel>> getAllActivities() {
-        return ResponseEntity.ok(
-                activitiesToModels(
-                        activityService.getAllActivities()
-                )
-        );
+        return ResponseEntity.ok(activitiesToModels(activityService.getAllActivities()));
     }
 
     /**
@@ -103,11 +95,7 @@ public class PnbController {
      */
     @GetMapping("/allActivitiesForUser/{username}")
     public ResponseEntity<List<ActivityModel>> getActivitiesForUser(@PathVariable String username) {
-        return ResponseEntity.ok(
-                activitiesToModels(
-                        activityService.getAllActivitiesForUsername(username)
-                )
-        );
+        return ResponseEntity.ok(activitiesToModels(activityService.getAllActivitiesForUsername(username)));
     }
 
     /**
@@ -115,23 +103,14 @@ public class PnbController {
      *
      * @param hoaId the ID of the HOA
      * @return a response entity containing the list of relevant activities
-     * @throws Exception
      */
     @GetMapping("/activitiesForHoa/{hoaId}")
-    public ResponseEntity<List<ActivityModel>> getActivitiesForHoa(@PathVariable int hoaId) throws Exception {
-
+    public ResponseEntity<List<ActivityModel>> getActivitiesForHoa(@PathVariable int hoaId) {
         try {
-            return ResponseEntity.ok(
-                    activitiesToModels(
-                            activityService.getActivitiesByHoaId(hoaId)
-                    )
-            );
+            return ResponseEntity.ok(activitiesToModels(activityService.getActivitiesByHoaId(hoaId)));
         } catch (Exception e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
-
     }
-
-
 }
