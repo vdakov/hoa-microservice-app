@@ -1,7 +1,9 @@
 package nl.tudelft.sem.template.hoa.services;
 
+import lombok.Getter;
 import nl.tudelft.sem.template.commons.models.DateModel;
 
+@Getter
 public class CreateActivityParameters {
     private final int hoaId;
     private final String name;
@@ -13,21 +15,5 @@ public class CreateActivityParameters {
         this.name = name;
         this.time = time;
         this.description = description;
-    }
-
-    public int getHoaId(){
-        return this.hoaId;
-    }
-
-    public String getName(){
-        return this.name;
-    }
-
-    public DateModel getTime(){
-        return this.time;
-    }
-
-    public String getDescription(){
-        return this.description;
     }
 }
