@@ -10,6 +10,7 @@ import nl.tudelft.sem.template.hoa.entitites.UserHoa;
 import nl.tudelft.sem.template.hoa.exceptions.HoaDoesNotExistException;
 import nl.tudelft.sem.template.hoa.exceptions.UserDoesNotExistException;
 import nl.tudelft.sem.template.hoa.services.UserService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("api/users")
@@ -63,9 +67,7 @@ public class UserController {
             List<User> users = userService.getAllUsers();
 
             return ResponseEntity.ok(
-                    users.stream().map(user -> {
-                        return user.toFullModel();
-                    }).collect(Collectors.toList())
+                    users.stream().map(User::toFullModel).collect(Collectors.toList())
             );
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
@@ -86,9 +88,7 @@ public class UserController {
 
         if (joinRequest.anyNull()) throw new UserDoesNotExistException("User does not exist");
 
-        if (joinRequest.getUserDisplayName() == null || joinRequest.getHoaName() == null
-                || joinRequest.getCountry() == null || joinRequest.getCity() == null || joinRequest.getStreet() == null
-                || joinRequest.getHoaName() == null || joinRequest.getPostalCode() == null) {
+        if (Stream.of(joinRequest.getClass().getDeclaredFields()).anyMatch(Objects::isNull)){
             return ResponseEntity.badRequest().build();
         }
 
