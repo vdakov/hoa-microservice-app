@@ -12,7 +12,7 @@ public class TimeAttributeConverter implements AttributeConverter<DateModel, Str
 
     @Override
     public String convertToDatabaseColumn(DateModel time) {
-        return time.getYear() + "-" + time.getMonth() + "-" + time.getDay();
+        return String.format("%d-%d-%d", time.getYear(), time.getMonth(), time.getDay());
     }
 
     @Override
