@@ -36,7 +36,7 @@ public class ActivityService {
      */
     public Activity createActivity(CreateActivityParameters p) throws Exception {
         if (existsByNameAndTime(p.getName(), p.getTime())) throw new ActivityNameAlreadyInUseException(p.getName());
-        Hoa hoa = this.services.getHoaService().getHoaById(hoaId);
+        Hoa hoa = this.services.getHoaService().getHoaById(p.getHoaId());
         Activity activity = new Activity(hoa, p.getName(), p.getTime(), p.getDescription());
         activityRepository.save(activity);
         return activity;
