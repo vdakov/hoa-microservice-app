@@ -102,14 +102,18 @@ public class ReportController {
     @GetMapping("/getReports/{hoaId}")
     public ResponseEntity<ReportResponseModel> getReports(@PathVariable("hoaId") int hoaId) {
         try {
-            if (Util.hoaExists(hoaId)) {
-                List<Report> reportList = reportService.getReportsByHoa(hoaId);
-                return ResponseEntity.ok(new ReportResponseModel(reportList));
-            } else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            if (hoaId != -1) {
+                if (Util.hoaExists(hoaId)) {
+                    return ResponseEntity.ok(new ReportResponseModel(reportService.getReportsByHoa(hoaId)));
+                } else {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                }
             }
+            return ResponseEntity.ok(new ReportResponseModel(reportService.getReportsByHoa(hoaId)));
+
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
+
 }
