@@ -4,6 +4,7 @@ import nl.tudelft.sem.template.hoa.entitites.Activity;
 import nl.tudelft.sem.template.hoa.services.ActivityService;
 import nl.tudelft.sem.template.commons.models.ActivityModel;
 
+import nl.tudelft.sem.template.hoa.services.CreateActivityParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,12 +61,12 @@ public class PnbController {
     public ResponseEntity<ActivityModel> createActivity(@RequestBody ActivityModel request) {
         try {
             ActivityModel activityModel =
-                    activityService.createActivity(
+                    activityService.createActivity(new CreateActivityParameters(
                             request.getHoaId(),
                             request.getName(),
                             request.getTime(),
                             request.getDescription()
-                    ).toModel();
+                    )).toModel();
             return ResponseEntity.ok(activityModel);
         } catch (Exception e) {
             e.printStackTrace();
