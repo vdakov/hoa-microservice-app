@@ -17,7 +17,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "report")
 @NoArgsConstructor
-public class Report extends HasEvents {
+public class Report{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)

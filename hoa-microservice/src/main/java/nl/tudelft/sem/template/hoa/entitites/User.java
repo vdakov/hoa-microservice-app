@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Table
 @Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor
-public class User extends HasEvents {
+public class User {
     /**
      * The primary key of the User class/table
      */

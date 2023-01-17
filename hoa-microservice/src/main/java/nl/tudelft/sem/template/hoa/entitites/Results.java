@@ -23,7 +23,7 @@ import javax.persistence.OneToOne;
 /**
  * Currently only a skeleton implementation of vote and will change depending on Elections microservice
  */
-public abstract class Results extends HasEvents {
+public abstract class Results {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
