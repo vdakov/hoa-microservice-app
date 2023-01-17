@@ -216,17 +216,13 @@ public class RequirementsController {
         try {
             if (hoaId != -1) {
                 if (Util.hoaExists(hoaId)) {
-                    List<Requirements> requirementsList = requirementsService.getAll()
-                            .stream().filter(o -> o.getHoaId() == hoaId)
-                            .collect(Collectors.toList());
+                    List<Requirements> requirementsList = requirementsService.getRequirementsByHoa(hoaId);
                     return ResponseEntity.ok(new RequirementsResponseModel(requirementsList));
                 } else {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
                 }
             } else {
-                List<Requirements> requirementsList = requirementsService.getAll()
-                        .stream().filter(o -> o.getHoaId() == hoaId)
-                        .collect(Collectors.toList());
+                List<Requirements> requirementsList = requirementsService.getRequirementsByHoa(hoaId);
                 return ResponseEntity.ok(new RequirementsResponseModel(requirementsList));
             }
         } catch (Exception e) {
