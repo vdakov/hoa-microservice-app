@@ -1,13 +1,15 @@
 package nl.tudelft.sem.template.requirements.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * The Json util for tests.
  */
-public class JsonUtil {
+public class Util {
     /**
      * Serialize object into a string.
      *
@@ -21,15 +23,16 @@ public class JsonUtil {
     }
 
     /**
-     * Deserializes a json string into an object.
-     *
-     * @param json The string to be deserialized.
-     * @param type The type of the desired object.
-     * @return The deserialized object.
-     * @throws JsonProcessingException if an error occurs during deserialization.
+     * This method will query the hoa microservice in order to check if the hoa exists
+     * @param hoaId the id of the hoa
+     * @return true/false
      */
-    public static <T> T deserialize(String json, TypeReference<T> type) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(json, type);
+    public static boolean hoaExists(int hoaId) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity entity = new HttpEntity(null, null);
+        String url = "http://localhost:8090/hoa/find/" + hoaId;
+
+        return Boolean.TRUE.equals(restTemplate.exchange(url, HttpMethod.GET, entity, Boolean.class).getBody());
     }
+
 }

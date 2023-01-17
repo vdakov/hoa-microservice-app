@@ -12,7 +12,7 @@ import nl.tudelft.sem.template.commons.entities.HasEvents;
 @MappedSuperclass
 @Data
 @NoArgsConstructor
-public abstract class HasAddress extends HasEvents {
+public abstract class HasAddress {
     
     @Column(name = "country", nullable = false)
     @NaturalId
