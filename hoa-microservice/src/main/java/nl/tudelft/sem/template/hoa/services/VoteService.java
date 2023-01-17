@@ -24,16 +24,12 @@ public class VoteService {
 
     private transient ResultsRepository resultsRepository;
     
-    private transient HoaService hoaService;
-    private transient UserService userService;
-    private transient BoardMemberService boardMemberService;
+    private transient ServiceParameterClass services;
 
     public VoteService(ResultsRepository resultsRepository, HoaService hoaService,
                        UserService userService, BoardMemberService boardMemberService) {
         this.resultsRepository = resultsRepository;
-        this.hoaService = hoaService;
-        this.userService = userService;
-        this.boardMemberService = boardMemberService;
+        this.services = new ServiceParameterClass(hoaService, userService, boardMemberService);
     }
 
     /**
@@ -41,9 +37,14 @@ public class VoteService {
      * @param results the results of the election
      */
     public void storeElectionResults(int hoaId, ElectionResultsModel results) {
-        Hoa hoa = hoaService.getHoaById(hoaId);
-        User winner = userService.findByDisplayName(Collections.max(results.getVoteDistributions().entrySet(),
-                Comparator.comparingInt(Map.Entry::getValue)).getKey());
+        Hoa hoa = this.services.getHoaService().getHoaById(hoaId);
+        User winner = this.services.getUserService()
+            .findByDisplayName(
+                Collections.max(
+                    results.getVoteDistributions().entrySet(),
+                    Comparator.comparingInt(Map.Entry::getValue)
+                ).getKey()
+            );
 
         resultsRepository.save(new ElectionResults(hoa, results.getNumberOfVotes(), results.getVoteDistributions(), winner));
     }
@@ -52,7 +53,7 @@ public class VoteService {
      * Converts the DTO object received into a DB object for the HOA and stores it
      */
     public void storeRequirementResults(int hoaId, RequirementResultsModel results) {
-        Hoa hoa = hoaService.getHoaById(hoaId);
+        Hoa hoa = this.services.getHoaService().getHoaById(hoaId);
 
         resultsRepository.save(new RequirementResults(hoa, results.getNumberOfVotes(), results.getVotedFor(),
                 results.isPassed()));
@@ -62,7 +63,7 @@ public class VoteService {
      * Creates a DTO for starting an election vote once requested from Gateway Microservice
      */
     public VotingModel startElectionVote(int hoaId) {
-        Hoa hoa = hoaService.getHoaById(hoaId);
+        Hoa hoa = this.services.getHoaService().getHoaById(hoaId);
         int numEligibleVotes = hoa.getMembers().size();
         VotingType type = VotingType.ELECTIONS_VOTE;
         List<String> candidates = Arrays.asList("candidate0", "candidate1", "candidate2");
@@ -76,15 +77,15 @@ public class VoteService {
      * Creates a DTO for starting a requirement vote once requested from Gateway
      */
     public VotingModel startRequirementVote(int hoaId) {
-        Hoa hoa = hoaService.getHoaById(hoaId);
+        Hoa hoa = this.services.getHoaService().getHoaById(hoaId);
         int numEligibleVotes = hoa.getMembers().size();
         VotingType type = VotingType.REQUIREMENTS_VOTE;
         return new VotingModel(hoaId, type, numEligibleVotes, Collections.emptyList());
     }
 
     public List<BoardMember> getListEligibleMembers(int hoaId){
-        Hoa hoa = hoaService.getHoaById(hoaId);
-        return this.boardMemberService.findBoardMemberByBoard(hoa);
+        Hoa hoa = this.services.getHoaService().getHoaById(hoaId);
+        return this.services.getBoardMemberService().findBoardMemberByBoard(hoa);
     }
 
 

@@ -8,6 +8,7 @@ import nl.tudelft.sem.template.hoa.exceptions.HoaDoesNotExistException;
 import nl.tudelft.sem.template.hoa.exceptions.UserDoesNotExistException;
 import nl.tudelft.sem.template.hoa.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,16 +20,12 @@ public class UserService {
     @Autowired
     private transient UserRepository userRepository;
 
-    private transient HoaService hoaService;
-    private transient ConnectionService connectionService;
-    private transient BoardMemberService boardMemberService;
+    private transient ServiceParameterClass services;
 
     public UserService(UserRepository userRepository, HoaService hoaService,
                        ConnectionService connectionService, BoardMemberService boardMemberService) {
         this.userRepository = userRepository;
-        this.hoaService = hoaService;
-        this.connectionService = connectionService;
-        this.boardMemberService = boardMemberService;
+        this.services = new ServiceParameterClass(hoaService, connectionService, boardMemberService);
     }
 
     /**
@@ -74,12 +71,12 @@ public class UserService {
         if (user == null)
             throw new UserDoesNotExistException("User for given username was not found");
 
-        Hoa hoa = this.hoaService.getByNaturalId(hoaName, country, city);
+        Hoa hoa = this.services.getHoaService().getByNaturalId(hoaName, country, city);
 
         if (hoa == null)
             throw new HoaDoesNotExistException("Hoa for given name/country/city was not found");
 
-        this.connectionService.removeConnection(user, hoa);
+        this.services.getConnectionService().removeConnection(user, hoa);
 
         return this.getUser(user.getId());
 
@@ -100,7 +97,7 @@ public class UserService {
     public UserHoa joinAssociation(String hoaName, String displayName, FullAddressModel address)
             throws HoaDoesNotExistException {
 
-        Hoa hoa = hoaService.getByNaturalId(hoaName, address.getCountry(), address.getCity());
+        Hoa hoa = this.services.getHoaService().getByNaturalId(hoaName, address.getCountry(), address.getCity());
 
         if (hoa == null)
             throw new HoaDoesNotExistException("Hoa with given attributes doesn't exits!");
@@ -118,7 +115,7 @@ public class UserService {
         connection.setUser(user);
         connection.setHoa(hoa);
 
-        return connectionService.createConnection(connection);
+        return this.services.getConnectionService().createConnection(connection);
     }
 
     /**
@@ -146,25 +143,25 @@ public class UserService {
     }
 
     public boolean isInHoa(String displayName, int hoaId) {
-        Hoa foundHoa = hoaService.getHoaById(hoaId);
+        Hoa foundHoa = this.services.getHoaService().getHoaById(hoaId);
         return isInHoa(displayName, foundHoa.getName(), foundHoa.getCountry(), foundHoa.getCity());
     }
 
     public boolean isInBoard(String displayName) {
-        return this.boardMemberService.existsBoardMemberByDisplayName(displayName);
+        return this.services.getBoardMemberService().existsBoardMemberByDisplayName(displayName);
     }
 
     public boolean isInSpecificBoard(String displayName, String hoaName, String country, String city) {
         if (!isInHoa(displayName, hoaName, country, city)) return false;
         if (!isInBoard(displayName)) return false;
-        Hoa hoa = hoaService.getByNaturalId(hoaName, country, city);
+        Hoa hoa = this.services.getHoaService().getByNaturalId(hoaName, country, city);
 
-        return this.boardMemberService.existsBoardMemberByDisplayNameAndBoard(displayName, hoa);
+        return this.services.getBoardMemberService().existsBoardMemberByDisplayNameAndBoard(displayName, hoa);
     }
 
     public boolean isInSpecificBoardByUserName(int hoaId, String userName) {
-        Hoa hoa = hoaService.getHoaById(hoaId);
-        return this.boardMemberService.existsBoardMemberByDisplayNameAndBoard(userName, hoa);
+        Hoa hoa = this.services.getHoaService().getHoaById(hoaId);
+        return this.services.getBoardMemberService().existsBoardMemberByDisplayNameAndBoard(userName, hoa);
     }
 
     public User findByDisplayName(String displayName) {

@@ -13,8 +13,13 @@ public class BoardMemberService {
 
     @Autowired
     private transient BoardMemberRepository boardMemberRepository;
-    @Autowired
-    private transient HoaService hoaService;
+    
+    private transient ServiceParameterClass services;
+
+    public BoardMemberService(BoardMemberRepository boardMemberRepository, HoaService hoaService) {
+        this.boardMemberRepository = boardMemberRepository;
+        this.services = new ServiceParameterClass(hoaService);
+    } 
 
     /**
      * Queries table for all the board members of a current hoa
@@ -22,7 +27,7 @@ public class BoardMemberService {
      * @return a list of the board members
      */
     public List<BoardMember> getAllBoardMembersOfAnHoa(int hoaId) {
-        Hoa hoa = hoaService.getHoaById(hoaId);
+        Hoa hoa = this.services.getHoaService().getHoaById(hoaId);
         return boardMemberRepository.findBoardMemberByBoard(hoa);
     }
 
