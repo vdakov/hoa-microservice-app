@@ -1,8 +1,10 @@
 package nl.tudelft.sem.template.voting.domain;
 
 import lombok.Getter;
-import nl.tudelft.sem.template.commons.models.ElectionResultsModel;
 import nl.tudelft.sem.template.commons.models.ResultsModel;
+import nl.tudelft.sem.template.voting.exceptions.IneligibleVoterException;
+import nl.tudelft.sem.template.voting.exceptions.InvalidOptionException;
+import nl.tudelft.sem.template.voting.exceptions.VoteClosedException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -48,15 +50,18 @@ public class Vote {
      * Cast a vote in the running voting procedure
      * @param netId The user who is voting
      * @param optionIndex the index of the option the user is voting for
-     * @throws VotingException if the voter is not eligible or if the chosen option is not within the list
+     * @throws IneligibleVoterException if the voter is not eligible
+     * @throws InvalidOptionException if the chosen option is not within the list
+     * @throws VoteClosedException if the vote is closed
      */
-    public void castVote(String netId, int optionIndex) throws VotingException{
+    public void castVote(String netId, int optionIndex)
+            throws IneligibleVoterException, InvalidOptionException, VoteClosedException {
         if (!isVoterEligible(netId))
-            throw new VotingException("Voter is not eligible");
+            throw new IneligibleVoterException("Voter is not eligible");
         if (optionIndex >= options.size())
-            throw new VotingException("Chosen option index is invalid");
+            throw new InvalidOptionException("Chosen option index is invalid");
         if (!timeKeeper.isVoteOngoing())
-            throw new VotingException("Voting is closed");
+            throw new VoteClosedException("Voting is closed");
         votes.put(netId, optionIndex);
     }
 
