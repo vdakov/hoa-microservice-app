@@ -1,16 +1,13 @@
 package nl.tudelft.sem.template.hoa.services;
 
 import nl.tudelft.sem.template.commons.models.hoa.FullAddressModel;
-import nl.tudelft.sem.template.hoa.entitites.BoardMember;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.entitites.User;
 import nl.tudelft.sem.template.hoa.entitites.UserHoa;
 import nl.tudelft.sem.template.hoa.exceptions.HoaDoesNotExistException;
 import nl.tudelft.sem.template.hoa.exceptions.UserDoesNotExistException;
-import nl.tudelft.sem.template.hoa.repositories.BoardMemberRepository;
 import nl.tudelft.sem.template.hoa.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,19 +18,17 @@ import java.util.List;
 public class UserService {
     @Autowired
     private transient UserRepository userRepository;
-    @Autowired
+
     private transient HoaService hoaService;
-    @Autowired
     private transient ConnectionService connectionService;
-    @Autowired
-    private transient BoardMemberRepository boardMemberRepository;
+    private transient BoardMemberService boardMemberService;
 
     public UserService(UserRepository userRepository, HoaService hoaService,
-                       ConnectionService connectionService, BoardMemberRepository boardMemberRepository) {
+                       ConnectionService connectionService, BoardMemberService boardMemberService) {
         this.userRepository = userRepository;
         this.hoaService = hoaService;
         this.connectionService = connectionService;
-        this.boardMemberRepository = boardMemberRepository;
+        this.boardMemberService = boardMemberService;
     }
 
     /**
@@ -156,7 +151,7 @@ public class UserService {
     }
 
     public boolean isInBoard(String displayName) {
-        return this.boardMemberRepository.existsBoardMemberByDisplayName(displayName);
+        return this.boardMemberService.existsBoardMemberByDisplayName(displayName);
     }
 
     public boolean isInSpecificBoard(String displayName, String hoaName, String country, String city) {
@@ -164,12 +159,16 @@ public class UserService {
         if (!isInBoard(displayName)) return false;
         Hoa hoa = hoaService.getByNaturalId(hoaName, country, city);
 
-        return this.boardMemberRepository.existsBoardMemberByDisplayNameAndBoard(displayName, hoa);
+        return this.boardMemberService.existsBoardMemberByDisplayNameAndBoard(displayName, hoa);
     }
 
     public boolean isInSpecificBoardByUserName(int hoaId, String userName) {
         Hoa hoa = hoaService.getHoaById(hoaId);
-        return this.boardMemberRepository.existsBoardMemberByDisplayNameAndBoard(userName, hoa);
+        return this.boardMemberService.existsBoardMemberByDisplayNameAndBoard(userName, hoa);
+    }
+
+    public User findByDisplayName(String displayName) {
+        return this.userRepository.findByDisplayName(displayName);
     }
 
 

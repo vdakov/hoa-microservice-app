@@ -55,4 +55,16 @@ public class BoardMemberService {
         return boardMemberRepository.findBoardMemberById(id).getYearsOnBoard();
     }
 
+    public List<BoardMember> findBoardMemberByBoard(Hoa hoa) {
+        return this.boardMemberRepository.findBoardMemberByBoard(hoa);
+    }
+
+    public boolean existsBoardMemberByDisplayNameAndBoard(String displayName, Hoa hoa) {
+        return this.boardMemberRepository.existsBoardMemberByDisplayNameAndBoard(displayName, hoa);
+    }
+
+    public boolean existsBoardMemberByDisplayName(String displayName) {
+        return this.boardMemberRepository.existsBoardMemberByDisplayName(displayName);
+    }
+
 }
