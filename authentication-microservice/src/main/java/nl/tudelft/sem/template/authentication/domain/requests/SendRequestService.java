@@ -22,10 +22,11 @@ public class SendRequestService {
      * @return an HttpEntity with the provided body
      */
     public ResponseEntity buildAndSend(String url, Object body, HttpMethod method) {
+        //Extract Bearer Token from incoming request
         String token = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))
                 .getRequest().getHeader("Authorization");
 
-        //Remove the "bearer" from the beginning of the token.
+        //Remove the "bearer prefix" from the beginning of the token.
         token = token.split(" ")[1];
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);

@@ -132,7 +132,7 @@ public class GatewayController {
         String userName = getClaimFromToken(token, Claims::getSubject);
 
         try {
-            sendRequestService.buildAndSend(url, null, HttpMethod.GET);
+            sendRequestService.buildAndSend(url, userName, HttpMethod.GET);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -170,7 +170,7 @@ public class GatewayController {
     @PostMapping("/requirements/createRequirement")
     public ResponseEntity createRequirement(@RequestBody CreateRequirementModel model) {
         String url = "http://localhost:8089/requirements/createRequirement";
-        return sendRequestService.buildAndSend(url, model, HttpMethod.GET);
+        return sendRequestService.buildAndSend(url, model, HttpMethod.POST);
     }
 
     /**
@@ -292,6 +292,6 @@ public class GatewayController {
     @PostMapping("/hoa/createHoa")
     public ResponseEntity createHoa(@RequestBody HoaRequestModel model) {
         String url = "http://localhost:8090/hoa/createHoa";
-        return sendRequestService.buildAndSend(url, model, HttpMethod.GET);
+        return sendRequestService.buildAndSend(url, model, HttpMethod.POST);
     }
 }
