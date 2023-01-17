@@ -1,6 +1,7 @@
 package nl.tudelft.sem.template.requirements.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import nl.tudelft.sem.template.requirements.domain.Requirements;
 import nl.tudelft.sem.template.requirements.repositories.RequirementsRepository;
@@ -33,6 +34,12 @@ public class RequirementsService {
 
     public List<Requirements> getAll() {
         return requirementsRepository.findAll();
+    }
+
+    public List<Requirements> getRequirementsByHoa(int hoaId){
+        return getAll()
+                .stream().filter(o -> o.getHoaId() == hoaId)
+                .collect(Collectors.toList());
     }
 
     public Requirements findById(int id) {

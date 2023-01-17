@@ -104,21 +104,16 @@ public class ReportController {
         try {
             if (hoaId != -1) {
                 if (Util.hoaExists(hoaId)) {
-                    List<Report> reportList = reportService.getAll().stream()
-                            .filter(o -> o.getRequirement().getHoaId() == hoaId)
-                            .collect(Collectors.toList());
-                    return ResponseEntity.ok(new ReportResponseModel(reportList));
+                    return ResponseEntity.ok(new ReportResponseModel(reportService.getReportsByHoa(hoaId)));
                 } else {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
                 }
-            } else {
-                List<Report> reportList = reportService.getAll()
-                        .stream().filter(o -> o.getRequirement().getHoaId() == hoaId)
-                        .collect(Collectors.toList());
-                return ResponseEntity.ok(new ReportResponseModel(reportList));
             }
+            return ResponseEntity.ok(new ReportResponseModel(reportService.getReportsByHoa(hoaId)));
+
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
+
 }
