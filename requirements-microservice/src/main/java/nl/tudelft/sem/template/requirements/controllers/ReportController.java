@@ -98,24 +98,17 @@ public class ReportController {
      * @param hoaId the ID of the hoa to get the lsit of reports for.
      * @return
      * @throws Exception
-     */
+     *
+     **/
+
     @GetMapping("/getReports/{hoaId}")
     public ResponseEntity<ReportResponseModel> getReports(@PathVariable("hoaId") int hoaId) {
         try {
-            if (hoaId != -1) {
-                if (Util.hoaExists(hoaId)) {
-                    List<Report> reportList = reportService.getAll().stream()
-                            .filter(o -> o.getRequirement().getHoaId() == hoaId)
-                            .collect(Collectors.toList());
-                    return ResponseEntity.ok(new ReportResponseModel(reportList));
-                } else {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-                }
-            } else {
-                List<Report> reportList = reportService.getAll()
-                        .stream().filter(o -> o.getRequirement().getHoaId() == hoaId)
-                        .collect(Collectors.toList());
+            if (Util.hoaExists(hoaId)) {
+                List<Report> reportList = reportService.getReportsByHoa(hoaId);
                 return ResponseEntity.ok(new ReportResponseModel(reportList));
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
