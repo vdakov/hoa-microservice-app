@@ -98,9 +98,7 @@ public class ReportController {
      * @param hoaId the ID of the hoa to get the lsit of reports for.
      * @return
      * @throws Exception
-     *
-     **/
-
+     */
     @GetMapping("/getReports/{hoaId}")
     public ResponseEntity<ReportResponseModel> getReports(@PathVariable("hoaId") int hoaId) {
         try {
