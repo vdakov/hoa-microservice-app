@@ -16,6 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.NaturalId;
 
@@ -32,7 +33,7 @@ import javax.persistence.OneToMany;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-@Table
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "city", "country"})})
 @NoArgsConstructor
 public class Hoa extends HasAddress {
 
@@ -42,7 +43,6 @@ public class Hoa extends HasAddress {
     private int id;
 
     @Column(name = "name", nullable = false, unique = true)
-    @NaturalId
     private String name;
 
     @OneToMany(cascade = {CascadeType.PERSIST}, mappedBy = "hoa")

@@ -1,0 +1,803 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Sem18b",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8081/gateway"
+    }
+  ],
+  "paths": {
+    "/pnb/allActivities": {
+      "get": {
+        "summary": "",
+        "operationId": "allActivities",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ActivityModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pnb/activitiesForHoa/{hoaId}": {
+      "get": {
+        "summary": "",
+        "operationId": "activitiesForHoa",
+        "parameters": [
+          {
+            "name": "hoaId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ActivityModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pnb/createActivity": {
+      "post": {
+        "summary": "",
+        "operationId": "createActivity",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivityModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivityModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/leaveHoa": {
+      "delete": {
+        "summary": "",
+        "operationId": "leaveHoa",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConnectionRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FullUserResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/joinHoa": {
+      "post": {
+        "summary": "",
+        "operationId": "joinHoa",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JoinRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FullUserHoaModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/castVote/{userName}/{hoaId}": {
+      "post": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userName",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "hoaId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error"
+          }
+        }
+      }
+    },
+    "/requirements/createRequirement": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRequirementModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error"
+          }
+        }
+      }
+    },
+    "/isABoardMember": {
+      "get": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConnectionRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error"
+          }
+        }
+      }
+    },
+    "/requirements/changeRequirement": {
+      "post": {
+        "requestBody":{
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRequirementModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error"
+          }
+        }
+      }
+    },
+    "/requirements/report": {
+      "post": {
+        "operationId": "report",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReportModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          }
+        }
+      }
+    },
+    "/startElectionVote/{hoaId}": {
+      "get": {
+        "operationId": "startElectionVote",
+        "parameters": [
+          {
+            "name": "hoaId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/startRequirementVote/{hoaId}": {
+      "get": {
+        "operationId": "startRequirementVote",
+        "parameters": [
+          {
+            "name": "hoaId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/requirements/getRequirements/{hoaId}": {
+      "get": {
+        "operationId": "getRequirements",
+        "parameters": [
+          {
+            "name": "hoaId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequirementsResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/requirements/getReports/{hoaId}": {
+      "get": {
+        "operationId": "getReports",
+        "parameters": [
+          {
+            "name": "hoaId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/requirements/deleteRequirement": {
+      "post": {
+        "operationId": "deleteRequirement",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteRequirementModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully deleted requirement",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hoa/createHoa": {
+      "post": {
+        "operationId": "createHoa",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HoaRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created HOA",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FullHoaResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    }  
+  },
+  "components": {
+    "schemas": {
+      "ActivityModel": {
+        "type": "object",
+        "properties": {
+          "hoaId": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "time": {
+            "$ref": "#/components/schemas/DateModel"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "DateModel": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer"
+          },
+          "month": {
+            "type": "integer"
+          },
+          "day": {
+            "type": "integer"
+          }
+        }
+      },
+      "ConnectionRequestModel": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          }
+        }
+      },
+      "FullUserResponseModel": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "associations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserLessUserHoaModel"
+            }
+          }
+        }
+      },
+      "UserLessUserHoaModel": {
+        "type": "object",
+        "properties": {
+          "hoa": {
+            "$ref": "#/components/schemas/SimpleHoaResponseModel"
+          },
+          "country": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "street": {
+            "type": "string"
+          },
+          "houseNumber": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          }
+        }
+      },
+      "SimpleHoaResponseModel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          }
+        }
+      },
+      "JoinRequestModel": {
+        "type": "object",
+        "properties": {
+          "hoaName": {
+            "type": "string"
+          },
+          "userDisplayName": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "street": {
+            "type": "string"
+          },
+          "houseNumber": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          }
+        }
+      },
+      "FullUserHoaModel": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/SimpleUserResponseModel"
+          },
+          "hoa": {
+            "$ref": "#/components/schemas/SimpleHoaResponseModel"
+          },
+          "country": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "street": {
+            "type": "string"
+          },
+          "houseNumber": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          }
+        }
+      },
+      "SimpleUserResponseModel": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateRequirementModel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "hoaId": {
+            "type": "integer"
+          }
+        }
+      },
+      "FullHoaResponseModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/HoaResponseModel"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "members": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/HoaLessUserHoaModel"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "HoaLessUserHoaModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/UserHoaModel"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "user": {
+                "$ref": "#/components/schemas/SimpleUserResponseModel"
+              }
+            }
+          }
+        ]
+      },
+      "UserHoaModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FullAddressModel"
+          }
+        ]
+      },
+      "HoaResponseModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AddressModel"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "AddressModel": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          }
+        }
+      },
+      "FullAddressModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AddressModel"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "street": {
+                "type": "string"
+              },
+              "houseNumber": {
+                "type": "string"
+              },
+              "postalCode": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "UpdateRequirementModel": {
+        "type": "object",
+        "properties": {
+          "newName": {
+            "type": "string"
+          },
+          "newDescription": {
+            "type": "string"
+          },
+          "requirementId": {
+            "type": "integer"
+          }
+        }
+      },
+      "CreateReportModel": {
+        "type": "object",
+        "properties": {
+          "reportedUser": {
+            "type": "string"
+          },
+          "brokenRequirementId": {
+            "type": "integer"
+          }
+        }
+      },
+      "RequirementsResponseModel": {
+        "type": "object",
+        "properties": {
+          "requirementsList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Requirements"
+            }
+          }
+        }
+      },
+      "Requirements": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "hoaId": {
+            "type": "integer"
+          },
+          "requirementName": {
+            "type": "string"
+          },
+          "requirementDescription": {
+            "type": "string"
+          }
+        }
+      },
+      "ReportResponseModel": {
+        "type": "object",
+        "properties": {
+          "reportList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Report"
+            }
+          }
+        }
+      },
+      "Report": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "reportedUser": {
+            "type": "string"
+          },
+          "requirement": {
+            "$ref": "#/components/schemas/Requirements"
+          }
+        }
+      },
+      "DeleteRequirementModel": {
+        "type": "object",
+        "properties": {
+          "requirementId": {
+            "type": "integer"
+          }
+        }
+      },
+      "HoaRequestModel": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AddressModel"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }            
+    }
+  }
+}
