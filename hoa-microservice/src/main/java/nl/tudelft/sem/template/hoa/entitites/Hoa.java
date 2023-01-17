@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import nl.tudelft.sem.template.commons.entities.HasEvents;
 import nl.tudelft.sem.template.commons.models.hoa.FullHoaResponseModel;
 import nl.tudelft.sem.template.commons.models.hoa.SimpleHoaResponseModel;
 
@@ -16,23 +15,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.NaturalId;
-
-
-import org.hibernate.annotations.NaturalId;
+import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.GenerationType;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.OneToMany;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-@Table
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"name", "country", "city"}))
 @NoArgsConstructor
 public class Hoa extends HasAddress {
 
@@ -42,7 +36,6 @@ public class Hoa extends HasAddress {
     private int id;
 
     @Column(name = "name", nullable = false, unique = true)
-    @NaturalId
     private String name;
 
     @OneToMany(cascade = {CascadeType.PERSIST}, mappedBy = "hoa")

@@ -32,16 +32,16 @@ public class VotingServiceTest {
 
     @Test
     public void testStoreElectionResults() {
-        HoaRepository hoaRepository = mock(HoaRepository.class);
-        when(hoaRepository.findById(1)).thenReturn(new Hoa());
+        HoaService hoaService = mock(HoaService.class);
+        when(hoaService.getHoaById(1)).thenReturn(new Hoa());
 
-        UserRepository userRepository = mock(UserRepository.class);
-        when(userRepository.findByDisplayName("1")).thenReturn(new User("1"));
+        UserService userService = mock(UserService.class);
+        when(userService.findByDisplayName("1")).thenReturn(new User("1"));
 
         ResultsRepository resultsRepository = mock(ResultsRepository.class);
         when(resultsRepository.save(any(ElectionResults.class))).thenReturn(new ElectionResults());
 
-        VoteService voteService = new VoteService(resultsRepository, hoaRepository, userRepository, null);
+        VoteService voteService = new VoteService(resultsRepository, hoaService, userService, null);
         HashMap<String, Integer> voteDistributions = new HashMap<>();
         voteDistributions.put("1", 10);
         voteDistributions.put("2", 5);
@@ -55,13 +55,13 @@ public class VotingServiceTest {
 
     @Test
     public void testStoreRequirementResults() {
-        HoaRepository hoaRepository = mock(HoaRepository.class);
-        when(hoaRepository.findById(1)).thenReturn(new Hoa());
+        HoaService hoaService = mock(HoaService.class);
+        when(hoaService.getHoaById(1)).thenReturn(new Hoa());
 
         ResultsRepository resultsRepository = mock(ResultsRepository.class);
         when(resultsRepository.save(any(RequirementResults.class))).thenReturn(new RequirementResults());
 
-        VoteService voteService = new VoteService(resultsRepository, hoaRepository, null, null);
+        VoteService voteService = new VoteService(resultsRepository, hoaService, null, null);
         RequirementResultsModel results = new RequirementResultsModel(10, 10, 10, true);
         voteService.storeRequirementResults(1, results);
 
@@ -70,13 +70,13 @@ public class VotingServiceTest {
 
     @Test
     public void testStartElectionVote() {
-        HoaRepository hoaRepository = mock(HoaRepository.class);
+        HoaService hoaService = mock(HoaService.class);
         Hoa hoa = new Hoa();
         hoa.setMembers(new HashSet<>(Arrays.asList(new UserHoa())));
-        when(hoaRepository.findById(1)).thenReturn(hoa);
+        when(hoaService.getHoaById(1)).thenReturn(hoa);
 
 
-        VoteService voteService = new VoteService(null, hoaRepository, null, null);
+        VoteService voteService = new VoteService(null, hoaService, null, null);
         VotingModel votingModel = voteService.startElectionVote(1);
 
 
@@ -89,12 +89,12 @@ public class VotingServiceTest {
 
     @Test
     public void testStartRequirementVote() {
-        HoaRepository hoaRepository = mock(HoaRepository.class);
+        HoaService hoaService = mock(HoaService.class);
         Hoa hoa = new Hoa();
         hoa.setMembers(new HashSet<>(Arrays.asList(new UserHoa())));
-        when(hoaRepository.findById(1)).thenReturn(hoa);
+        when(hoaService.getHoaById(1)).thenReturn(hoa);
 
-        VoteService voteService = new VoteService(null, hoaRepository, null, null);
+        VoteService voteService = new VoteService(null, hoaService, null, null);
         VotingModel votingModel = voteService.startRequirementVote(1);
 
         assertEquals(1, votingModel.getHoaId());
