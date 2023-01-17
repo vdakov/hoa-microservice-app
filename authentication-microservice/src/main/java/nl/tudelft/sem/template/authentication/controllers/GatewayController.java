@@ -218,7 +218,7 @@ public class GatewayController {
      */
     @PostMapping("/requirements/report")
     public ResponseEntity report(@RequestBody CreateReportModel model) {
-        String url = "http://localhost:8089/requirements/report";
+        String url = "http://localhost:8089/report/submit";
         return sendRequestService.buildAndSend(url, null, HttpMethod.POST);
     }
 
@@ -279,7 +279,7 @@ public class GatewayController {
      */
     @GetMapping("/requirements/getReports/{hoaId}")
     public ResponseEntity getReports(@PathVariable(HOA_ID_LITERAL) int hoaId) {
-        String url = "http://localhost:8089/requirements/getReports/" + hoaId;
+        String url = "http://localhost:8089/report/getReports/" + hoaId;
         return sendRequestService.buildAndSend(url, null, HttpMethod.GET);
     }
 
