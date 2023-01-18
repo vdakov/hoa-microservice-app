@@ -216,7 +216,7 @@ public class GatewayController {
      * @param model the model containing information about the report.
      * @return the ResponseEntity passed back from the endpoint.
      */
-    @PostMapping("/requirements/report")
+    @PostMapping("/report/submit")
     public ResponseEntity report(@RequestBody CreateReportModel model) {
         String url = "http://localhost:8089/report/submit";
         return sendRequestService.buildAndSend(url, model, HttpMethod.POST);
@@ -277,7 +277,7 @@ public class GatewayController {
      * @param hoaId the ID of the HOA to retrieve the reports from.
      * @return a ResponseEntity containing the list of reports.
      */
-    @GetMapping("/requirements/getReports/{hoaId}")
+    @GetMapping("/report/getReports/{hoaId}")
     public ResponseEntity getReports(@PathVariable(HOA_ID_LITERAL) int hoaId) {
         String url = "http://localhost:8089/report/getReports/" + hoaId;
         return sendRequestService.buildAndSend(url, null, HttpMethod.GET);
