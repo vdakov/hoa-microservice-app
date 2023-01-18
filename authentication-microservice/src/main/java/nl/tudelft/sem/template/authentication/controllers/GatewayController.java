@@ -91,7 +91,7 @@ public class GatewayController {
     @PostMapping("/pnb/createActivity")
     public ResponseEntity<ActivityModel> createActivity(@RequestBody ActivityModel model) {
         String url = "http://localhost:8090/pnb/createActivity";
-        return sendRequestService.buildAndSend(url, null, HttpMethod.POST);
+        return sendRequestService.buildAndSend(url, model, HttpMethod.POST);
     }
 
 
@@ -219,7 +219,7 @@ public class GatewayController {
     @PostMapping("/requirements/report")
     public ResponseEntity report(@RequestBody CreateReportModel model) {
         String url = "http://localhost:8089/report/submit";
-        return sendRequestService.buildAndSend(url, null, HttpMethod.POST);
+        return sendRequestService.buildAndSend(url, model, HttpMethod.POST);
     }
 
     /**
