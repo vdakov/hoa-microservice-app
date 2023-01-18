@@ -14,7 +14,8 @@ import java.util.NoSuchElementException;
 @Service
 public class ActivityService {
     private final transient ActivityRepository activityRepository;
-    private final transient HoaService hoaService;
+
+    private transient ServiceParameterClass services;
 
     /**
      * Creates a new activity service with the given repository.
@@ -23,7 +24,7 @@ public class ActivityService {
      */
     public ActivityService(ActivityRepository activityRepository, HoaService hoaService) {
         this.activityRepository = activityRepository;
-        this.hoaService = hoaService;
+        this.services = new ServiceParameterClass(hoaService);
     }
 
     /**
@@ -35,7 +36,7 @@ public class ActivityService {
      */
     public Activity createActivity(CreateActivityParameters p) throws Exception {
         if (existsByNameAndTime(p.getName(), p.getTime())) throw new ActivityNameAlreadyInUseException(p.getName());
-        Hoa hoa = hoaService.getHoaById(p.getHoaId());
+        Hoa hoa = this.services.getHoaService().getHoaById(p.getHoaId());
         Activity activity = new Activity(hoa, p.getName(), p.getTime(), p.getDescription());
         activityRepository.save(activity);
         return activity;
@@ -77,7 +78,7 @@ public class ActivityService {
      * @return the list of activities that belong to the given HOA
      */
     public List<Activity> getActivitiesByHoaId(int hoaId) {
-        if (!hoaService.existsById(hoaId)) throw new NoSuchElementException();
+        if (!this.services.getHoaService().existsById(hoaId)) throw new NoSuchElementException();
         return activityRepository.findAllByHoaId(hoaId);
     }
 }

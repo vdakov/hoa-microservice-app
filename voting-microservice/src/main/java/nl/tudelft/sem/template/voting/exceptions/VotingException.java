@@ -1,4 +1,4 @@
-package nl.tudelft.sem.template.voting.domain;
+package nl.tudelft.sem.template.voting.exceptions;
 
 public class VotingException extends Exception{
     static final long serialVersionUID = 1L;

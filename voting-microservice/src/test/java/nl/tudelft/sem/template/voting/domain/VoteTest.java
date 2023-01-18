@@ -1,6 +1,10 @@
 package nl.tudelft.sem.template.voting.domain;
 
 import nl.tudelft.sem.template.commons.models.ElectionResultsModel;
+import nl.tudelft.sem.template.voting.exceptions.IneligibleVoterException;
+import nl.tudelft.sem.template.voting.exceptions.InvalidOptionException;
+import nl.tudelft.sem.template.voting.exceptions.VoteClosedException;
+import nl.tudelft.sem.template.voting.exceptions.VotingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
@@ -69,7 +73,7 @@ public class VoteTest {
         try {
             election.castVote(user0, 0);
             assertEquals(0, election.getVotes().get(user0));
-        } catch(VotingException e) {
+        } catch(IneligibleVoterException | InvalidOptionException | VoteClosedException e) {
             fail();
         }
     }
@@ -81,7 +85,7 @@ public class VoteTest {
             election.castVote(user0, 2);
             election.castVote(user0, 1);
             assertEquals(1, election.getVotes().get(user0));
-        } catch(VotingException e) {
+        } catch(IneligibleVoterException | InvalidOptionException | VoteClosedException e) {
             fail();
         }
     }
@@ -94,7 +98,7 @@ public class VoteTest {
             election.castVote(user0, 1);
             assertEquals(1, election.getVotes().get(user0));
             assertEquals(2, election.getVotes().get(user1));
-        } catch(VotingException e) {
+        } catch(IneligibleVoterException | InvalidOptionException | VoteClosedException e) {
             fail();
         }
     }
@@ -108,7 +112,7 @@ public class VoteTest {
             election.castVote(user0, 1);
             assertEquals(1, election.getVotes().get(user0));
             assertEquals(0, election.getVotes().get(user1));
-        } catch(VotingException e) {
+        } catch(IneligibleVoterException | InvalidOptionException | VoteClosedException e) {
             fail();
         }
     }
@@ -176,7 +180,7 @@ public class VoteTest {
                     3,
                     expectedVoteDistributions);
             assertEquals(expected, election.getResults());
-        } catch(VotingException e) {
+        } catch(IneligibleVoterException | InvalidOptionException | VoteClosedException e) {
             fail();
         }
     }
@@ -222,7 +226,7 @@ public class VoteTest {
                     2,
                     expectedVoteDistributions);
             assertEquals(expected, election.getResults());
-        } catch(VotingException e) {
+        } catch(IneligibleVoterException | InvalidOptionException | VoteClosedException e) {
             fail();
         }
     }

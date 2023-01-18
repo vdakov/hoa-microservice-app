@@ -38,7 +38,7 @@ public class HoaServiceTest {
 
     @BeforeEach
     public void setup() {
-        hoaService = new HoaService(hoaRepository, voteService);
+        hoaService = new HoaService(hoaRepository);
     }
 
     @Test

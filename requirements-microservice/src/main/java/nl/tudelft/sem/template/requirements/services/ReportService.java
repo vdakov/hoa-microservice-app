@@ -7,6 +7,7 @@ import nl.tudelft.sem.template.requirements.repositories.ReportRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReportService {
@@ -24,6 +25,12 @@ public class ReportService {
 
     public List<Report> getAll() {
         return reportRepository.findAll();
+    }
+
+    public List<Report> getReportsByHoa(int hoaId){
+        return getAll().stream()
+                .filter(o -> o.getRequirement().getHoaId() == hoaId)
+                .collect(Collectors.toList());
     }
 
     public Report find(int id) {

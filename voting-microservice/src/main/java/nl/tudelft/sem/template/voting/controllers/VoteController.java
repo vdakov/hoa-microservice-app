@@ -1,9 +1,10 @@
 package nl.tudelft.sem.template.voting.controllers;
 
-import nl.tudelft.sem.template.commons.models.ElectionResultsModel;
 import nl.tudelft.sem.template.commons.models.VotingModel;
 import nl.tudelft.sem.template.voting.application.VotingService;
-import nl.tudelft.sem.template.voting.domain.VotingException;
+import nl.tudelft.sem.template.voting.exceptions.IneligibleVoterException;
+import nl.tudelft.sem.template.voting.exceptions.InvalidOptionException;
+import nl.tudelft.sem.template.voting.exceptions.VoteClosedException;
 import nl.tudelft.sem.template.commons.models.VotingType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -90,14 +90,10 @@ public class VoteController {
             String netId = userName;
             votingService.castVote(hoaId, netId, optionIndex);
             return ResponseEntity.ok().build();
-        } catch (VotingException e) {
-            if (e.getMessage().equals("Voter is not eligible")) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            } else if (e.getMessage().equals("Chosen option index is invalid")
-                    || e.getMessage().equals("Vote is still ongoing")) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-            }
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (IneligibleVoterException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        } catch (InvalidOptionException | VoteClosedException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 

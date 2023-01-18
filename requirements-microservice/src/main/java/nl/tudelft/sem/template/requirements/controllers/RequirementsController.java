@@ -48,6 +48,7 @@ public class RequirementsController {
 
     /**
      * Get a list of hoa members (will be used for remembering which users will receive the notification)
+     *
      * @param hoaId id of the hoa
      * @return a list of usernames
      */
@@ -60,7 +61,7 @@ public class RequirementsController {
         if (hoa != null) {
             if (hoa.getMembers().size() == 0) return null;
             List<String> usernames = new ArrayList<>();
-            for (HoaLessUserHoaModel usr: hoa.getMembers()) {
+            for (HoaLessUserHoaModel usr : hoa.getMembers()) {
                 usernames.add(usr.getUser().getDisplayName());
             }
             return usernames;
@@ -71,7 +72,8 @@ public class RequirementsController {
 
     /**
      * Method used to send a new requirement created notification to the gateway
-     * @param req the new requirement
+     *
+     * @param req   the new requirement
      * @param hoaId the id of the HOA
      */
     public void createRequirementNotification(Requirements req, int hoaId) throws JsonProcessingException {
@@ -87,9 +89,11 @@ public class RequirementsController {
             restTemplate.exchange(processUrl, HttpMethod.POST, entity, String.class);
         }
     }
+
     /**
      * Method used to send a new changed requirement notification to the gateway
-     * @param req the new and old details of the requirement
+     *
+     * @param req   the new and old details of the requirement
      * @param hoaId the id of the HOA
      */
     public void changeRequirementNotification(Requirements req, int hoaId, String newName, String newDescription)
@@ -111,7 +115,8 @@ public class RequirementsController {
 
     /**
      * Method used to send a 'delete requirement' notification to the gateway
-     * @param req the details of the requirement
+     *
+     * @param req   the details of the requirement
      * @param hoaId the id of the HOA
      */
     public void deleteRequirementNotification(Requirements req, int hoaId)
@@ -131,6 +136,7 @@ public class RequirementsController {
 
     /**
      * Creates a new requirement for the HOA members
+     *
      * @param request Name and description of the requirement
      * @return OK status -> requirement created
      * @throws Exception bad request if the body (CreateRequirementModel) is invalid
@@ -161,6 +167,7 @@ public class RequirementsController {
 
     /**
      * Changes an existing requirement for the HOA members
+     *
      * @param request Name and description of the requirement
      * @return OK status -> requirement modified
      * @throws Exception bad request if the body (UpdateRequirementModel) is invalid
@@ -184,6 +191,7 @@ public class RequirementsController {
 
     /**
      * Deletes an existing requirement if it's not needed anymore for the HOA members
+     *
      * @param request Name and description of the requirement
      * @return OK status -> requirement deleted
      * @throws Exception bad request if the body (DeleteRequirementModel) is invalid
@@ -206,29 +214,23 @@ public class RequirementsController {
 
     /**
      * Returns a list of all requirements
+     *
      * @param hoaId the ID of the hoa to get the list of requirements for.
      * @return a list containing all the requirements for an hoa
      * @throws Exception bad request if the hoa doesn't exist/invalid hoaId
      */
     @GetMapping("/getRequirements/{hoaId}")
-    public ResponseEntity<RequirementsResponseModel> getRequirements(@PathVariable("hoaId") int hoaId)
-            throws Exception {
+    public ResponseEntity<RequirementsResponseModel> getRequirements(@PathVariable("hoaId") int hoaId) {
         try {
             if (hoaId != -1) {
                 if (Util.hoaExists(hoaId)) {
-                    List<Requirements> requirementsList = requirementsService.getAll()
-                            .stream().filter(o -> o.getHoaId() == hoaId)
-                            .collect(Collectors.toList());
-                    return ResponseEntity.ok(new RequirementsResponseModel(requirementsList));
+                    return ResponseEntity.ok(new RequirementsResponseModel(requirementsService.getRequirementsByHoa(hoaId)));
                 } else {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
                 }
-            } else {
-                List<Requirements> requirementsList = requirementsService.getAll()
-                        .stream().filter(o -> o.getHoaId() == hoaId)
-                        .collect(Collectors.toList());
-                return ResponseEntity.ok(new RequirementsResponseModel(requirementsList));
             }
+            return ResponseEntity.ok(new RequirementsResponseModel(requirementsService.getRequirementsByHoa(hoaId)));
+
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
