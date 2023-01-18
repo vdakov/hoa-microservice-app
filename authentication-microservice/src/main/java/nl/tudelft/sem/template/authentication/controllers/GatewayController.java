@@ -127,7 +127,7 @@ public class GatewayController {
     @PostMapping("/users/joinHoa")
     public ResponseEntity<FullUserHoaModel> joinHoa(@RequestBody JoinRequestModel request) {
         String token = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))
-                .getRequest().getHeader("Authorization");
+                .getRequest().getHeader("Authorization").split(" ")[1];
         String url = "http://localhost:8090/api/users/createNewUser";
         String userName = getClaimFromToken(token, Claims::getSubject);
 
