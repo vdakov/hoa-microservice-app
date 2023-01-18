@@ -63,7 +63,7 @@ public class GatewayController {
     @GetMapping("/pnb/allActivities")
     public ResponseEntity allActivities() {
         String token = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))
-                .getRequest().getHeader("Authorization");
+                .getRequest().getHeader("Authorization").split(" ")[1];
         String username = getClaimFromToken(token, Claims::getSubject);
         String url = "http://localhost:8090/pnb/allActivitiesForUser/" + username;
 
@@ -105,7 +105,7 @@ public class GatewayController {
     @DeleteMapping("/users/leaveHoa")
     public ResponseEntity<FullUserResponseModel> leaveHoa(@RequestBody ConnectionRequestModel request) {
         String token = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))
-                .getRequest().getHeader("Authorization");
+                .getRequest().getHeader("Authorization").split(" ")[1];
         String userName = getClaimFromToken(token, Claims::getSubject);
         request.setDisplayName(userName);
 
