@@ -15,7 +15,7 @@ import nl.tudelft.sem.template.commons.entities.HasEvents;
 @Entity
 @Table(name = "requirements")
 @NoArgsConstructor
-public class Requirements extends HasEvents {
+public class Requirements{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)

@@ -9,10 +9,7 @@ import nl.tudelft.sem.template.hoa.entitites.Hoa;
 import nl.tudelft.sem.template.hoa.entitites.ElectionResults;
 import nl.tudelft.sem.template.hoa.entitites.BoardMember;
 import nl.tudelft.sem.template.hoa.entitites.RequirementResults;
-import nl.tudelft.sem.template.hoa.repositories.BoardMemberRepository;
-import nl.tudelft.sem.template.hoa.repositories.HoaRepository;
 import nl.tudelft.sem.template.hoa.repositories.ResultsRepository;
-import nl.tudelft.sem.template.hoa.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -20,23 +17,19 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
-import java.util.List;
 
 
 @Service
 public class VoteService {
 
     private transient ResultsRepository resultsRepository;
-    private transient HoaRepository hoaRepository;
-    private transient UserRepository userRepository;
-    private transient BoardMemberRepository boardMemberRepository;
+    
+    private transient ServiceParameterClass services;
 
-    public VoteService(ResultsRepository resultsRepository, HoaRepository hoaRepository,
-                       UserRepository userRepository, BoardMemberRepository boardMemberRepository) {
+    public VoteService(ResultsRepository resultsRepository, HoaService hoaService,
+                       UserService userService, BoardMemberService boardMemberService) {
         this.resultsRepository = resultsRepository;
-        this.hoaRepository = hoaRepository;
-        this.userRepository = userRepository;
-        this.boardMemberRepository = boardMemberRepository;
+        this.services = new ServiceParameterClass(hoaService, userService, boardMemberService);
     }
 
     /**
@@ -44,9 +37,14 @@ public class VoteService {
      * @param results the results of the election
      */
     public void storeElectionResults(int hoaId, ElectionResultsModel results) {
-        Hoa hoa = hoaRepository.findById(hoaId);
-        User winner = userRepository.findByDisplayName(Collections.max(results.getVoteDistributions().entrySet(),
-                Comparator.comparingInt(Map.Entry::getValue)).getKey());
+        Hoa hoa = this.services.getHoaService().getHoaById(hoaId);
+        User winner = this.services.getUserService()
+            .findByDisplayName(
+                Collections.max(
+                    results.getVoteDistributions().entrySet(),
+                    Comparator.comparingInt(Map.Entry::getValue)
+                ).getKey()
+            );
 
         resultsRepository.save(new ElectionResults(hoa, results.getNumberOfVotes(), results.getVoteDistributions(), winner));
     }
@@ -55,7 +53,7 @@ public class VoteService {
      * Converts the DTO object received into a DB object for the HOA and stores it
      */
     public void storeRequirementResults(int hoaId, RequirementResultsModel results) {
-        Hoa hoa = hoaRepository.findById(hoaId);
+        Hoa hoa = this.services.getHoaService().getHoaById(hoaId);
 
         resultsRepository.save(new RequirementResults(hoa, results.getNumberOfVotes(), results.getVotedFor(),
                 results.isPassed()));
@@ -65,7 +63,7 @@ public class VoteService {
      * Creates a DTO for starting an election vote once requested from Gateway Microservice
      */
     public VotingModel startElectionVote(int hoaId) {
-        Hoa hoa = hoaRepository.findById(hoaId);
+        Hoa hoa = this.services.getHoaService().getHoaById(hoaId);
         int numEligibleVotes = hoa.getMembers().size();
         VotingType type = VotingType.ELECTIONS_VOTE;
         List<String> candidates = Arrays.asList("candidate0", "candidate1", "candidate2");
@@ -79,15 +77,15 @@ public class VoteService {
      * Creates a DTO for starting a requirement vote once requested from Gateway
      */
     public VotingModel startRequirementVote(int hoaId) {
-        Hoa hoa = hoaRepository.findById(hoaId);
+        Hoa hoa = this.services.getHoaService().getHoaById(hoaId);
         int numEligibleVotes = hoa.getMembers().size();
         VotingType type = VotingType.REQUIREMENTS_VOTE;
         return new VotingModel(hoaId, type, numEligibleVotes, Collections.emptyList());
     }
 
     public List<BoardMember> getListEligibleMembers(int hoaId){
-        Hoa hoa = hoaRepository.findById(hoaId);
-        return this.boardMemberRepository.findBoardMemberByBoard(hoa);
+        Hoa hoa = this.services.getHoaService().getHoaById(hoaId);
+        return this.services.getBoardMemberService().findBoardMemberByBoard(hoa);
     }
 
 

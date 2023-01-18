@@ -77,50 +77,27 @@ public class NotificationController {
     }
 
     /**
-     * Testing, will be removed
-     * @return
-     */
-    @GetMapping("/whoami")
-    public ResponseEntity whoami() {
-        try {
-            AppUser user = parseUserFromToken();
-            if (user != null) {
-                return ResponseEntity.ok("Hello " + user.getUsername().toString());
-            } else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ok");
-            }
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
-    }
-
-    /**
      * Retrieves the notifications for a specific user
      * @return a list of notifications
      */
     @GetMapping("/getNotifications")
     public ResponseEntity<NotificationModel> getNotification() {
         try {
-            if (parseUserFromToken() != null) {
-                //TODO: maybe figure out a more efficient way to retrieve notifications
-                List<Notification> notificationList = notificationService.getAll();
-                List<Event> ret = new ArrayList<>();
-                for (Notification n: notificationList) {
-                    n.getEvent().setId(n.getId());
-                    Map<String, Boolean> users = n.getUsers(); // map of users and a boolean for markedRead
-                    for (String user: users.keySet()) {
-                        if (user.equals(parseUserFromToken().getUsername().toString()) && !users.get(user)) {
-                            // check our user and markedRead
-                            ret.add(n.getEvent());
-                            break;
-                        }
+            if (parseUserFromToken() == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid user");
+            List<Notification> notificationList = notificationService.getAll();
+            List<Event> ret = new ArrayList<>();
+            for (Notification n: notificationList) {
+                n.getEvent().setId(n.getId());
+                Map<String, Boolean> users = n.getUsers(); // map of users and a boolean for markedRead
+                for (String user: users.keySet()) {
+                    if (user.equals(parseUserFromToken().getUsername().toString()) && !users.get(user)) {
+                        // check our user and markedRead
+                        ret.add(n.getEvent());
+                        break;
                     }
                 }
-                NotificationModel fin = new NotificationModel(ret);
-                return ResponseEntity.ok(fin);
-            } else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid user");
             }
+            return ResponseEntity.ok(new NotificationModel(ret));
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -134,25 +111,19 @@ public class NotificationController {
     @PostMapping("/markRead/{id}")
     public ResponseEntity markRead(@PathVariable("id") int id) {
         try {
-            if (parseUserFromToken() != null) {
-                Notification notification = notificationService.findById(id);
-                if (notification != null) {
-                    Map<String, Boolean> users = notification.getUsers();
-                    for (String user: users.keySet()) {
-                        if (user.equals(parseUserFromToken().getUsername().toString())) {
-                            users.put(user, true);
-                            break;
-                        }
-                    }
-                    notification.setUsers(users);
-                    notification = notificationService.updateNotification(notification);
-                    return ResponseEntity.ok("Notification with id " + id + " marked as read\n" + notification);
-                } else {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid notification");
+            if (parseUserFromToken() == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid user");
+            Notification notification = notificationService.findById(id);
+            if (notification == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid notification");
+            Map<String, Boolean> users = notification.getUsers();
+            for (String user: users.keySet()) {
+                if (user.equals(parseUserFromToken().getUsername().toString())) {
+                    users.put(user, true);
+                    break;
                 }
-            } else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid user");
             }
+            notification.setUsers(users);
+            notification = notificationService.updateNotification(notification);
+            return ResponseEntity.ok("Notification with id " + id + " marked as read\n" + notification);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -207,6 +178,4 @@ public class NotificationController {
                 break;
         }
     }
-
-
 }

@@ -46,7 +46,7 @@ class UserServiceTest {
     private ConnectionService connectionService;
 
     @Mock
-    private BoardMemberRepository boardMemberRepository;
+    private BoardMemberService boardMemberRepository;
 
     private UserService userService;
 

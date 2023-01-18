@@ -30,9 +30,7 @@ public class HoaController {
     @GetMapping("/all")
     public ResponseEntity<List<FullHoaResponseModel>> getAllHoas() {
         List<Hoa> hoas = hoaService.getAllHoas();
-        return ResponseEntity.ok(hoas.stream().map(hoa -> {
-            return hoa.toFullModel();
-        }).collect(Collectors.toList()));
+        return ResponseEntity.ok(hoas.stream().map(Hoa::toFullModel).collect(Collectors.toList()));
     }
 
     @PostMapping("/createHoa")

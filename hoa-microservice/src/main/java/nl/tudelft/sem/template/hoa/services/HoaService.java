@@ -3,12 +3,7 @@ package nl.tudelft.sem.template.hoa.services;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-
-import nl.tudelft.sem.template.commons.models.ElectionResultsModel;
-import nl.tudelft.sem.template.commons.models.RequirementResultsModel;
-import nl.tudelft.sem.template.commons.models.hoa.HoaModel;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
-import nl.tudelft.sem.template.hoa.exceptions.HoaDoesNotExistException;
 import nl.tudelft.sem.template.hoa.repositories.HoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,12 +13,9 @@ public class HoaService {
 
     private transient HoaRepository hoaRepository;
 
-    private transient VoteService voteService;
-
     @Autowired
-    public HoaService(HoaRepository hoaRepository, VoteService voteService) {
+    public HoaService(HoaRepository hoaRepository) {
         this.hoaRepository = hoaRepository;
-        this.voteService = voteService;
     }
 
     public Hoa createHoa(String name, String country, String city) throws Exception {

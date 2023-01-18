@@ -8,14 +8,14 @@ import nl.tudelft.sem.template.hoa.repositories.ActivityRepository;
 
 import org.springframework.stereotype.Service;
 
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
 public class ActivityService {
     private final transient ActivityRepository activityRepository;
-    private final transient HoaService hoaService;
+
+    private transient ServiceParameterClass services;
 
     /**
      * Creates a new activity service with the given repository.
@@ -24,31 +24,20 @@ public class ActivityService {
      */
     public ActivityService(ActivityRepository activityRepository, HoaService hoaService) {
         this.activityRepository = activityRepository;
-        this.hoaService = hoaService;
+        this.services = new ServiceParameterClass(hoaService);
     }
 
     /**
      * Saves an activity with the given parameters into the repository.
      *
-     * @param name the name of the activity
-     * @param dateModel the date of the activity
-     * @param description the description of the activity
+     * @param p the parameters for this activity
      * @return the activity that has been created
      * @throws Exception if an activity with the given name already exists
      */
-    public Activity createActivity(int hoaId, String name, DateModel dateModel, String description) throws Exception {
-
-        int year = dateModel.getYear();
-        int month = dateModel.getMonth();
-        int day = dateModel.getDay();
-        GregorianCalendar time = new GregorianCalendar(year, month, day);
-
-        if (existsByNameAndTime(name, time)) throw new ActivityNameAlreadyInUseException(name);
-
-        Hoa hoa = hoaService.getHoaById(hoaId);
-
-
-        Activity activity = new Activity(hoa, name, time, description);
+    public Activity createActivity(CreateActivityParameters p) throws Exception {
+        if (existsByNameAndTime(p.getName(), p.getTime())) throw new ActivityNameAlreadyInUseException(p.getName());
+        Hoa hoa = this.services.getHoaService().getHoaById(p.getHoaId());
+        Activity activity = new Activity(hoa, p.getName(), p.getTime(), p.getDescription());
         activityRepository.save(activity);
         return activity;
     }
@@ -61,7 +50,6 @@ public class ActivityService {
     public List<Activity> getAllActivities() {
         return activityRepository.findAll();
     }
-
 
     /**
      * Returns all activities that a certain username is associated with.
@@ -79,7 +67,7 @@ public class ActivityService {
      * @param time the time in question
      * @return whether it is unique
      */
-    public boolean existsByNameAndTime(String name, GregorianCalendar time) {
+    public boolean existsByNameAndTime(String name, DateModel time) {
         return activityRepository.existsByNameAndTime(name, time);
     }
 
@@ -90,7 +78,7 @@ public class ActivityService {
      * @return the list of activities that belong to the given HOA
      */
     public List<Activity> getActivitiesByHoaId(int hoaId) {
-        if (!hoaService.existsById(hoaId)) throw new NoSuchElementException();
+        if (!this.services.getHoaService().existsById(hoaId)) throw new NoSuchElementException();
         return activityRepository.findAllByHoaId(hoaId);
     }
 }

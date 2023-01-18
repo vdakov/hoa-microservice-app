@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -42,15 +41,17 @@ public class ActivityServiceTest {
         Hoa hoa = mock(Hoa.class);
         when(hoaService.getHoaById(1)).thenReturn(hoa);
 
-        Activity activity = service.createActivity(1, "Test", new DateModel(2022, 12, 14), "A test activity");
+        Activity activity = service.createActivity(new CreateActivityParameters(
+                1, "Test", new DateModel(2022, 12, 14), "A test activity"
+        ));
 
         verify(activityRepository).save(activity);
     }
 
     @Test
     public void testExistsByNameAndTime() {
-        GregorianCalendar time1 = new GregorianCalendar(2002, 10, 24);
-        GregorianCalendar time2 = new GregorianCalendar(2002, 10, 21);
+        DateModel time1 = new DateModel(2002, 10, 24);
+        DateModel time2 = new DateModel(2002, 10, 21);
 
         when(activityRepository.existsByNameAndTime("Test", time1)).thenReturn(true);
         assertTrue(service.existsByNameAndTime("Test", time1));
@@ -65,14 +66,14 @@ public class ActivityServiceTest {
         verify(activityRepository, times(1)).existsByNameAndTime("Test", time2);
 
         assertThrows(ActivityNameAlreadyInUseException.class,
-                () -> service.createActivity(
-                        1, "Test", new DateModel(2002, 10, 24), "desc"));
+                () -> service.createActivity(new CreateActivityParameters(
+                        1, "Test", new DateModel(2002, 10, 24), "desc")));
 
-        assertDoesNotThrow(() -> service.createActivity(
-                1, "Tests", new DateModel(2002, 10, 24), "desc"));
+        assertDoesNotThrow(() -> service.createActivity(new CreateActivityParameters(
+                1, "Tests", new DateModel(2002, 10, 24), "desc")));
 
-        assertDoesNotThrow(() -> service.createActivity(
-                1, "Test", new DateModel(2002, 10, 21), "desc"));
+        assertDoesNotThrow(() -> service.createActivity(new CreateActivityParameters(
+                1, "Test", new DateModel(2002, 10, 21), "desc")));
     }
 
     @Test

@@ -13,8 +13,13 @@ public class BoardMemberService {
 
     @Autowired
     private transient BoardMemberRepository boardMemberRepository;
-    @Autowired
-    private transient HoaService hoaService;
+    
+    private transient ServiceParameterClass services;
+
+    public BoardMemberService(BoardMemberRepository boardMemberRepository, HoaService hoaService) {
+        this.boardMemberRepository = boardMemberRepository;
+        this.services = new ServiceParameterClass(hoaService);
+    } 
 
     /**
      * Queries table for all the board members of a current hoa
@@ -22,7 +27,7 @@ public class BoardMemberService {
      * @return a list of the board members
      */
     public List<BoardMember> getAllBoardMembersOfAnHoa(int hoaId) {
-        Hoa hoa = hoaService.getHoaById(hoaId);
+        Hoa hoa = this.services.getHoaService().getHoaById(hoaId);
         return boardMemberRepository.findBoardMemberByBoard(hoa);
     }
 
@@ -53,6 +58,18 @@ public class BoardMemberService {
      */
     public int getYearsOnBoard(int id) {
         return boardMemberRepository.findBoardMemberById(id).getYearsOnBoard();
+    }
+
+    public List<BoardMember> findBoardMemberByBoard(Hoa hoa) {
+        return this.boardMemberRepository.findBoardMemberByBoard(hoa);
+    }
+
+    public boolean existsBoardMemberByDisplayNameAndBoard(String displayName, Hoa hoa) {
+        return this.boardMemberRepository.existsBoardMemberByDisplayNameAndBoard(displayName, hoa);
+    }
+
+    public boolean existsBoardMemberByDisplayName(String displayName) {
+        return this.boardMemberRepository.existsBoardMemberByDisplayName(displayName);
     }
 
 }
