@@ -5,16 +5,12 @@ import nl.tudelft.sem.template.commons.models.VotingType;
 import nl.tudelft.sem.template.voting.application.VotingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.Mockito;
-
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class VotingServiceTest {
 
@@ -30,7 +26,7 @@ public class VotingServiceTest {
         VoterEligibilityChecker mockVec = Mockito.mock(VoterEligibilityChecker.class);
         ResultsCollator collator = Mockito.mock(ResultsCollator.class);
 
-        vote = new Vote(1,options,mockTimeKeeper,mockVec, 5, collator);
+        vote = new Vote(1, options, mockTimeKeeper, mockVec, 5, collator);
     }
 
     @Test
