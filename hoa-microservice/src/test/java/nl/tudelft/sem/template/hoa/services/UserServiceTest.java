@@ -1,9 +1,14 @@
 package nl.tudelft.sem.template.hoa.services;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertThrows;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.any;
 
 import nl.tudelft.sem.template.commons.models.hoa.FullAddressModel;
 import nl.tudelft.sem.template.hoa.entitites.Hoa;
@@ -52,6 +57,7 @@ class UserServiceTest {
     @BeforeEach
     public void setUp() {
         userService = new UserService(userRepository, hoaService, connectionService, boardMemberService);
+        //initialization of some commonly used variables
         this.displayName = "user1";
         this.hoaName = "HOA1";
         this.country = "Netherlands";
@@ -97,8 +103,8 @@ class UserServiceTest {
 
         User actualUser = userService.leaveAssociation(displayName, hoaName, country, city);
 
-        verify(connectionService,times(1)).removeConnection(user,hoa);
-        verify(connectionService,times(1)).removeConnection(any(User.class),any(Hoa.class));
+        verify(connectionService, times(1)).removeConnection(user, hoa);
+        verify(connectionService, times(1)).removeConnection(any(User.class), any(Hoa.class));
 
         assertEquals(user, actualUser);
     }
@@ -108,7 +114,7 @@ class UserServiceTest {
         when(userRepository.findByDisplayName(displayName)).thenReturn(null);
 
         UserDoesNotExistException exception = assertThrows(UserDoesNotExistException.class,
-            () -> userService.leaveAssociation(displayName, hoaName, country, city));
+                () -> userService.leaveAssociation(displayName, hoaName, country, city));
         assertEquals("User for given username was not found", exception.getMessage());
     }
 
@@ -119,7 +125,7 @@ class UserServiceTest {
         when(hoaService.getByNaturalId(hoaName, country, city)).thenReturn(null);
 
         HoaDoesNotExistException exception = assertThrows(HoaDoesNotExistException.class,
-            () -> userService.leaveAssociation(displayName, hoaName, country, city));
+                () -> userService.leaveAssociation(displayName, hoaName, country, city));
         assertEquals("Hoa for given name/country/city was not found", exception.getMessage());
     }
 
@@ -147,7 +153,7 @@ class UserServiceTest {
         when(hoaService.getByNaturalId(hoaName, "Netherlands", "Delft")).thenReturn(null);
 
         HoaDoesNotExistException exception = assertThrows(HoaDoesNotExistException.class,
-            () -> userService.joinAssociation(hoaName, displayName, address));
+                () -> userService.joinAssociation(hoaName, displayName, address));
         assertEquals("Hoa with given attributes doesn't exits!", exception.getMessage());
     }
 
@@ -204,11 +210,11 @@ class UserServiceTest {
     @Test
     public void testIsInHoaById_false() {
         int hoaId = 0;
-        Hoa hoa = new Hoa(hoaName,country,city);
+        Hoa hoa = new Hoa(hoaName, country, city);
         hoa.setId(hoaId);
 
         when(hoaService.getHoaById(hoaId)).thenReturn(hoa);
-        when(userRepository.isInHoa(displayName,hoa.getName(),hoa.getCountry(),hoa.getCity())).thenReturn(false);
+        when(userRepository.isInHoa(displayName, hoa.getName(), hoa.getCountry(), hoa.getCity())).thenReturn(false);
 
         assertFalse(userService.isInHoa(displayName, hoaId));
     }
@@ -216,11 +222,11 @@ class UserServiceTest {
     @Test
     public void testIsInHoaById_true() {
         int hoaId = 0;
-        Hoa hoa = new Hoa(hoaName,country,city);
+        Hoa hoa = new Hoa(hoaName, country, city);
         hoa.setId(hoaId);
 
         when(hoaService.getHoaById(hoaId)).thenReturn(hoa);
-        when(userRepository.isInHoa(displayName,hoa.getName(),hoa.getCountry(),hoa.getCity())).thenReturn(true);
+        when(userRepository.isInHoa(displayName, hoa.getName(), hoa.getCountry(), hoa.getCity())).thenReturn(true);
 
         assertTrue(userService.isInHoa(displayName, hoaId));
     }
@@ -238,88 +244,95 @@ class UserServiceTest {
 
     @Test
     public void testIsInSpecificBoard_notInHoa() {
-        when(userRepository.isInHoa(displayName,hoaName,country,city)).thenReturn(false);
+        when(userRepository.isInHoa(displayName, hoaName, country, city))
+                .thenReturn(false); //rejects at the first conditional
 
-        assertFalse(userService.isInSpecificBoard(displayName,hoaName,country,city));
+        assertFalse(userService.isInSpecificBoard(displayName, hoaName, country, city));
     }
 
     @Test
     public void testIsInSpecificBoard_notInAnyBoard() {
-        when(userService.isInHoa(displayName,hoaName,country,city)).thenReturn(true);
-        when(userService.isInBoard(displayName)).thenReturn(false);
+        when(userService.isInHoa(displayName, hoaName, country, city))
+                .thenReturn(true); //bypasses first conditional
+        when(userService.isInBoard(displayName)).thenReturn(false); //rejects at the second conditional
 
 
-        assertFalse(userService.isInSpecificBoard(displayName,hoaName,country,city));
+        assertFalse(userService.isInSpecificBoard(displayName, hoaName, country, city));
     }
 
     @Test
     public void testIsInSpecificBoard_notInThisBoard() {
-        Hoa hoa = new Hoa(hoaName,country,city);
+        Hoa hoa = new Hoa(hoaName, country, city);
 
-        when(userService.isInHoa(displayName,hoaName,country,city)).thenReturn(true);
-        when(userService.isInBoard(displayName)).thenReturn(true);
-        when(hoaService.getByNaturalId(hoaName,country,city)).thenReturn(hoa);
-        when(boardMemberService.existsBoardMemberByDisplayNameAndBoard(displayName,hoa)).thenReturn(false);
+        when(userService.isInHoa(displayName, hoaName, country, city))
+                .thenReturn(true); //bypasses conditional
+        when(userService.isInBoard(displayName)).thenReturn(true); //bypasses condition
+        when(hoaService.getByNaturalId(hoaName, country, city))
+                .thenReturn(hoa); //fetches hoa to be used in service call mock
+        when(boardMemberService.existsBoardMemberByDisplayNameAndBoard(displayName, hoa)).thenReturn(false);
 
-        assertFalse(userService.isInSpecificBoard(displayName,hoaName,country,city));
+        assertFalse(userService.isInSpecificBoard(displayName, hoaName, country, city));
 
     }
 
 
     @Test
     public void testIsInSpecificBoard_true() {
-        Hoa hoa = new Hoa(hoaName,country,city);
+        Hoa hoa = new Hoa(hoaName, country, city);
 
-        when(userService.isInHoa(displayName,hoaName,country,city)).thenReturn(true);
-        when(userService.isInBoard(displayName)).thenReturn(true);
-        when(hoaService.getByNaturalId(hoaName,country,city)).thenReturn(hoa);
-        when(boardMemberService.existsBoardMemberByDisplayNameAndBoard(displayName,hoa)).thenReturn(true);
+        when(userService.isInHoa(displayName, hoaName, country, city))
+                .thenReturn(true); //bypasses conditional
+        when(userService.isInBoard(displayName)).thenReturn(true); //bypasses condition
+        when(hoaService.getByNaturalId(hoaName, country, city))
+                .thenReturn(hoa); //fetches hoa to be used in service call mock
+        when(boardMemberService.existsBoardMemberByDisplayNameAndBoard(displayName, hoa)).thenReturn(true);
 
-        assertTrue(userService.isInSpecificBoard(displayName,hoaName,country,city));
+        assertTrue(userService.isInSpecificBoard(displayName, hoaName, country, city));
     }
 
     @Test
-    public void testInSpecificBoardByUserName_true(){
+    public void testInSpecificBoardByUserName_true() {
         String userName = "user1";
         int hoaId = 0;
-        Hoa hoa = new Hoa(hoaName,country,city);
+        Hoa hoa = new Hoa(hoaName, country, city);
         hoa.setId(hoaId);
 
         when(hoaService.getHoaById(hoaId)).thenReturn(hoa);
-        when(boardMemberService.existsBoardMemberByDisplayNameAndBoard(userName,hoa)).thenReturn(true);
+        when(boardMemberService.existsBoardMemberByDisplayNameAndBoard(userName, hoa)).thenReturn(true);
 
-        assertTrue(userService.isInSpecificBoardByUserName(hoaId,userName));
+        assertTrue(userService.isInSpecificBoardByUserName(hoaId, userName));
     }
 
     @Test
-    public void testInSpecificBoardByUserName_false(){
+    public void testInSpecificBoardByUserName_false() {
         String userName = "user1";
         int hoaId = 0;
-        Hoa hoa = new Hoa(hoaName,country,city);
+        //fetches hoa so that the end behavior from the services is known
+        Hoa hoa = new Hoa(hoaName, country, city);
         hoa.setId(hoaId);
 
         when(hoaService.getHoaById(hoaId)).thenReturn(hoa);
-        when(boardMemberService.existsBoardMemberByDisplayNameAndBoard(userName,hoa)).thenReturn(false);
+        when(boardMemberService.existsBoardMemberByDisplayNameAndBoard(userName, hoa)).thenReturn(false);
 
-        assertFalse(userService.isInSpecificBoardByUserName(hoaId,userName));
+        assertFalse(userService.isInSpecificBoardByUserName(hoaId, userName));
     }
 
     @Test
-    public void testFindByDisplayName_found(){
+    public void testFindByDisplayName_found() {
         User user = new User(displayName);
 
+        //bypasses initial check for users existing
         when(userRepository.existsByDisplayName(displayName)).thenReturn(true);
+        //returns the correct user when called
         when(userRepository.findByDisplayName(displayName)).thenReturn(user);
 
-        assertEquals(userService.findByDisplayName(displayName),user);
+        assertEquals(userService.findByDisplayName(displayName), user);
     }
 
     @Test
-    public void testFindByDisplayName_notFound(){
+    public void testFindByDisplayName_notFound() {
         assertNull(userService.findByDisplayName("Ivan"));
     }
-
-
 
 
 }
