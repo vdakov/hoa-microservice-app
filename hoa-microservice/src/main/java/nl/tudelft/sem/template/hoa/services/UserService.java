@@ -112,9 +112,6 @@ public class UserService {
         user.joinAssociation(connection);
         hoa.addMember(connection);
 
-        connection.setUser(user);
-        connection.setHoa(hoa);
-
         return this.services.getConnectionService().createConnection(connection);
     }
 
@@ -165,6 +162,7 @@ public class UserService {
     }
 
     public User findByDisplayName(String displayName) {
+        if(!userRepository.existsByDisplayName(displayName)) return null;
         return this.userRepository.findByDisplayName(displayName);
     }
 
