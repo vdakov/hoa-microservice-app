@@ -275,7 +275,6 @@ class UserServiceTest {
 
     }
 
-
     @Test
     public void testIsInSpecificBoard_true() {
         Hoa hoa = new Hoa(hoaName, country, city);
