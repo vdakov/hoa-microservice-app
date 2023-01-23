@@ -204,7 +204,7 @@ class UserServiceTest {
     public void testIsInHoa_true() {
         when(userRepository.isInHoa(displayName, hoaName, country, city)).thenReturn(true);
 
-        assertEquals(userRepository.isInHoa(displayName, hoaName, country, city), true);
+        assertEquals(userService.isInHoa(displayName, hoaName, country, city), true);
     }
 
     @Test
