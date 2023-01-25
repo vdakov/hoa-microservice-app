@@ -1,6 +1,7 @@
 package nl.tudelft.sem.template.voting.domain;
 
 import nl.tudelft.sem.template.commons.models.ElectionResultsModel;
+import nl.tudelft.sem.template.commons.models.RequirementResultsModel;
 import nl.tudelft.sem.template.voting.exceptions.IneligibleVoterException;
 import nl.tudelft.sem.template.voting.exceptions.InvalidOptionException;
 import nl.tudelft.sem.template.voting.exceptions.VoteClosedException;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -227,6 +229,27 @@ public class VoteTest {
                     expectedVoteDistributions);
             assertEquals(expected, election.getResults());
         } catch(IneligibleVoterException | InvalidOptionException | VoteClosedException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void requirementVoteCountedCorrectly() {
+        try {
+            election = new RequirementVoteBuilder()
+                    .forHoaWithId(0)
+                    .withOptions(options)
+                    .withTimeKeeper(mockTimeKeeper)
+                    .withVoterEligibilityChecker(mockVec)
+                    .build();
+
+            election.castVote(user0, 0);
+            election.castVote(user1, 1);
+            election.castVote(user2, 1);
+
+            RequirementResultsModel results = (RequirementResultsModel) election.getResults();
+            assertTrue(results.isPassed());
+        } catch(VotingException e) {
             fail();
         }
     }
