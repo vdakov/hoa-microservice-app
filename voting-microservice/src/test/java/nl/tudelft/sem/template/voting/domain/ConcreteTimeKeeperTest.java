@@ -9,9 +9,8 @@ import java.time.Period;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAmount;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 class ConcreteTimeKeeperTest {
     private static Instant startTime = Instant.now();
