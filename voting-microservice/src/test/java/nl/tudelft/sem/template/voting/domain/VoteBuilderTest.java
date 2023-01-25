@@ -83,4 +83,15 @@ public class VoteBuilderTest {
         }
         assertFalse(tk.isVoteOngoing());
     }
+
+    @Test
+    public void optionsAreRemembered() {
+        election = new RequirementVoteBuilder()
+                .forHoaWithId(0)
+                .withOptions(options)
+                .startInstantlyWithDuration(Duration.ofSeconds(1L))
+                .build();
+
+        assertEquals(options, election.getOptions());
+    }
 }
